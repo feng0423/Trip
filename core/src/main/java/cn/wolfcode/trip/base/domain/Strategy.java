@@ -12,10 +12,12 @@ import java.util.HashMap;
 @Getter
 @Setter
 public class Strategy extends BaseDomain{
-
-    public static final int STATE_NORMAL = 0;//普通
-    public static final int STATE_HOT = 1;//热门
-    public static final int STATE_DISABLE = -1;//禁用
+    //普通
+    public static final int STATE_NORMAL = 0;
+    //热门
+    public static final int STATE_HOT = 1;
+    //禁用
+    public static final int STATE_DISABLE = -1;
 
     //地区
     private Region place;

@@ -1,11 +1,13 @@
 package cn.wolfcode.trip.base.domain;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-//用户的实体类
+@ApiModel(value="用户",description="平台注册用户模型")
+////用户的实体类
 public class User extends BaseDomain{
 
     public static final int man = 1; //男

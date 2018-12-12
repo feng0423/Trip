@@ -14,6 +14,7 @@
            <p class="navbar-text text-info">
                <span class="glyphicon glyphicon-user"></span>
                <#--<@shiro.principal property="name"/>-->
+               admin
            </p>
         </li>
         <li><a href="/logout.do">安全退出</a></li>

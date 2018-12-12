@@ -12,10 +12,20 @@ public interface IRegionService {
      * @return
      */
     List<Region> queryByParentId(Long parentId);
-
+    /**
+     * 修改状态
+     * @param region
+     */
     void changeState(Region region);
-
+    /**
+     * 新增和编辑
+     * @param region
+     */
     void saveOrUpdate(Region region);
-
+    /**
+     * 获取所有地区
+     * 可以根据状态查询
+     * @return
+     */
     List<Region> listAll(Integer state);
 }

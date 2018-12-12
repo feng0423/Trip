@@ -62,7 +62,7 @@ public class StrategyController {
     }
 
    @GetMapping("/{strategyId}/commends")
-    public PageInfo queryComment(StrategyCommentQueryObject qo) {
+    public PageInfo queryComments(StrategyCommentQueryObject qo) {
         qo.setOrderBy("sc.commendTime desc");
         return strategyCommendService.query(qo);
     }

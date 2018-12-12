@@ -6,6 +6,7 @@ import cn.wolfcode.trip.base.service.ITravelService;
 import cn.wolfcode.trip.base.service.IUserService;
 import cn.wolfcode.trip.base.util.JsonResult;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 用户资源控制器
  */
+@Api(value = "用户资源",description = "用户资源控制器")
 public class UserController {
 
     @Autowired
@@ -23,8 +25,13 @@ public class UserController {
 
     //需求一: 注册的实现
     @PostMapping
+    @ApiOperation(value = "注册功能",notes = "其实就是新增用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "昵称",name = "nickName",dataType = "String",required = true),
+            @ApiImplicitParam(value = "邮箱",name = "email",dataType = "String",required = true),
+            @ApiImplicitParam(value = "密码",name = "password",dataType = "String",required = true)
+    })
     public JsonResult register(User user) {
-
         JsonResult result = new JsonResult();
         try {
             userService.register(user);

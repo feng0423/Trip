@@ -11,7 +11,7 @@
     </style>
     <script>
         $(function () {
-
+            //查看文章按钮
             $(".look_Btn").click(function () {
                 var id = $(this).data("id");
                 $.get("/travel/travelContentById.do",{id:id},function (data) {
@@ -19,6 +19,7 @@
                 })
                 $("#contentModal").modal("show");
             })
+            //发布文章按钮
             $(".changeState").click(function () {
                 var id = $(this).data("id");
                 var state = $(this).data("state");

@@ -9,7 +9,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * @Description:游记
+ * @Author: Tank
+ * @Date: 2018/12/12 22:19
+ * @Version: 1.0
+ */
 @Setter
 @Getter
 public class Travel extends BaseDomain{
@@ -60,16 +65,22 @@ public class Travel extends BaseDomain{
         String temp = "";
         switch (person){
             case 1:
-                temp = "自驾游";
+                temp = "一个人的旅行";
                 break;
             case 2:
-                temp = "和朋友";
+                temp = "和父母";
                 break;
             case 3:
+                temp = "和朋友";
+                break;
+            case 4:
+                temp = "和同事";
+                break;
+            case 5:
                 temp = "和爱人";
                 break;
             default:
-                temp="和同事";
+                temp = "和其他";
         }
         return temp;
     }

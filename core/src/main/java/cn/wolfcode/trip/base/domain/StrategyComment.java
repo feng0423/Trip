@@ -9,7 +9,7 @@ import org.springframework.util.StringUtils;
 import java.util.Date;
 
 /**
- * @Description: 攻略页面评论列表
+ * @Description: 攻略评论
  * @Author: Tank
  * @Date: 2018/12/10 12:17
  * @Version: 1.0
@@ -23,19 +23,20 @@ public class StrategyComment extends BaseDomain {
     public static final int STATE_HOT = 1;
     //禁用
     public static final int STATE_DISABLE = -1;
-
+    //点评者
     private User user;
-
+    //创建时间
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date createTime;
-
+    //点评内容
     private String content;
-
+    //图片urls
     private String imgUrls;
-
+    //星星数量
     private Integer starNum;
-
+    //所属攻略
     private Strategy strategy;
-
+    //状态
     private Integer state;
     //推荐时间安排
     @DateTimeFormat(pattern = "yyyy-MM-dd")

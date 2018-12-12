@@ -26,7 +26,7 @@ public class StrategyCatalog extends BaseDomain{
     private Integer sequence;
     //状态
     private Boolean state;
-
+    //攻略文章集合
     private List<StrategyDetail>  details = new ArrayList<StrategyDetail>();
 
     public String getStateName(){

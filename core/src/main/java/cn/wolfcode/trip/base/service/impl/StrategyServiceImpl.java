@@ -1,7 +1,6 @@
 package cn.wolfcode.trip.base.service.impl;
 
 import cn.wolfcode.trip.base.domain.Strategy;
-import cn.wolfcode.trip.base.domain.StrategyCatalog;
 import cn.wolfcode.trip.base.mapper.StrategyMapper;
 import cn.wolfcode.trip.base.query.StrategyQueryObject;
 import cn.wolfcode.trip.base.service.IStrategyService;
@@ -32,7 +31,7 @@ public class StrategyServiceImpl implements IStrategyService{
         }
     }
 
-    public List listAll() {
+    public List<Strategy> listAll() {
         return strategyMapper.selectAll();
     }
 

@@ -13,6 +13,16 @@
     <packaging>war</packaging>
 
     <dependencies>
+        <!-- swagger2 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+        </dependency>
+        <!-- swagger2 ui-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
         <!--依赖core包-->
         <dependency>
             <groupId>cn.wolfcode.trip</groupId>

@@ -14,12 +14,18 @@
 
  <script>
      $(function () {
+         //修改确认框中的按钮文本
+         $.messager.model={
+             ok:{text:"确定"},
+             cancel:{text:"取消"}
+         }
+
          $(".btn-delete").click(function () {
              //获取删除按钮上绑定的url
              var url = $(this).data("url");
              //弹出确认框
-             $.messager.confirm("温馨提示", "亲,你确定要删除!", function () {
-
+             $.messager.confirm("温馨提示", "亲,您确定要删除当前数据吗?!", function () {
+                //发送删除的请求
                  $.get(url, function (data) {
                      successAlert(data);
                  });

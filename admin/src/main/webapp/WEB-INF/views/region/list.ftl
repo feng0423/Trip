@@ -9,12 +9,13 @@
 
     <script>
         $(function () {
-            //通过发ajax发请求查询根目录的数据
+            //通过发ajax发请求查询根目录的所有地区的数据
             $.get("/region/listByParentId.do", {type: "tree"}, function (data) {
                 $("#treeview").treeview({
                     data: [{text: '全部地区', nodes: data}],
                     showTags: true,
                     lazyLoad: function (node) {
+                        //查询该节点下的子节点
                         $.get("/region/listByParentId.do", {parentId: node.id, type: "tree"}, function (data) {
                             //调用插件的方法添加节点(第一个参数是要添加的节点,第二个参数是要添加到哪里(父节点))
                             $("#treeview").treeview('addNode', [data, node])
@@ -30,7 +31,7 @@
                                 $(tr).find("td:nth-child(1)").html(index + 1);
                                 $(tr).find("td:nth-child(2)").html(ele.name);
                                 $(tr).find("a").attr("data-json", ele.json);
-                                //判断地区的状态
+                                //判断地区的状态(如果是推荐状态)
                                 if (ele.state == 1) {
                                     temp = "取消推荐";
                                     $(tr).find("a:last").html(temp)
@@ -83,16 +84,16 @@
                 if (json.state == 1) {
                     state = 0;
                 }
-                $.get('/region/changeState.do', {id: json.id, state: state}, function (data) {
-      /*              if (data.success){
+                $.post('/region/changeState.do', {id: json.id, state: state}, function (data) {
+                    if (data.success){
                         $.messager.alert("温馨提示", "操作成功,2s后关闭");
                         setTimeout(function () {
                             window.location.reload();
                         }, 2000);
-                    }*/
-                        $.messager.confirm("提示","修改成功",function(){
+                    }
+                   /*     $.messager.confirm("提示","修改成功",function(){
                             window.location.reload();
-                        });
+                        });*/
                 })
             });
         })

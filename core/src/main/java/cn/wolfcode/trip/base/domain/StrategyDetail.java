@@ -6,7 +6,12 @@ import lombok.Setter;
 
 import java.util.Date;
 import java.util.HashMap;
-
+/**
+ * @Description:攻略文章
+ * @Author: Tank
+ * @Date: 2018/12/12 22:18
+ * @Version: 1.0
+ */
 @Getter
 @Setter
 public class StrategyDetail extends BaseDomain{
@@ -28,7 +33,7 @@ public class StrategyDetail extends BaseDomain{
     private String coverUrl;
     //状态
     private Integer state = STATE_NORMAL;
-    //
+    //攻略内容
     private StrategyContent strategyContent;
 
     public String getJson(){

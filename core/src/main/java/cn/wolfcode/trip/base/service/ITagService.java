@@ -6,5 +6,10 @@ import java.util.List;
 
 public interface ITagService {
 
+    /**
+     * 查询标签列表
+     * @param strategyId
+     * @return
+     */
     List<Tag> listByStrategyId(Long strategyId);
 }

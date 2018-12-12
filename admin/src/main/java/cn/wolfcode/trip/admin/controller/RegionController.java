@@ -27,9 +27,10 @@ public class RegionController {
     }
 
     @RequestMapping("/changeState")
-    public String changeState(Region region) {
+    @ResponseBody
+    public JsonResult changeState(Region region) {
         regionService.changeState(region);
-        return "redirect:/region/listByParentId.do";
+        return new JsonResult();
     }
 
     @RequestMapping("/listByParentId")

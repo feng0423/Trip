@@ -125,13 +125,13 @@
 					<input type="hidden" name="email" render-value="email">
 					<!--隐藏域没有必要,因为我在put更新操作那里用了id,也就是谁提交id就是谁-->
 					<!--<input type="hidden" name="id" >-->
-					<label>昵称</label><input type="text" name="nickName" class="form-control" render-value="nickName">
+					<label>昵称</label><input type="text" name="nickName" class="form-control" render-value="nickName"><br/>
 					<label>性别</label><select class="form-control" name="gender" render-value="gender">
 							<option value="-1">保密</option>
 							<option value="1">男</option>
 							<option value="0">女</option>
-						</select>
-					<label>地区</label><input type="text" name="place"  class="form-control" render-value="place">
+						</select><br/>
+					<label>地区</label><input type="text" name="place"  class="form-control" render-value="place"><br/>
 					<label>签名</label><textarea name="sign" class="form-control" rows="5" render-value="sign"></textarea>
 			</form>
 		</div>

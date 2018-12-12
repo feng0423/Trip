@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>我的游记</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
+    <script src="/js/jquery/jquery.min.js"></script>
+    <script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
+    <script src="/js/plugins/jrender/jrender.min.js"></script>
+    <link rel="stylesheet" href="/css/font/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/css/reset.css" />
+    <link rel="stylesheet" href="/css/userTravels.css" />
+    <link rel="stylesheet" href="/js/plugins/dialog2/dialog.css" />
+    <script src="/js/plugins/dialog2/dialog.min.js"></script>
+
+    <!--由于页面上的数据静态的需要进行ajax动态哦处理-->
+    <!--第一步  引插件jrender插件 然后将下面的数据进行遍历处理-->
+    <!--第二步  引插件jquery插件-->
+    <!--第三步 发异步请求,获取分页服务器响应的数据-->
+    <!--第四步 通过插件reader共享数据-->
+    <!--第五步 循环遍历模板,设置数据-->
+    <!--第六步 每次查询会把之前的覆盖,定义个缓冲数组接收所有的信息-->
+    <!--第七步 获取到的新数组重新共享到render中,在渲染数据-->
+    <script>
+        $(function () {
+            var user = JSON.parse(sessionStorage.getItem("user"));
+            //当前页
+            var currentPage = 1;
+            //总页数
+            var pages;
+            //由于当前渲染的只有三页,那么每次渲染重新查询之后会吧之前的覆盖掉,所以必须要
+            //定义一个游记的存储数据,每次查询到的数据放在数组里,即不会丢失
+            var travelArr = []
+            function query() {
+                //获取我的游记
+                $.get("/users/" + user.id + "/travels", {currentPage: currentPage}, function (data) {
+                    console.log(data);
+                    //将第二个数组合并第一数组中
+                    $.merge(travelArr,data.list);
+                    //转换成json对象,之后再存
+                    var json = {
+                        list:travelArr
+                    };
+                    //渲染数据
+                    $(".travels").renderValues(json,{
+                        getHref:function (item,value) {
+                            $(item).attr("href","/mine/editTravels.html?id="+value);
+
+                        }
+                    });
+
+                    //获取总页数
+                    pages = data.pages;
+                })
+                currentPage = currentPage+1;
+            }
+            //默认查询的第一页
+            query();
+            //给window绑定滚动事件
+
+            $(window).scroll(function () {
+                if($(window).height() + $(document).scrollTop() +1  >= $(document).height()){
+                    //如果是大于总页数就不发送请求了
+                    if(currentPage <= pages){
+                        query();
+                    }else{
+                        $(document).dialog({
+                            type:'notice',
+                            content:'<span class="info-text">亲,已经到底了!</span>',
+                            autoClose:2500
+                        });
+                    }
+                }
+            })
+        })
+    </script>
+</head>
+
+<body>
+<div class="search-head">
+    <div class="row nav-search">
+        <div class="col">
+            <a href="profiles.html">
+                <span><i class="fa fa-chevron-left"></i></span>
+            </a>
+        </div>
+        <div class="col">
+            <span>我的游记</span>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>
+
+<div class="container travels">
+    <dl class="list" render-loop="list">
+        <dd>
+            <a render-fun="getHref" render-key="list.id">
+                <img   render-src="list.coverUrl">
+                <h6 class="title" render-html="list.title"> </h6>
+                <p>最近更新时间 <span render-html="list.lastUpdateTime"></span>
+                    <span class="span-right">
+							  <i class="fa fa-heart"></i><span>0</span>收藏
+						  <i class="fa fa-thumbs-o-up"></i><span>0</span>点赞</span>
+                </p>
+            </a>
+        </dd>
+    </dl>
+</div>
+
+</body>
+</html>

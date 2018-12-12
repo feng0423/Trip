@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>设置个人资料</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
+		<script src="/js/jquery/jquery.min.js"></script>
+		<script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="/css/font/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="/css/reset.css" />
+		<link rel="stylesheet" href="/css/myInfo.css" />
+		<script src="/js/plugins/form/jquery.form.js"></script>
+		<!--引用jrender插件-->
+		<script src="/js/plugins/jrender/jrender.min.js"></script>
+		<script
+		<script>
+			$(function () {
+				var user = JSON.parse(sessionStorage.getItem("user"));
+				$(".info").renderValues(user)
+				//设置背景图片//修改样式使用css的方法
+				$(".myBg").css("background-image","url('"+user.coverImgUrl+"')")
+				//第一步,设置action路径
+				$("#infoForm").attr("action","/users/"+user.id);
+				//第二步,配好处理put和post请求的过滤器
+				//第三步,配置隐藏域,将post请求改为put请求(如下)
+				//第四步,发ajax请求
+				//第五步,数据缓存起来,每次都是之前的,所以需要更新缓存
+				$("#saveBtn").click(function () {
+					$("#infoForm").ajaxSubmit(function (data) {
+                        if(data.success){
+                            //更新缓存
+							sessionStorage.setItem("user",JSON.stringify(data.obj))
+							window.location.href = "/mine/profiles.html";
+						}else{
+                            $(document).dialog({
+                                content: data.msg,
+                            });
+						}
+                    })
+                })
+
+				var flag = true;
+				//给头像绑定点击事件,然后触发文件框的点击动作
+				$("#headBtn").click(function () {
+					$("#fileInput").click();
+					flag = true
+                });
+				//给背景绑定点击事件,然后触发文件框的点击动作
+				$("#coverBtn").click(function () {
+					$("#fileInput").click();
+					flag = false;
+                });
+				//文本框使用change事件
+				$("#fileInput").change(function () {
+				    //判断是否有图片,如果这里不判断的啥,点上传的时候,但没保存就会上传的时候为空
+                    if($(this).val()){
+						//上传图片
+						$("#fileFrom").ajaxSubmit(function (data) {
+                            console.log(data.status);
+                            if(data.status == 1){
+                                //判断修改头像还是修改背景
+								if(flag){
+                                    //回显到img上
+                                    $("#headImg").attr("src", data.url);
+                                    //回显到隐藏域上
+                                    $("[name='headImgUrl']").val(data.url);
+								}else{
+								    //回显到背景的样式
+                                    $(".myBg").css("background-image","url('"+data.url+"')")
+									//回显带隐藏域
+                                    $("[name='coverImgUrl']").val(data.url);
+								}
+							}
+                        })
+					}
+                })
+            })
+		</script>
+
+	</head>
+
+	<body>
+	<!--文件上传的设置方法,包括文件的类型,并且隐藏-->
+	<form action="/images" method="post" id="fileFrom" enctype="multipart/form-data">
+		<!--修改头像-->
+		<input type="file" style="display: none" id="fileInput" name="file">
+	</form>
+		<div class="search-head">
+			<div class="row nav-search">
+				<div class="col">
+					<!--回到上一个页面-->
+					<a href="javascript:window.history.go(-1);">
+						<span>取消</span>
+					</a>
+				</div>
+				<div class="col">
+					<span>设置个人资料</span>
+				</div>
+				<div class="col" >
+					<a href="#" id="saveBtn" >
+						<span>保存</span>
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="container info">
+			<!--<div class="myBg" style="background-image: url('/upload/f7b178c5-dc83-4743-b120-90bfb24bbb9a.jpeg')">-->
+			<div class="myBg" >
+				<img id="headImg"  class="rounded-circle" render-src="headImgUrl"/>
+				<div class="editHead" id="headBtn" ><i class="fa fa-pencil-square fa-lg " aria-hidden="true"></i></div>
+				<button  class="btn btn-outline-light ibtn " id="coverBtn">设置背景</button>
+			</div>
+
+			<!--这里不能使用action提交,主要是在后台的方法中没办法给id,所以只能使用js,但由于保存没有提交表单,所以只能ajaxsubmit提交-->
+			<form id="infoForm" method="post">
+
+					<input type="hidden" value="put" name="_method">
+					<!--隐藏域,将头像带过去-->
+					<input type="hidden" name="headImgUrl" render-value="headImgUrl">
+					<!--隐藏域,将背景带过去-->
+					<input type="hidden" name="coverImgUrl" render-value="coverImgUrl">
+					<!--隐藏域,将邮箱带过去-->
+					<input type="hidden" name="email" render-value="email">
+					<!--隐藏域没有必要,因为我在put更新操作那里用了id,也就是谁提交id就是谁-->
+					<!--<input type="hidden" name="id" >-->
+					<label>昵称</label><input type="text" name="nickName" class="form-control" render-value="nickName">
+					<label>性别</label><select class="form-control" name="gender" render-value="gender">
+							<option value="-1">保密</option>
+							<option value="1">男</option>
+							<option value="0">女</option>
+						</select>
+					<label>地区</label><input type="text" name="place"  class="form-control" render-value="place">
+					<label>签名</label><textarea name="sign" class="form-control" rows="5" render-value="sign"></textarea>
+			</form>
+		</div>
+	</body>
+</html>

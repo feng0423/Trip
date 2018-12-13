@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>我的消息</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
+		<script src="/js/jquery/jquery.min.js"></script>
+		<script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="/css/font/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="/css/reset.css" />
+		<link rel="stylesheet" href="/css/message.css" />
+		<script src="/js/plugins/jrender/jrender.min.js"></script>
+		<link href="http://css.mafengwo.net/css/cv/css+jquery-ui-1.8.18.custom:css+new_notes+new_notes:css+new_notes+schedule_info:css+new_notes+step:css+new_notes+sideview:css+new_notes+notes_comments:css+mfw_comment^YlNV^1524648540.css" rel="stylesheet" type="text/css">
+
+
+
+
+	</head>
+
+	<body>
+		<div class="search-head">
+			<div class="row nav-search">
+				<div class="col">
+					<a href="javascript:history.go(-1);">
+						<span><i class="fa fa-chevron-left" ></i></span>
+					</a>
+				</div>
+				<div class="col-">
+					<span>我收到的@</span>
+				</div>
+				<div class="col"></div>
+			</div>
+		</div>
+
+		
+
+
+		<div class="container travel">
+			<dl class="itemList" render-loop="list" >
+				<dd>
+					<div class="mfw-cmt _j_reply_item" >
+						<div class="mcmt-info">
+							<div class="mcmt-photo">
+								<a href="#" title="牛逼" target="_blank">
+									<img render-src="list.userHeadImgUrl" width="48" height="48" alt="牛逼">
+								</a>
+							</div>
+							<div class="mcmt-user">
+								<a href="#" target="_blank" class="name" render-html="list.userName"></a>
+								<a href="#" class="level">LV.40</a>
+								<a href="#" class="identity identity-vip" target="_blank"></a>
+								<a href="javascript:void(0);" class="per_attention" data-japp="following" data-uid="45066857" data-follow_class="hide">
+									<img src="http://images.mafengwo.net/images/home/tweet/btn_sfollow.gif" width="38" height="13" border="0" title="关注TA">
+								</a>
+							</div>
+						</div>
+					</div>
+					<p render-html="list.titleMessage"></p>
+					<p render-html="list.comment"></p>
+					<div class="d-flex">
+						<div class="p-2  flex-fill">
+							<i class="fa fa-calendar"></i>
+							<span render-html="list.commentTime"></span>
+						</div>
+						<div class="p-2  flex-fill">
+							<a href="" render-key="list.destinationMsg" render-fun="handle">
+								<i class="fa fa-money"></i> 回复他
+							</a>
+						</div>
+					</div>
+
+
+				</dd>
+			</dl>
+
+		</div>
+
+
+		<div class="container strategy">
+			<dl class="itemList" render-loop="list" >
+				<dd>
+					<div class="mfw-cmt _j_reply_item" >
+						<div class="mcmt-info">
+							<div class="mcmt-photo">
+								<a href="#" title="牛逼" target="_blank">
+									<img render-src="list.userHeadImgUrl" width="48" height="48" alt="牛逼">
+								</a>
+							</div>
+							<div class="mcmt-user">
+								<a href="#" target="_blank" class="name" render-html="list.userName"></a>
+								<a href="#" class="level">LV.40</a>
+								<a href="#" class="identity identity-vip" target="_blank"></a>
+								<a href="javascript:void(0);" class="per_attention" data-japp="following" data-uid="45066857" data-follow_class="hide">
+									<img src="http://images.mafengwo.net/images/home/tweet/btn_sfollow.gif" width="38" height="13" border="0" title="关注TA">
+								</a>
+							</div>
+						</div>
+					</div>
+					<p render-html="list.titleMessage"></p>
+					<p render-html="list.comment"></p>
+					<div class="d-flex">
+						<div class="p-2  flex-fill">
+							<i class="fa fa-calendar"></i>
+							<span render-html="list.commentTime"></span>
+						</div>
+						<div class="p-2  flex-fill">
+							<a href="" render-key="list.themeId" render-fun="handle">
+								<i class="fa fa-money"></i> 回复他
+							</a>
+						</div>
+					</div>
+
+
+				</dd>
+			</dl>
+
+		</div>
+
+
+
+
+		<script>
+            $(function () {
+                $.get("/users/messages/atmes/strategys",function (data) {
+                    $(".strategy").renderValues({list:data},{
+                        handle: function (ele, value) {
+                            ele.href = "/strategyDetails.html?id="+value;
+                        }
+
+                    })
+                })
+				setTimeout(50);
+                $.get("/users/messages/atmes/travels",function (data) {
+                    $(".travel").renderValues({list:data},{
+                        handle: function (ele, value) {
+                           // ele.href = "/travelContent.html?id="+value;
+                            ele.href = "/travelContent.html?id="+value;
+                        }
+
+                    })
+                })
+            })
+		</script>
+
+
+
+
+	</body>
+</html>

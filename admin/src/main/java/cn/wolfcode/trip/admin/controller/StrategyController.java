@@ -38,9 +38,11 @@ public class StrategyController {
     public JsonResult saveOrUpdate(Strategy strategy, MultipartFile file) {
         //判断是否上传文件
         if(file!=null && file.getSize()>0){
-            String url = UploadUtil.upload(file, UploadUtil.PATH+"/upload");
-            System.out.println(url);
-            strategy.setCoverUrl(url);
+            //String url = UploadUtil.upload(file, UploadUtil.PATH+"/upload");
+            String url = UploadUtil.uploadQiniyun(file);
+            //map.put("url",UploadUtil.Qi_PATH+url);
+            //System.out.println(UploadUtil.Qi_PATH+url);
+            strategy.setCoverUrl(UploadUtil.Qi_PATH+url);
         }
         strategyService.saveOrUpdate(strategy);
         return new JsonResult();

@@ -25,9 +25,12 @@ public class TravelCommendController {
     @ResponseBody
     public JsonResult saveOrUpdate(TravelCommend travelCommend, MultipartFile file) {
         if(file!=null && file.getSize()>0){
-            String url = UploadUtil.upload(file, UploadUtil.PATH+"/upload");
-            System.out.println(url);
-            travelCommend.setCoverUrl(url);
+            //String url = UploadUtil.upload(file, UploadUtil.PATH+"/upload");
+            String url = UploadUtil.uploadQiniyun(file);
+
+            //System.out.println(url);
+            travelCommend.setCoverUrl(UploadUtil.Qi_PATH+url);
+           // travelCommend.setCoverUrl(url);
         }
         travelCommendService.saveOrUpdate(travelCommend);
         return new JsonResult();

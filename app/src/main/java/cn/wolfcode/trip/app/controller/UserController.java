@@ -1,7 +1,10 @@
 package cn.wolfcode.trip.app.controller;
 
+import cn.wolfcode.trip.base.domain.Travel;
 import cn.wolfcode.trip.base.domain.User;
 import cn.wolfcode.trip.base.query.TravelQueryObject;
+import cn.wolfcode.trip.base.query.UserQueryObject;
+import cn.wolfcode.trip.base.service.IStrategyCommentService;
 import cn.wolfcode.trip.base.service.ITravelService;
 import cn.wolfcode.trip.base.service.IUserService;
 import cn.wolfcode.trip.base.util.JsonResult;
@@ -22,6 +25,8 @@ public class UserController {
     private IUserService userService;
     @Autowired
     private ITravelService travelService;
+    @Autowired
+    private IStrategyCommentService strategyCommentService;
 
     //需求一: 注册的实现
     @PostMapping
@@ -68,5 +73,22 @@ public class UserController {
     public PageInfo query(TravelQueryObject qo) {
         qo.setOrderBy("t.lastUpdateTime desc");
         return travelService.queryForList(qo);
+    }
+    @GetMapping("/{UserId}")
+    public User getUserById(@PathVariable Long UserId) {
+
+        return userService.getUser(UserId);
+    }
+    @GetMapping("/{UserId}/travelsByUserId")
+    public PageInfo travelByauthorId(UserQueryObject qo) {
+        qo.setOrderBy("lastUpdateTime desc");
+        return travelService.queryTravelByauthorId(qo);
+    }
+
+
+    @GetMapping("/{UserId}/strategycommentByUserId")
+    public PageInfo queryStrategycommentsByUserId(UserQueryObject qo) {
+        qo.setOrderBy("createTime desc");
+        return strategyCommentService.queryStrategycommentsByUserId(qo);
     }
 }

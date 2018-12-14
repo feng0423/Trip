@@ -1,5 +1,6 @@
 package cn.wolfcode.trip.base.service.impl;
 
+import cn.wolfcode.trip.base.domain.Travel;
 import cn.wolfcode.trip.base.domain.User;
 import cn.wolfcode.trip.base.mapper.UserMapper;
 import cn.wolfcode.trip.base.query.QueryObject;
@@ -56,4 +57,9 @@ public class UserServiceImpl implements IUserService{
     public void update(User user) {
         userMapper.updateByPrimaryKey(user);
     }
+
+    public User getUser(Long userId) {
+        return userMapper.selectByPrimaryKey(userId);
+    }
+
 }

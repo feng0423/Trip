@@ -56,4 +56,8 @@ public class UserServiceImpl implements IUserService{
     public void update(User user) {
         userMapper.updateByPrimaryKey(user);
     }
+
+    public List<User> selectAll() {
+        return userMapper.selectAll();
+    }
 }

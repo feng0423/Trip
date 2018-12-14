@@ -4,6 +4,8 @@ import cn.wolfcode.trip.base.domain.User;
 import cn.wolfcode.trip.base.query.QueryObject;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
+
 public interface IUserService {
 
 
@@ -29,4 +31,9 @@ public interface IUserService {
      * @param user
      */
     void update(User user);
+
+    /**
+     * 查询所有user
+     */
+    List<User> selectAll();
 }

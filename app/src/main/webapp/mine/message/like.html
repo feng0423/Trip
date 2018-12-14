@@ -14,9 +14,6 @@
 		<script src="/js/plugins/jrender/jrender.min.js"></script>
 		<link href="http://css.mafengwo.net/css/cv/css+jquery-ui-1.8.18.custom:css+new_notes+new_notes:css+new_notes+schedule_info:css+new_notes+step:css+new_notes+sideview:css+new_notes+notes_comments:css+mfw_comment^YlNV^1524648540.css" rel="stylesheet" type="text/css">
 
-
-
-
 	</head>
 
 	<body>
@@ -41,30 +38,26 @@
 				<div class="mfw-cmt _j_reply_item" >
 					<div class="mcmt-info">
 						<div class="mcmt-photo">
-							<a href="#" title="牛逼" target="_blank">
-								<img render-src="list.user.headImgUrl" width="48" height="48" alt="牛逼">
+							<a href="/userProfiles.html" title="牛逼" target="_blank">
+								<img render-src="list.headImgUrl" width="48" height="48" alt="牛逼">
 							</a>
 						</div>
 						<div class="mcmt-user">
-							<a href="#" target="_blank" class="name" render-html="list.user.nickName"></a>
-							<a href="#" class="level">LV.40</a>
-							<a href="#" class="identity identity-vip" target="_blank"></a>
-							<a href="javascript:void(0);" class="per_attention" data-japp="following" data-uid="45066857" data-follow_class="hide">
-								<img src="http://images.mafengwo.net/images/home/tweet/btn_sfollow.gif" width="38" height="13" border="0" title="关注TA">
-							</a>
+							<a href="#" target="_blank" class="name" render-html="list.nickName">赞了你!</a>
+							<a href="#" target="_blank">赞了你!</a>
+
 						</div>
 					</div>
 				</div>
 					<p render-html="list.titlemsg"></p>
 				</dd>
 			</dl>
-
 		</div>
 
 
 		<script>
 		  $(function () {
-		      $.get("/users//messages/userlike",function (data) {
+		      $.get("/users/messages/userlike",function (data) {
                   $(".systemMsg").renderValues({list:data})
               })
           })

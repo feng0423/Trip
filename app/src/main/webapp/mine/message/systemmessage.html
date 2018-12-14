@@ -38,35 +38,32 @@
 
 
 		<div class="container travel">
+			<a render-html="list.user.nickName"></a>
 			<dl class="itemList" render-loop="list" >
 				<dd>
 					<p render-html="list.message"></p>
 					<div class="d-flex">
 						<div class="p-2  flex-fill">
 							<i class="fa fa-calendar"></i>
-							<span render-html="list.creatTime"></span>
+							<span render-html="list.createTime"></span>
 						</div>
 						<div class="p-2  flex-fill">
-							<a href=":;" >
-								<i class="fa fa-money"></i> 提出申诉
+							<a href="#" >
+								<i class="fa fa-money"></i> 查看详情
 							</a>
 						</div>
 					</div>
-
-
 				</dd>
 			</dl>
-
 		</div>
 
 
 
 		<script>
             $(function () {
-                $.get("/users/messages/systemmessage",function (data) {
+                $.get("/users/messages/systemMessage",function (data) {
                     $(".travel").renderValues({list:data})
                 })
-
             })
 		</script>
 	</body>

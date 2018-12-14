@@ -1,14 +1,22 @@
 package cn.wolfcode.trip.app.controller;
 
+import cn.wolfcode.trip.base.domain.SystemMessage;
 import cn.wolfcode.trip.base.domain.User;
+import cn.wolfcode.trip.base.query.QueryObject;
 import cn.wolfcode.trip.base.query.TravelQueryObject;
+import cn.wolfcode.trip.base.service.ISystemMessageService;
 import cn.wolfcode.trip.base.service.ITravelService;
 import cn.wolfcode.trip.base.service.IUserService;
 import cn.wolfcode.trip.base.util.JsonResult;
+import cn.wolfcode.trip.base.util.UserContext;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
+import jdk.nashorn.internal.objects.annotations.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -22,6 +30,9 @@ public class UserController {
     private IUserService userService;
     @Autowired
     private ITravelService travelService;
+
+    @Autowired
+    private ISystemMessageService systemMessageService;
 
     //需求一: 注册的实现
     @PostMapping
@@ -69,4 +80,28 @@ public class UserController {
         qo.setOrderBy("t.lastUpdateTime desc");
         return travelService.queryForList(qo);
     }
+
+    /**
+     * 查询系统消息显示在系统消息界面
+     * @return
+     */
+    @GetMapping("/messages/systemMessage")
+    public Object getSystemMessage() {
+       /* User user = UserContext.getUser();*/
+        List<SystemMessage> systemMessages = systemMessageService.selectAll();
+        return systemMessages;
+    }
+
+    /**
+     * 获取user数据展示到点赞界面
+     * @return
+     */
+    @GetMapping("/messages/userlike")
+    public Object getUserLike(){
+        List<User> list = userService.selectAll();
+        return list;
+    }
+
+
+
 }

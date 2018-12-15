@@ -48,4 +48,8 @@ public class StrategyCommentServiceImpl implements IStrategyCommentService {
         }
     }
 
+    public void changeState(Long id, Integer state) {
+        strategyCommentMapper.changeState(id,state);
+    }
+
 }

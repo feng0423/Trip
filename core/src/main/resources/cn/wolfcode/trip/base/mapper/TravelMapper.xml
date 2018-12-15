@@ -128,6 +128,9 @@ DELETE FROM favorite_user_travel
       <if test="travelId!=null">
         and t.id = #{travelId}
       </if>
+      <if test="keyword!=null">
+        and title like concat('%',#{keyword},'%')
+      </if>
     </where>
   </select>
   <select id="selectLikeById" resultType="map">

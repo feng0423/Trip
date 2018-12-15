@@ -2,6 +2,7 @@ package cn.wolfcode.trip.base.service.impl;
 
 import cn.wolfcode.trip.base.domain.Strategy;
 import cn.wolfcode.trip.base.mapper.StrategyMapper;
+import cn.wolfcode.trip.base.query.SerachQueryObject;
 import cn.wolfcode.trip.base.query.StrategyQueryObject;
 import cn.wolfcode.trip.base.service.IStrategyService;
 import com.github.pagehelper.PageHelper;
@@ -37,5 +38,11 @@ public class StrategyServiceImpl implements IStrategyService{
 
     public Strategy getStrategyById(Long id) {
         return strategyMapper.selectByPrimaryKey(id);
+    }
+
+    public PageInfo queryList(SerachQueryObject qo) {
+        PageHelper.startPage(qo.getCurrentPage(),qo.getPageSize());
+        List<Strategy> list = strategyMapper.selectSearchForList(qo);
+        return new PageInfo(list);
     }
 }

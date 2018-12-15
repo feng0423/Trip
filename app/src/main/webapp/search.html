@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <title>修改</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
+    <script src="/js/jquery/jquery.min.js"></script>
+    <script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/font/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="/css/reset.css"/>
+    <link rel="stylesheet" href="/css/strategy.css"/>
+    <link rel="stylesheet" href="/js/plugins/dialog2/dialog.css">
+    <script src="/js/plugins/jrender/jrender.min.js"></script>
+    <script src="/js/plugins/dialog2/dialog.min.js"></script>
+    <script src="/js/common.js"></script>
+
+    <script>
+        $(function () {
+            //接受存储的关键字
+            var keywordInSession = sessionStorage.getItem("keyword");
+            $("#keyword").val(keywordInSession);
+            //搜索按钮点击事件
+            $("#select").click(function () {
+                var keyword = $("#keyword").val();
+                console.log(keyword);
+                //什么都不输/输n个空格,都不会跳页
+                if (keyword == "" || keyword == undefined || keyword == null || (keyword.length > 0 && keyword.trim().length == 0)) {
+                    $(document).dialog({
+                        type: 'notice',
+                        infoText: '搜索内容不能能为空',
+                        autoClose: 1000,
+                        position: 'center'  // center: 居中; bottom: 底部
+                    });
+                } else {
+                    sessionStorage.setItem("keyword", keyword);
+                    window.location.href = "/search.html";
+                }
+            });
+            //当前页,初始值为1
+            var currentPage1 = 1;
+            //总页数
+            var pages1 = 1;
+
+            function queryForStrategy() {
+                //先来一个简单的,把所有有关键字的攻略查出来
+                $.get("/searchs/strategies", {keyword: keywordInSession, currentPage: currentPage1}, function (data) {
+                    $("#strategyTotal").html(data.total);
+                    var temp = "";
+                    if (!(data.list.length)) {
+                        temp = '<br/><div class="col-12"style="text-align:center;color: #666">该条目下没有您搜索的内容...</div>'
+                    }
+                    $.each(data.list, function (index, ele) {
+                        if (ele) {
+                            console.log(ele);
+                            temp += '<div class="container">\n' +
+                                '\t\t\t\t<br/>\n' +
+                                '\t\t\t\t<div class="row hot">\n' +
+                                '\t\t\t\t\t<div class="col-5">\n' +
+                                '\t\t\t\t\t\t<a href="strategyCatalogs.html?id=' + ele.id + '">\n' +
+                                '\t\t\t\t\t\t\t<img src="' + ele.coverUrl + '">\n' +
+                                '\t\t\t\t\t\t</a>\n' +
+                                '\t\t\t\t\t</div>\n' +
+                                '\t\t\t\t\t<div class="col-7">\n' +
+                                '\t\t\t\t\t\t<a href="strategyCatalogs.html?id=' + ele.id + '">\n' +
+                                '\t\t\t\t\t\t<h4>' + ele.title + '</h4></a>\n' +
+                                '\t\t\t\t\t\t<h6 class="text-left">' + ele.subTitle + '</h6>\n' +
+                                /*'\t\t\t\t\t\t<p class="text-left">所属地区: ' + ele.place.name + '</p>\n' +*/
+                                '\t\t\t\t\t\t</div>\n' +
+                                '\t\t\t\t</div>\n' +
+                                '\t\t\t</div>';
+                        }
+                    });
+                    $("#pills-1").append(temp);
+                    pages1 = data.pages;//给总页数赋值
+                });
+                currentPage1++;
+            }
+
+            queryForStrategy();
+
+            //当前页,初始值为1
+            var currentPage2 = 1;
+            //总页数
+            var pages2 = 1;
+
+            //走,咱们继续查游记去
+            function queryForTravel() {
+                $.get("/searchs/travels", {keyword: keywordInSession, currentPage: currentPage2}, function (data) {
+                    console.log(currentPage2);
+                    $("#travelTotal").html(data.total);
+                    var temp = "";
+                    if (!(data.list.length)) {
+                        temp = '<br/><div class="col-12"style="text-align:center;color: #666">该条目下没有您搜索的内容...</div>'
+                    }
+                    console.log(data);
+                    $.each(data.list, function (index, ele) {
+                        console.log(ele);
+                        temp += '<div class="container">\n' +
+                            '\t\t\t\t<br/>\n' +
+                            '\t\t\t\t<div class="row hot">\n' +
+                            '\t\t\t\t\t<div class="col-5">\n' +
+                            '\t\t\t\t\t\t<a href="travelContent.html?id=' + ele.id + '">\n' +
+                            '\t\t\t\t\t\t\t<img src="' + ele.coverUrl + '">\n' +
+                            '\t\t\t\t\t\t</a>\n' +
+                            '\t\t\t\t\t</div>\n' +
+                            '\t\t\t\t\t<div class="col-7">\n' +
+                            '\t\t\t\t\t\t\t<a href="travelContent.html?id=' + ele.id + '">\n' +
+                            '\t\t\t\t\t\t\t\t<h5>' + ele.title + '</h5>\n' +
+                            '\t\t\t\t\t\t\t</a>\n' +
+                            '\t\t\t\t\t\t<div style="width: 20px">\n' +
+                            /*             '\t\t\t\t\t\t\t<a href="userProfiles.html?authorId=' + ele.author.id + '">\n' +*/
+                            /*           '\t\t\t\t\t\t\t\t<img class="rounded-circle" src="' + ele.author.headImgUrl + '">\n' +*/
+                            '\t\t\t\t\t\t\t</a>\n' +
+                            '\t\t\t\t\t\t</div>\n' +
+                            '\t\t\t\t\t\t<div>\n' +
+                            /*          '\t\t\t\t\t\t\t<h6><span>' + ele.author.nickName + '</span> 在 <span>' + ele.place.name + '</span></h6>\n' +*/
+                            '\t\t\t\t\t\t\t<p class="text-left"><span>最近更新: ' + ele.lastUpdateTime + '</span></p>\n' +
+                            '\t\t\t\t\t\t</div>\n' +
+                            '\t\t\t\t\t</div>\n' +
+                            '\t\t\t\t</div>\n' +
+                            '\t\t\t</div>';
+                    });
+                    $("#pills-2").append(temp);
+                    pages2 = data.pages;//给总页数赋值
+                });
+                currentPage2++;
+            }
+
+            queryForTravel();
+
+            //当前页,初始值为1
+             var currentPage3=1;
+             //总页数
+             var pages3=1;
+             function queryForNews() {
+                 //先来一个简单的,把所有有关键字的攻略查出来
+                 $.get("/searchs/news", {keyword: keywordInSession,currentPage:currentPage3}, function (data) {
+                     //console.log(data);
+                     $("#newsTotal").html(data.total);
+                     var temp = "";
+                     if (!(data.list.length)) {
+                         temp = '<br/><div class="col-12"style="text-align:center;color: #666">该条目下没有您搜索的内容...</div>'
+                     }
+                     $.each(data.list, function (index, ele) {
+                         if (ele) {
+                             temp += '<div class="container">\n' +
+                                 '\t\t\t\t<br/>\n' +
+                                 '\t\t\t\t<div class="row hot">\n' +
+                                 '\t\t\t\t\t<div class="col-5">\n' +
+                                 '\t\t\t\t\t\t<a href="newsContent.html?id=' + ele.id + '">\n' +
+                                 '\t\t\t\t\t\t\t<img src="' + ele.coverUrl + '">\n' +
+                                 '\t\t\t\t\t\t</a>\n' +
+                                 '\t\t\t\t\t</div>\n' +
+                                 '\t\t\t\t\t<div class="col-7">\n' +
+                                 '\t\t\t\t\t\t<a href="newsContent.html?id=' + ele.id + '">\n' +
+                                 '\t\t\t\t\t\t<h4>' + ele.title + '</h4></a>\n' +
+                                 '\t\t\t\t\t\t<h6 class="text-left"></h6>\n' +
+                                 '\t\t\t\t\t\t<p class="text-left">发布时间: ' + ele.releaseTime + '</p>\n' +
+                                 '\t\t\t\t\t\t</div>\n' +
+                                 '\t\t\t\t</div>\n' +
+                                 '\t\t\t</div>';
+                         }
+                     });
+                     $("#pills-3").append(temp);
+                     pages3=data.pages;//给总页数赋值
+                 });
+                 currentPage3++;
+             }
+             queryForNews();
+
+            //当前页,初始值为1
+            var currentPage4 = 1;
+            //总页数
+            var pages4 = 1;
+
+            function queryForUser() {
+                //走,下一个查用户
+                $.get("/searchs/users", {keyword: keywordInSession, currentPage: currentPage4}, function (data) {
+                    //console.log(data);
+                    $("#userTotal").html(data.total);
+                    var temp = "";
+                    if (!(data.list.length)) {
+                        temp = '<br/><div class="col-12"style="text-align:center;color: #666">该条目下没有您搜索的内容...</div>'
+                    }
+                    $.each(data.list, function (index, ele) {
+                        temp += '<div class="container">\n' +
+                            '\t\t\t\t<br/>\n' +
+                            '\t\t\t\t<div class="row hot">\n' +
+                            '\t\t\t\t\t<div class="col-4">\n' +
+                            '\t\t\t\t\t\t<a href="userProfiles.html?id=' + ele.id + '">\n' +
+                            '\t\t\t\t\t\t\t<img class="rounded-circle" style="width: 110px" src="' + ele.headImgUrl + '" >\n' +
+                            '\t\t\t\t\t\t</a>\n' +
+                            '\t\t\t\t\t</div>\n' +
+                            '\t\t\t\t\t<div class="col-8">\n' +
+                            '\t\t\t\t\t\t<div>\n' +
+                            '\t\t\t\t\t\t\t<h5> 昵称: <span>' + ele.nickName + '</span></h5>\n' +
+                            '\t\t\t\t\t\t</div>\n' +
+                            '\t\t\t\t\t\t<div>\n' +
+                            '\t\t\t\t\t\t\t<h6> 性别:<span>' + ele.genderName + '</span></h6>\n' +
+                            '\t\t\t\t\t\t</div>\n' +
+                            '\t\t\t\t\t\t<div>\n' +
+                            '\t\t\t\t\t\t\t<h6> 签名:<span>' + ele.sign + '</span></h6>\n' +
+                            '\t\t\t\t\t\t</div>\n' +
+                            '\t\t\t\t\t</div>\n' +
+                            '\t\t\t\t</div>\n' +
+                            '\t\t\t</div>';
+                    });
+                    $("#pills-4").append(temp);
+                    pages4 = data.pages;//给总页数赋值
+                });
+                currentPage4++;
+            }
+
+            queryForUser();
+
+
+            //监听鼠标滚动事件
+            $(window).scroll(function () {
+                //当文档滚上去的高度+窗口的高度>=html整个文档的高度,
+                if ($(document).scrollTop() + $(window).height() >= $(document).height() - 1) {
+                    //并且当前页小于等于总页数时,执行分页查询
+                    if ($("#pills-1-tab").hasClass('show')) {
+                        if (currentPage1 <= pages1) {
+                            queryForStrategy();
+                        } else {
+                            $(document).dialog({
+                                type: 'notice',
+                                content: '<span class="info-text">已经到底了!</span>',
+                                autoClose: 1500
+                            });
+                        }
+                    }
+                    else if ($("#pills-2-tab").hasClass('show')) {
+                        if (currentPage2 <= pages2) {
+                            queryForTravel();
+                        } else {
+                            $(document).dialog({
+                                type: 'notice',
+                                content: '<span class="info-text">已经到底了!</span>',
+                                autoClose: 1500
+                            });
+                        }
+                    } else if ($("#pills-4-tab").hasClass('show')) {
+                        if (currentPage4 <= pages4) {
+                            queryForUser();
+                        } else {
+                            $(document).dialog({
+                                type: 'notice',
+                                content: '<span class="info-text">已经到底了!</span>',
+                                autoClose: 1500
+                            });
+                        }
+                    } /*else if ($("#pills-3-tab").hasClass('show')) {
+                        if (currentPage3 <= pages3) {
+                            queryForNews();
+                        } else {
+                            $(document).dialog({
+                                type: 'notice',
+                                content: '<span class="info-text">已经到底了!</span>',
+                                autoClose: 1500
+                            });
+                        }
+                    }*/
+                }
+            });
+        });
+    </script>
+
+</head>
+
+<body>
+
+<div class="search-head">
+    <div class="row nav-search">
+        <div class="col-1">
+            <a href="javascript:void(window.history.length > 1 ? window.history.back() : document.location.href='index.html')">
+                <span><i class="fa fa-chevron-left fa-2x"></i></span>
+            </a>
+        </div>
+        <div class="col-9">
+            <div class="input-group-sm search">
+                <input class="form-control" placeholder="请输入要搜索的攻略/游记/日报/用户" id="keyword">
+            </div>
+        </div>
+        <div class="col-1">
+            <i class="fa fa-search" id="select"
+               style="color:white;font-size:25px;position: absolute;top: 23%;left: 88%"></i>
+        </div>
+    </div>
+</div>
+
+
+<ul class="nav nav-pills nav-justified border border-left-0 border-top-0 border-right-0" id="pills-tab" role="tablist">
+    <li class="nav-item">
+        <a data-id="1" class="nav-link active show" id="pills-1-tab" data-toggle="pill" href="#pills-1">攻略[<span
+                id="strategyTotal"></span>]</a>
+    </li>
+    <li class="nav-item">
+        <a data-id="2" class="nav-link" id="pills-2-tab" data-toggle="pill" href="#pills-2">游记[<span
+                id="travelTotal"></span>]</a>
+    </li>
+    <li class="nav-item">
+        <a data-id="3" class="nav-link" id="pills-3-tab" data-toggle="pill" href="#pills-3">日报[<span
+                id="newsTotal"></span>]
+        </a>
+    </li>
+    <li class="nav-item">
+        <a data-id="4" class="nav-link" id="pills-4-tab" data-toggle="pill" href="#pills-4">用户[<span
+                id="userTotal"></span>]</a>
+    </li>
+</ul>
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade active show" id="pills-1">
+    </div>
+    <div class="tab-pane fade" id="pills-2">
+    </div>
+    <div class="tab-pane fade" id="pills-3">
+    </div>
+    <div class="tab-pane fade" id="pills-4">
+    </div>
+</div>
+</body>
+
+</html>

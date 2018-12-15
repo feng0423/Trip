@@ -5,10 +5,7 @@ import cn.wolfcode.trip.base.service.IUserService;
 import cn.wolfcode.trip.base.util.JsonResult;
 import cn.wolfcode.trip.base.util.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/sessions")
@@ -41,6 +38,14 @@ public class SessionController {
     @DeleteMapping
     public void logout(){
         UserContext.setUser(null);
+    }
+
+    @GetMapping("/isLogined")
+    public JsonResult isLogined(){
+        JsonResult jsonResult = new JsonResult();
+
+        jsonResult.setObj(UserContext.isLogined());
+        return jsonResult;
     }
 
 }

@@ -17,14 +17,108 @@
 		    <script src="/js/plugins/common.js"></script>
 		<script>
             $(function () {
+
+                var title = "";
                 var params = getParams();
                 if(params.id){
                     //获取该游记的相关信息
                     $.get('/news/'+params.id,function (data) {
-                        console.log(data);
+
                         $(".newsDetail").renderValues(data);
                     })
                 }
+
+                //------------------
+
+
+                function like(state) {
+
+                    $.get("/news/" + params.id + "/likes/" + state, function (data) {
+
+                        // 回显
+                        var resultMap = data.obj;
+                        if (resultMap!=null){
+                            if (!resultMap["hasClick"]) {
+
+                                $("#likeBtn").removeClass("fa-thumbs-up").addClass("fa-thumbs-o-up")
+                            } else {
+                                $("#likeBtn").removeClass("fa-thumbs-o-up").addClass("fa-thumbs-up")
+                            }
+                            $("#likeCount").text(resultMap["count"]);
+                        }
+                    })
+                }
+//
+                like(-1);
+
+                //---------------------------------------------
+                function favorite(state) {
+
+                    $.get("/news/" + params.id + "/favorites/"+ state, function (data) {
+
+                        var resultMap = data.obj;
+
+                        if (resultMap!=null){
+                            if (!resultMap["hasClick"]) {
+                                $("#collectBtn").removeClass("fa-star").addClass("fa-star-o")
+                            } else {
+                                $("#collectBtn").removeClass("fa-star-o").addClass("fa-star")
+                            }
+
+
+
+                            $("#collectCount").text(resultMap["count"]);
+                        }
+
+
+                    })
+                }
+//
+                favorite(-1);
+
+                //---------------------------------
+
+                $.get("/sessions/isLogined", function (data) {
+                    // 没登录的话就不显示底部3个按钮
+                    if(!data.obj){
+                        $("#likeBtn").click(function () {
+                            window.location.href = "login.html";
+                        });
+                        $("#commentBtn").click(function () {
+                            window.location.href = "login.html";
+                        });
+                        $("#bottomBtn").click(function () {
+                            window.location.href = "login.html";
+                        });
+                    }else {
+                        $("#likeBtn").click(function () {
+                            // state  -1:查询 0:没按 1:按下
+                            var state = 1;
+                            var has = $(this).hasClass("fa-thumbs-o-up");
+                            if(has){
+                                state = 0;
+                            }
+                            like(state);
+                        })
+
+
+                        $("#commentBtn").click(function () {
+                            window.location.href = "reply.html?id=" + params.id+"&title="+encodeURI(encodeURI(title));
+                        });
+
+                        $("#collectBtn").click(function () {
+                            // state  -1:查询 0:没按 1:按下
+                            var state = 1;
+                            var has = $(this).hasClass("fa-star-o");
+                            if(has){
+                                state = 0;
+                            }
+                            favorite(state);
+                        })
+
+                    }
+
+                })
             })
 		</script>
 		
@@ -61,6 +155,17 @@
 				</div>
 			</div>
 			</div>
+
+			<div class="container d-flex" id="bottomBtn" >
+				<div class="p-2  flex-fill">
+					<i class="fa fa-thumbs-o-up" id="likeBtn"> <span id="likeCount"></span></i>
+				</div>
+				<div class="p-2  flex-fill"><i class="fa  fa-commenting-o" id="commentBtn"> </i>
+				</div>
+				<div class="p-2  flex-fill"><i class="fa fa-star-o" id="collectBtn"> <span id="collectCount"></span></i>
+				</div>
+			</div>
+
 		</div>
 	
 

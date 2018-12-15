@@ -6,9 +6,13 @@ import cn.wolfcode.trip.base.query.TravelQueryObject;
 import cn.wolfcode.trip.base.service.ITravelCommendService;
 import cn.wolfcode.trip.base.service.ITravelService;
 import cn.wolfcode.trip.base.util.JsonResult;
+import cn.wolfcode.trip.base.util.UserContext;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/travels")
@@ -33,6 +37,7 @@ public class TravelController {
 
     @GetMapping("/{id}")
     public Travel getById(@PathVariable Long id){
+
         return travelService.getById(id);
     }
 
@@ -49,4 +54,37 @@ public class TravelController {
         qo.setOrderBy("tc.schedule desc");
         return  travelCommendService.queryForList(qo);
     }
+
+
+    @GetMapping("/{id}/likes/{state}")
+    public JsonResult like(@PathVariable Long id, @PathVariable int state){
+        JsonResult jsonResult = new JsonResult();
+
+        Map map;
+        if (state == -1){// 查询
+            map = travelService.getLikeById(id);
+        }else{// 插入或删除
+            map = travelService.like(id);
+        }
+        jsonResult.setObj(map);
+
+        return jsonResult;
+    }
+
+
+    @GetMapping("/{id}/favorites/{state}")
+    public JsonResult favorite(@PathVariable Long id, @PathVariable int state){
+        JsonResult jsonResult = new JsonResult();
+
+        Map map;
+        if (state == -1){// 查询
+            map = travelService.getFavoriteById(id);
+            // 如果页面取此值为null, 即当前没有收藏;反之有收藏
+        }else{// 插入或删除
+            map = travelService.favorite(id);
+        }
+        jsonResult.setObj(map);
+        return jsonResult;
+    }
+
 }

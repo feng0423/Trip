@@ -29,7 +29,7 @@ public class NewsController {
     public JsonResult saveOrUpdate(News news, MultipartFile file) {
         //判断是否上传文件
         if(file!=null && file.getSize()>0){
-            String url = UploadUtil.upload(file, UploadUtil.PATH+"/upload");
+            String url = UploadUtil.upload(file, UploadUtil.Qi_PATH+"/upload");
             news.setCoverUrl(url);
         }
         newsService.saveOrUpdate(news);

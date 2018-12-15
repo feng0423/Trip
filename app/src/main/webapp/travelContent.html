@@ -17,7 +17,7 @@
         $(function () {
             var params = getParams();
             $.get("/travels/"+params.id,function (data) {
-                console.log(data);
+                //console.log(data);
                 //共享编辑器
                 $(".travels").renderValues(data)
             })

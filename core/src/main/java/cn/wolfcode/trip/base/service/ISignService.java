@@ -8,5 +8,9 @@ public interface ISignService {
 
     List<Sign> getSignsByUserId(Long  userId) ;
 
-    void saveSignInfo(Long userId);
+    void saveSignInfo(Sign sign);
+
+    int selectUserState(Long id);
+
+    int selectUserScore(Long id);
 }

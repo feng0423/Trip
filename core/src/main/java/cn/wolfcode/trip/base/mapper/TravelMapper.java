@@ -1,8 +1,6 @@
 package cn.wolfcode.trip.base.mapper;
 
-import cn.wolfcode.trip.base.domain.Strategy;
 import cn.wolfcode.trip.base.domain.Travel;
-import cn.wolfcode.trip.base.query.SerachQueryObject;
 import cn.wolfcode.trip.base.query.TravelQueryObject;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,5 +22,4 @@ public interface TravelMapper {
 
     void chageState(@Param("id") Long id, @Param("state") Integer state);
 
-    List<Strategy> selectSearchForList(SerachQueryObject qo);
 }

@@ -9,11 +9,13 @@ import java.util.Date;
 @Setter
 public class Sign extends BaseDomain{
 
-    private User user;
+    private Long userId;
 
     private Date addTime;
 
     private Integer score;
 
     private Integer count;
+
+    private Integer signCount;
 }

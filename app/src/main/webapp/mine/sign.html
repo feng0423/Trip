@@ -23,20 +23,20 @@
             var user = JSON.parse(sessionStorage.getItem("user"));
 
             //当天签到就显示已签到
-           /* function state() {
-                $.get('/signs/state/' + user.id, function (data) {
+            function state() {
+                $.get('/signs/signCount/' + user.id, function (data) {
                     if (data == 1) {
                         $("#sign-txt").text("已签到");
                     }
                 });
-            }*/
+            }
             //回显到签到的位置
             function getsigns() {
                 $.get('/signs/' + user.id, function (data) {
-                    $('.sign').renderValues(data[0]);
-                    $('#sign-count').text(data[0].count);
-                    //state();
-
+                    console.log(data);
+                    $('.sign').renderValues(data[data.length-1]);
+                    $('#sign-count').text(data[data.length-1].count);
+                    state();
                 });
             }
 
@@ -57,31 +57,23 @@
             $("#signIn").click(function () {
                 //判断今天是否签到
                 if ($('#sign-txt').text() == "签到") {
-                    console.log(user.id);
-                    $.post("/signs", {id: user.id}, function (data) {
+                    //console.log(user.id);
+                    $.post("/signs", {userId: user.id}, function (data) {
                         if (data.success) {
                             $(document).dialog({
                                 type: 'notice',
-                                infoText: '签到成功,+10积分',
+                                infoText: '签到成功,+5积分',
                                 autoClose: 2000
                             });
                             $("#sign-txt").text("已签到");
-
-                            /*$.get('/signs/' + user.id, function (data) {
+                            $.get('/signs/' + user.id, function (data) {
                                 $('.sign').renderValues(data[0]);
                                     $('#sign-count').text(data[0].count);
                                 state();
                                 sign = $('#sign-count').html();
-
                                 //判断当天签到后连续签到是否满足3次
-                                if (sign % 3 == 0) {
-                                    $(document).dialog({
-                                        titleShow: false,
-                                        content: '连续签到三天，+20积分'
-                                    });
-                                }
-                            });*/
-                            //window.location.reload();
+                            });
+                            window.location.reload();
                         } else {
                             $(document).dialog({
                                 titleShow: false,

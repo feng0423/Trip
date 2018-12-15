@@ -1,7 +1,6 @@
 package cn.wolfcode.trip.app.controller;
 
 import cn.wolfcode.trip.base.domain.Sign;
-import cn.wolfcode.trip.base.domain.User;
 import cn.wolfcode.trip.base.service.ISignService;
 import cn.wolfcode.trip.base.util.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +32,19 @@ public class SignController {
      * @return
      */
     @PostMapping
-    public JsonResult saveOrUpdate(User user) {
-        System.out.println(user);
-        signService.saveSignInfo (user.getId());
+    public JsonResult saveOrUpdate(Sign sign) {
+        signService.saveSignInfo (sign);
         return new JsonResult();
     }
-/*    @GetMapping
-    public PageInfo queryStrategiesByRegionId(StrategyQueryObject qo) {
-        //查询该地区的所有的状态为推荐的攻略(分页)
-        qo.setPageSize(3);
-        return regionService.query(qo);
-    }*/
+
+    //查询用户当前签到的状态
+    @GetMapping("/signCount/{id}")
+    public int getState(@PathVariable Long id){
+        return signService.selectUserState(id);
+    }
+    //查询用户的积分
+    @GetMapping("/score/{id}")
+    public int getScore(@PathVariable Long id){
+        return signService.selectUserScore(id);
+    }
 }

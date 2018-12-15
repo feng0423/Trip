@@ -20,51 +20,68 @@
             //将对象进行渲染
             $(".info").renderValues(user);
             var user = sessionStorage.getItem("user");
-        })
-
-        $(function () {
+            var user1 = JSON.parse(sessionStorage.getItem("user"));
             $("#sign").click(function () {
-                window.location.href="/mine/sign.html";
+                window.location.href = "/mine/sign.html";
             })
-        })
+
+
             //点击签到
-           /* $(function () {
-                if (user) {
-                    //将用户的id发回去
-                    var id = JSON.parse(user).id;
-                    //获取当前的时间
-                    var dd = new Date().getDate()
-                    var temp;
-                    $("#sign").click(function () {
-                        temp = "";
-                        $.get("/signs/" + id + '/signIn', function (data) {
-                            //已经签到
-                            if (data[0] == dd) {
-                                $(document).dialog({
-                                    titleShow: false,
-                                    content: '今日已经签到啦'
-                                });
-                                temp += "<h7>签到成功</h7><small style='background-color:lightcyan'>明日待签到</small>";
-                                $("#signId").html(temp);
-                            } else {
-                                $.post("/signs/" + id + "/saveOrUpdateSign", function (data) {
-                                    $(document).dialog({
-                                        titleShow: true,
-                                        content: '签到成功,赠送十积分!',
-                                    });
-                                    temp += "<h7>签到成功</h7><small style='background-color:lightcyan'>明日待签到</small>";
-                                    $("#signId").html(temp);
-                                });
-                            }
-                        });
-                    });
-                } else {
-                    $(document).dialog({
-                        titleShow: false,
-                        content: '请先登录'
-                    });
-                }*/
+            $.get('/signs/signCount/' + user1.id, function (data) {
+                console.log(data);
+                if (data == 1) {
+                    $("#sign-txt").text("已签到");
+                }
+            });
+            $.get("/signs/score/"+user1.id,function (data) {
+                console.log(data);
+                $("#credit").text(data);
+            })
+            /*            $(document).dialog({
+                            titleShow: false,
+                            content: '今日已经签到啦'
+                        });*/
+
+
+            //点击签到
+            /* $(function () {
+                 if (user) {
+                     //将用户的id发回去
+                     var id = JSON.parse(user).id;
+                     //获取当前的时间
+                     var dd = new Date().getDate()
+                     var temp;
+                     $("#sign").click(function () {
+                         temp = "";
+                         $.get("/signs/" + id + '/signIn', function (data) {
+                             //已经签到
+                             if (data[0] == dd) {
+                                 $(document).dialog({
+                                     titleShow: false,
+                                     content: '今日已经签到啦'
+                                 });
+                                 temp += "<h7>签到成功</h7><small style='background-color:lightcyan'>明日待签到</small>";
+                                 $("#signId").html(temp);
+                             } else {
+                                 $.post("/signs/" + id + "/saveOrUpdateSign", function (data) {
+                                     $(document).dialog({
+                                         titleShow: true,
+                                         content: '签到成功,赠送十积分!',
+                                     });
+                                     temp += "<h7>签到成功</h7><small style='background-color:lightcyan'>明日待签到</small>";
+                                     $("#signId").html(temp);
+                                 });
+                             }
+                         });
+                     });
+                 } else {
+                     $(document).dialog({
+                         titleShow: false,
+                         content: '请先登录'
+                     });
+                 }*/
             //})
+        })
     </script>
 </head>
 
@@ -133,7 +150,7 @@
         <ul class="list-inline">
             <li class="list-inline-item"><i class="fa fa-calendar-check-o fa-2x"></i></li>
             <li class="list-inline-item" id="sign">
-                <h7>每日签到</h7>
+                <h7 id="sign-txt">每日签到</h7>
                 <small>别忘了签到哦</small>
             </li>
         </ul>

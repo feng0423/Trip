@@ -18,4 +18,13 @@ public interface SignMapper {
     int updateByPrimaryKey(Sign record);
 
     List<Sign> selectByUserId(@Param("userId") Long userId);
+
+    int selectUserState(@Param("id") Long id);
+
+    Integer getScoreByUserId(Long userId);
+
+    int getSignByUserId(Long userId);
+
+    Integer getCountByUserId(Long userId);
+
 }

@@ -57,6 +57,8 @@ public class TravelCommend extends BaseDomain{
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         map.put("schedule",sdf.format(schedule));
         map.put("type",type);
+
+
         return JSONUtils.toJSONString(map);
     }
 

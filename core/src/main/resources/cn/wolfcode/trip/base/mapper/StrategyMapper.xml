@@ -56,4 +56,13 @@
 
       </where>
     </select>
+  <select id="selectSearchForList" resultMap="BaseResultMap">
+    select id, place_id, title, subTitle, coverUrl, state
+    from strategy
+    <where>
+      <if test="keyword!=null">
+        and title like concat('%',#{keyword},'%')
+      </if>
+    </where>
+  </select>
 </mapper>

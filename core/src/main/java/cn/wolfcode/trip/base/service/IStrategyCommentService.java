@@ -17,4 +17,6 @@ public interface IStrategyCommentService {
      * @return
      */
     void save(StrategyComment strategyComment,String[] tags);
+
+    void changeState(Long id, Integer state);
 }

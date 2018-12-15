@@ -1,9 +1,11 @@
 package cn.wolfcode.trip.base.service.impl;
 
+import cn.wolfcode.trip.base.domain.Strategy;
 import cn.wolfcode.trip.base.domain.Travel;
 import cn.wolfcode.trip.base.domain.TravelContent;
 import cn.wolfcode.trip.base.mapper.TravelContentMapper;
 import cn.wolfcode.trip.base.mapper.TravelMapper;
+import cn.wolfcode.trip.base.query.SerachQueryObject;
 import cn.wolfcode.trip.base.query.TravelQueryObject;
 import cn.wolfcode.trip.base.service.ITravelService;
 import cn.wolfcode.trip.base.util.UserContext;
@@ -71,5 +73,11 @@ public class TravelServiceImpl implements ITravelService{
 
     public void changeState(Long id, Integer state) {
         travelMapper.chageState(id,state);
+    }
+
+    public PageInfo queryList(SerachQueryObject qo) {
+        PageHelper.startPage(qo.getCurrentPage(),qo.getPageSize());
+        List<Strategy> list = travelMapper.selectSearchForList(qo);
+        return new PageInfo(list);
     }
 }

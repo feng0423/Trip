@@ -95,4 +95,14 @@
       </if>
     </where>
   </select>
+    <select id="selectSearchForList" resultMap="BaseResultMap">
+      select id, title, travelTime, perExpends, days, person, author_id, createTime, releaseTime,
+        isPublic, place_id, coverUrl, lastUpdateTime, state
+      from travel
+      <where>
+        <if test="keyword!=null">
+          and title like concat('%',#{keyword},'%')
+        </if>
+      </where>
+    </select>
 </mapper>

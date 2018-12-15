@@ -21,8 +21,7 @@ public class StrategyController {
     private IStrategyCatalogService strategyCatalogService;
     @Autowired
     private IStrategyDetailService strategyDetailService;
-    @Autowired
-    private IStrategyCommentService strategyCommendService;
+
 
     @Autowired
     private IStrategyCommentService strategyCommentService;
@@ -64,7 +63,7 @@ public class StrategyController {
    @GetMapping("/{strategyId}/commends")
     public PageInfo queryComments(StrategyCommentQueryObject qo) {
         qo.setOrderBy("sc.commendTime desc");
-        return strategyCommendService.query(qo);
+        return strategyCommentService.query(qo);
     }
    @PostMapping("/{strategy.id}/commends")
     public JsonResult saveComment(StrategyComment strategyComment,String[] tags ) {

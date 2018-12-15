@@ -43,4 +43,5 @@ public interface ITravelService {
      * @param state
      */
     void changeState(Long id, Integer state);
+
 }

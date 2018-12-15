@@ -29,4 +29,5 @@ public interface IStrategyService {
      * @return
      */
     Strategy getStrategyById(Long id);
+
 }

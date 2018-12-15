@@ -36,8 +36,13 @@ public class StrategyDetailController {
     @ResponseBody
     public JsonResult saveOrUpdate(StrategyDetail strategyDetail, MultipartFile file){
         if(file!=null && file.getSize()>0){
-            String uri = UploadUtil.upload(file, UploadUtil.PATH + "/upload");
-            strategyDetail.setCoverUrl(uri);
+            //String uri = UploadUtil.upload(file, UploadUtil.PATH + "/upload");
+
+            String url = UploadUtil.uploadQiniyun(file);
+           // map.put("url",UploadUtil.Qi_PATH+url);
+
+            strategyDetail.setCoverUrl(UploadUtil.Qi_PATH+url);
+            //strategyDetail.setCoverUrl(uri);
         }
         strategyDetailService.saveOrUpdate(strategyDetail);
         return new JsonResult();

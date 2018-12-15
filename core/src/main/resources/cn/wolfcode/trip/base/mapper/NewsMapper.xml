@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.trip.base.mapper.NewsMapper">
+  <resultMap id="BaseResultMap" type="cn.wolfcode.trip.base.domain.News">
+    <id column="id" property="id" />
+    <result column="title" property="title" />
+    <result column="creationTime" property="creationTime" />
+    <result column="coverUrl" property="coverUrl" />
+    <result column="amount" property="amount" />
+    <association property="content" javaType="NewsContent" columnPrefix="c_">
+      <id column="id" property="id" />
+      <result column="content" property="content" />
+    </association>
+  </resultMap>
+  <delete id="deleteByPrimaryKey">
+    delete from news
+    where id = #{id}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into news ( title, creationTime, coverUrl, amount)
+    values ( #{title}, #{creationTime}, #{coverUrl}, #{amount})
+  </insert>
+  <update id="updateByPrimaryKey">
+    update news
+    set
+      title = #{title},
+      coverUrl = #{coverUrl},
+      amount = #{amount}
+    where id = #{id}
+  </update>
+  <update id="update">
+    update news set amount=amount+1 where id =#{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+     select n.id,  n.title, n.creationTime, n.coverUrl, n.amount,c.content c_content
+     from news n
+     JOIN newscontent c ON n.id = c.id
+    where n.id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id,  title, creationTime, coverUrl, amount
+    from news
+  </select>
+  <select id="selectForList" resultMap="BaseResultMap">
+    select n.id, n.title, n.creationTime, n.coverUrl, n.amount,c.id c_id,c.content c_content
+    from news n
+    JOIN newscontent c ON n.id = c.id
+    <where>
+    <if test="keyword!=null">
+      and n.title like concat('%',#{keyword},'%')
+    </if>
+    </where>
+  </select>
+
+  <select id="selectForAppList" resultMap="BaseResultMap">
+    select n.id,  n.title, n.creationTime, n.coverUrl, n.amount,c.content c_content
+     from news n
+     JOIN newscontent c ON n.id = c.id
+  </select>
+</mapper>

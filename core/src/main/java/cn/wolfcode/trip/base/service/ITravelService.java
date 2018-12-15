@@ -73,4 +73,5 @@ public interface ITravelService {
      * @return
      */
     Map getFavoriteById(Long id);
+
 }

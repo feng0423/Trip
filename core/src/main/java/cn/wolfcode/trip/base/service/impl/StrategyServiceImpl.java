@@ -38,4 +38,15 @@ public class StrategyServiceImpl implements IStrategyService{
     public Strategy getStrategyById(Long id) {
         return strategyMapper.selectByPrimaryKey(id);
     }
+
+
+    public List selectStrategyByUserId(Long userId) {
+        return strategyMapper.selectStrategyByUserId(userId);
+    }
+
+    public List listLook() {
+        return strategyMapper.selectAll();
+    }
+
+
 }

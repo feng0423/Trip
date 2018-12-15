@@ -104,6 +104,38 @@
                 });
             }
 
+
+            //加入我的旅行表单
+          /*  $('#travel').click(function () {
+
+                if(sessionStorage.getItem('user')){//获取当前用户判断是否登陆
+                    var strategy = getParams().id; //获取大攻略ID
+                    alert(strategy)
+                }else{
+                    window.location.href = '/login.html';
+                }
+            })*/
+
+            var user = JSON.parse(sessionStorage.getItem("user"));
+            //加入我的旅行表单
+            $("#travel").click(function () {
+                if (user) {
+                    $.get("/users/" + user.id + "/strategies/" + params.id, function (data) {
+                        if(data){
+                            alert("该表单已存在")
+                        }else {
+                            //新增关系
+                            $.post("/users/" + user.id + "/strategies/" + params.id, function (data){
+                                alert("已添加")
+                            });
+                        }
+                    });
+                }
+            });
+
+
+
+
         })
     </script>
 
@@ -227,7 +259,7 @@
 </div>
 
 <div class="operation">
-    <button class="btn">加入旅行单</button>
+    <button class="btn" id="travel">加入旅行单</button>
     <button class="btn" id="commentBtn">点评</button>
 </div>
 

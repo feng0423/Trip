@@ -20,24 +20,71 @@
             var params = getParams();//获取用户ID
             $.get('/users/' + params.id, function (data) {
                 $('.container').renderValues(data);
-                $('.bg').css('background-image',"url('"+data.coverImgUrl+"')");
+                $('.bg').css('background-image', "url('" + data.coverImgUrl + "')");
 
             });
 
             //关注关联
-            var visitorId = sessionStorage.getItem('user');//访客
+            var user = JSON.parse(sessionStorage.getItem('user'));//访客
+            var visitorId = user;//访客ID
             var authorId = params.id;//作者ID
 
+            var attention;
 
+            //查询是否关注改变按钮名字
+            function button() {
+                if (visitorId) {
+                    $.get('/users/' + visitorId.id + "/" + authorId, function (data) {
+                        attention = data;
+                        if (data) {
+                            $('#followBtn').text("取消关注");
+                        } else {
+                            $('#followBtn').text("关注");
+                        }
+                    });
+                }
+            }
+            button();
+            function getNub() {
+                //回显粉丝和关注
+                $.get('/users/' + params.id + '/attention', function (data) {
+                    console.log(data);
+                    $('#spanAttention').text(data.attention)
+                    $('#spanFans').text(data.fans)
+                })
+            }
+            getNub();
+            //点击关注/取消关注加减
+            $('#followBtn').click(function () {
+                //if(visitorId.id !=  authorId) {
+                    if (sessionStorage.getItem('user')) {
+                        if(visitorId.id !=  authorId) {
+                        if (attention) {
+                            $.post('/users/' + visitorId.id + '/' + authorId + '/delete');//删除关联
+                            getNub();
+                            button()
+                        } else {
+                            $.post('/users/' + visitorId.id + '/' + authorId);//新增关联
+                            getNub();
+                            button();
+                        }
+                    } else {
+                        //window.location.href = '/login.html';
+                            alert("你每天都在关注自己,别太自恋了")
+                    }
+                }else {
 
+                        window.location.href = '/login.html';
+                }
+            })
 
-            //当前页
+            //当前页h
             var currentPage = 1;
             //总页数
             var pages;
             var travelArr = [];
-            function queryTravel() {
 
+            function queryTravel() {
 
                 //根据用户ID 查询出当前用户的游记
                 $.get('/users/' + params.id + "/travelsByUserId", {currentPage: currentPage}, function (data) {
@@ -55,58 +102,54 @@
                     })
                     pages = data.pages;
                 })
-                currentPage = currentPage+1;
+                currentPage = currentPage + 1;
             }
             queryTravel();
 
-
             $(window).scroll(function () {
-                if($(window).height()+$(document).scrollTop()+1>=$(document).height()){
-                    if(currentPage <= pages){
+                if ($(window).height() + $(document).scrollTop() + 1 >= $(document).height()) {
+                    if (currentPage <= pages) {
                         queryTravel()
-                    }else {
+                    } else {
                         $(document).dialog({
-                            type:'notice',
-                            content:'<span class="info-text">到底了</span>',
-                            autoClose:1000
+                            type: 'notice',
+                            content: '<span class="info-text">到底了</span>',
+                            autoClose: 1000
                         });
                     }
                 }
             });
 
 
-
-
-
-
-            var commentsCurrentPage = 1 ;
+            var commentsCurrentPage = 1;
             var commentsages;
             var commentArr = [];
+
             function query() {
                 //他的的攻略回显
-                    $.get('/users/' + params.id + '/strategycommentByUserId', {currentPage: commentsCurrentPage}, function (data) {
-                        $.merge(commentArr,data.list)
-                        var json = {list:commentArr};
+                $.get('/users/' + params.id + '/strategycommentByUserId', {currentPage: commentsCurrentPage}, function (data) {
+                    $.merge(commentArr, data.list)
+                    var json = {list: commentArr};
 
-                        $('#comments').renderValues(json, {
-                            getStar: function (item, value) {
-                                var temp = "";
-                                //实心
-                                for (var i = 0; i < value; i++) {
-                                    temp += '<i class="fa fa-star""></i>'
-                                }
-
-                                if( 5 != value ) {
-                                    for (var i = 0; i < 5 - value; i++) {
-                                        temp += '<i class="fa fa-star-o" "></i>'
-                                    }
-                                    $(item).html(temp);
-                                }
+                    $('#comments').renderValues(json, {
+                        getStar: function (item, value) {
+                            var temp = "";
+                            //实心
+                            for (var i = 0; i < value; i++) {
+                                temp += '<i class="fa fa-star""></i>'
                             }
 
-                        });
-                        commentsages = data.pages;
-                    })
+                            if (5 != value) {
+                                for (var i = 0; i < 5 - value; i++) {
+                                    temp += '<i class="fa fa-star-o" "></i>'
+                                }
+                                $(item).html(temp);
+                            }
+                        }
+
+                    });
+                    commentsages = data.pages;
+                })
                 commentsCurrentPage = commentsCurrentPage + 1;
             }
             query()
@@ -125,12 +168,27 @@
                     }
                 }
             })
+
+            //我的旅行表单,通过用户ID查询
+            $.get('/users/'+ params.id+"/strategy",function (data) {
+                var json = {list:data}
+                console.log(json);
+                $('#pills-newsreview').renderValues(json,{
+                    getHref: function (item, value) {
+                        //通过当前的对象获取超链接
+                        var url = $(item).data("href");
+                        //拼接id
+                        $(item).attr("href", url + value);
+                    }
+                })
+            })
+
         })
     </script>
 </head>
 
 <body>
-<div  class="container bg" style="background-image: url(/img/user/bg.jpeg);">
+<div class="container bg" style="background-image: url(/img/user/bg.jpeg);">
     <a href="javascript:window.history.go(-1)" class="my-arrow">
         <span><i class="fa fa-chevron-left fa-2x"></i></span>
     </a>
@@ -142,18 +200,18 @@
             <div class="row num">
                 <div class="col-2 border border-left-0 border-top-0 border-bottom-0">
                     <div>
-                        <span>1</span>
+                        <span id="spanAttention"></span>
                     </div>
                     <div>
-                        <span>关注</span>
+                        <span>粉丝</span>
                     </div>
                 </div>
                 <div class="col-2">
                     <div>
-                        <span>0</span>
+                        <span id="spanFans"></span>
                     </div>
                     <div>
-                        <span>粉丝</span>
+                        <span>关注</span>
                     </div>
                 </div>
                 <div class="col">
@@ -186,10 +244,11 @@
     </ul>
 
     <div class="container tab-content" id="pills-tabContent">
+        <div></div>
         <div class="tab-pane fade show active" render-loop="list" id="travels">
             <dl class="list">
                 <dd>
-                    <a  render-fun="getTravels" render-key="list.id" data-href="/travelContent.html?id=" >
+                    <a render-fun="getTravels" render-key="list.id" data-href="/travelContent.html?id=">
                         <img render-src="list.coverUrl">
                         <p><span class="list.title" render-html="list.title"></span>
                             <span class="span-right">
@@ -231,7 +290,8 @@
 
                         <div class="comment-link">
                             <a href="strategyCatalogs.html" data-id="2">
-                                <img render-src="list.strategy.coverUrl"> <span render-html="list.strategy.title"></span>
+                                <img render-src="list.strategy.coverUrl"> <span
+                                    render-html="list.strategy.title"></span>
                                 <i class="fa fa-angle-right fa-2x"></i>
                             </a>
                         </div>
@@ -241,7 +301,27 @@
             </div>
 
         </div>
-        <div class="tab-pane fade" id="pills-contact">.3333..</div>
+        <div class="tab-pane fade" id="pills-contact">
+
+
+            <div class="tab-pane fade show" id="pills-newsreview">
+                <div class="row" render-loop="list">
+                    <div class="col-6">
+                        <a data-href="/strategyCatalogs.html?id=" render-fun="getHref" render-key="list.id">  <!--data-href="/strategyCatalogs.html?id=" render-fun="getHref" render-key="list.id"-->
+                            <img class="rounded" width="100%" height="110px" render-src="list.coverUrl">
+                        </a>
+                        <div class="caption">
+                            <span render-html="list.createTime">他很懒,什么也没有</span>
+                            <a > <!--data-href="/strategyCatalogs.html?id=" render-fun="getHref" render-key="list.id"-->
+                                <p render-html="list.title"></p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
     </div>
 </div>
 

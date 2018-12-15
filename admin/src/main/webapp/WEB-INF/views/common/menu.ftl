@@ -8,7 +8,7 @@
             <li class="strategyCatalog"><a href="/strategyCatalog/list.do">攻略分类管理</a></li>
             <li class="strategyDetail"><a href="/strategyDetail/list.do">攻略文章管理</a></li>
             <li class="strategyComment"><a href="/strategyComment/list.do">攻略评论管理</a></li>
-            <li class="strategyTravel"><a href="/strategyTravel/list.do">大家都在看</a></li>
+            <li class="strategyTravel"><a href="/strategy/strategyLook.do">大家都在看</a></li>
         </ul>
     </li>
 

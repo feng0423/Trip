@@ -4,6 +4,70 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/css/comment.css">
+    <script>
+        $(function () {
+            var params = getParams();
+            // if (params.id) {
+            //     //根据a标签id获取
+            //     $.get("/replies/" + params.id, function (data) {
+            //         $(".title").html(data.title)
+            //         //共享编辑器
+            //         // $(".travels").renderValues(data)
+            //     });
+            // }
+
+
+            //----------------------------------------
+
+
+            var currentPage = 1;
+            var pages;
+
+            var replyArr = [];
+
+            function query() {
+                // type = 1 是游记的评论
+                $.get("/replies", {currentPage: currentPage, targetId: params.id, type: 1}, function (data) {
+                    $.merge(replyArr, data.list);
+
+                    // 渲染数据
+                    $(".comment_list").renderValues({list: replyArr});
+                    // $(".comment_list").renderValues({list: replyArr}, {
+                    //     getHref: function (item, value) {
+                    //         console.log(item); // a连接
+                    //         console.log(value); // id值
+                    //
+                    //         $(item).attr('href', '/mine/editTravels.html?id=' + value);
+                    //     }
+                    // });
+                    // 获取总页数
+                    pages = data.pages;
+                })
+                currentPage++;
+            }
+
+            // 默认查询第一页
+            query();
+
+            // 给window绑定滚动事件
+            $(window).scroll(function () {
+                if ($(window).height() + $(document).scrollTop() + 1 >= $(document).height()) {
+                    console.log(currentPage);
+                    // 如果是大于总页数就不发送请求了
+                    if (currentPage <= pages) {
+                        query();
+                    } else {
+                        $(document).dialog({
+                            type: 'notice',
+                            content: '<span class="info-text">亲，已经到底了！</span>',
+                            autoClose: 2500
+                        });
+                    }
+                }
+            })
+        })
+
+    </script>
 </head>
 <body>
 

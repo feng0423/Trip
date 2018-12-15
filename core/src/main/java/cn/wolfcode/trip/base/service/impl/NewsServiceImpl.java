@@ -7,11 +7,16 @@ import cn.wolfcode.trip.base.mapper.NewsMapper;
 import cn.wolfcode.trip.base.query.NewsQueryObject;
 import cn.wolfcode.trip.base.query.TravelCommendQueryObject;
 import cn.wolfcode.trip.base.service.INewsService;
+import cn.wolfcode.trip.base.util.MapUtil;
+import cn.wolfcode.trip.base.util.UserContext;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class NewsServiceImpl implements INewsService{
@@ -58,6 +63,83 @@ public class NewsServiceImpl implements INewsService{
 
     public void update(Long id) {
         newsMapper.update(id);
+    }
+
+
+    public Map like(Long id) {
+
+        if (!UserContext.isLogined())
+            return null;
+
+        Long userId = UserContext.getUser().getId();
+        Map map = new HashMap();
+        if (userId !=null){
+
+            Map mapSelect = newsMapper.selectLikeById(id, userId);
+            if (mapSelect==null) {
+                newsMapper.insertLikeTravelUserRelation(id, userId);
+                map.put("hasClick",true);
+            }else {
+                newsMapper.deleteLikeTravelUserRelation(id, userId);
+                map.put("hasClick",false);
+            }
+        }
+
+
+
+        map.put("count",newsMapper.countLikes(id));
+
+        return map;
+    }
+
+    public Map getLikeById(Long id) {
+        Map map;
+        if (!UserContext.isLogined()) {
+            map = MapUtil.getNewMap(null);
+            map.put("count",newsMapper.countLikes(id));
+            return map;
+        }
+        Long userId = UserContext.getUser().getId();
+        map = MapUtil.getNewMap(newsMapper.selectLikeById(id, userId));
+        map.put("count",newsMapper.countLikes(id));
+        return map;
+    }
+
+    public Map favorite(Long id) {
+        if (!UserContext.isLogined())
+            return null;
+        Long userId = UserContext.getUser().getId();
+
+        Map map = new HashMap();
+        if (userId !=null){
+            Map mapSelect = newsMapper.selectFavoriteById(id, userId);
+            if (mapSelect==null) {
+                newsMapper.insertFavoriteTravelUserRelation(id, userId);
+                map.put("hasClick",true);
+            }else {
+                newsMapper.deleteFavoriteTravelUserRelation(id, userId);
+                map.put("hasClick",false);
+            }
+        }
+
+        map.put("count",newsMapper.countFavorites(id));
+
+        return map;
+    }
+
+    public Map getFavoriteById(Long id) {
+        Map map;
+        if (!UserContext.isLogined()) {
+            map = MapUtil.getNewMap(null);
+            map.put("count",newsMapper.countFavorites(id));
+            return map;
+        }
+
+        Long userId = UserContext.getUser().getId();
+
+        map = MapUtil.getNewMap(newsMapper.selectFavoriteById(id, userId));
+        map.put("count",newsMapper.countFavorites(id));
+        return map;
     }
 
 }

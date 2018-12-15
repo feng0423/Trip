@@ -5,6 +5,8 @@ import cn.wolfcode.trip.base.domain.TravelContent;
 import cn.wolfcode.trip.base.query.TravelQueryObject;
 import com.github.pagehelper.PageInfo;
 
+import java.util.Map;
+
 public interface ITravelService {
 
     /**
@@ -43,4 +45,32 @@ public interface ITravelService {
      * @param state
      */
     void changeState(Long id, Integer state);
+
+    /**
+     * 点赞或取消点赞
+     * @param id
+     * @param state true的话就插入值, false就delete记录
+     */
+    Map like(Long id);
+
+    /**
+     * 查询是否点赞
+     * @param id
+     * @return
+     */
+    Map getLikeById(Long id);
+
+    /**
+     * 收藏或取消收藏
+     * @param id
+     * @param state
+     */
+    Map favorite(Long id);
+
+    /**
+     * 查询是否收藏了 返回null就没有收藏
+     * @param id
+     * @return
+     */
+    Map getFavoriteById(Long id);
 }

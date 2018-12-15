@@ -6,6 +6,7 @@ import cn.wolfcode.trip.base.mapper.TravelContentMapper;
 import cn.wolfcode.trip.base.mapper.TravelMapper;
 import cn.wolfcode.trip.base.query.TravelQueryObject;
 import cn.wolfcode.trip.base.service.ITravelService;
+import cn.wolfcode.trip.base.util.MapUtil;
 import cn.wolfcode.trip.base.util.UserContext;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TravelServiceImpl implements ITravelService{
@@ -71,5 +74,79 @@ public class TravelServiceImpl implements ITravelService{
 
     public void changeState(Long id, Integer state) {
         travelMapper.chageState(id,state);
+    }
+
+    public Map like(Long id) {
+        if (!UserContext.isLogined())
+            return null;
+        Long userId = UserContext.getUser().getId();
+        Map map = new HashMap();
+        if (userId !=null){
+
+            Map mapSelect = travelMapper.selectLikeById(id, userId);
+            if (mapSelect==null) {
+                travelMapper.insertLikeTravelUserRelation(id, userId);
+                map.put("hasClick",true);
+            }else {
+                travelMapper.deleteLikeTravelUserRelation(id, userId);
+                map.put("hasClick",false);
+            }
+        }
+
+
+
+        map.put("count",travelMapper.countLikes(id));
+
+        return map;
+    }
+
+    public Map getLikeById(Long id) {
+        Map map;
+        if (!UserContext.isLogined()) {
+            map = MapUtil.getNewMap(null);
+            map.put("count",travelMapper.countLikes(id));
+            return map;
+        }
+        Long userId = UserContext.getUser().getId();
+        map = MapUtil.getNewMap(travelMapper.selectLikeById(id, userId));
+        map.put("count",travelMapper.countLikes(id));
+        return map;
+    }
+
+    public Map favorite(Long id) {
+        if (!UserContext.isLogined())
+            return null;
+        Long userId = UserContext.getUser().getId();
+
+        Map map = new HashMap();
+        if (userId !=null){
+            Map mapSelect = travelMapper.selectFavoriteById(id, userId);
+            if (mapSelect==null) {
+                travelMapper.insertFavoriteTravelUserRelation(id, userId);
+                map.put("hasClick",true);
+            }else {
+                travelMapper.deleteFavoriteTravelUserRelation(id, userId);
+                map.put("hasClick",false);
+            }
+        }
+
+        map.put("count",travelMapper.countFavorites(id));
+
+        return map;
+    }
+
+    public Map getFavoriteById(Long id) {
+        Map map;
+        if (!UserContext.isLogined()) {
+            map = MapUtil.getNewMap(null);
+            map.put("count",travelMapper.countFavorites(id));
+            return map;
+        }
+
+        Long userId = UserContext.getUser().getId();
+
+        map = MapUtil.getNewMap(travelMapper.selectFavoriteById(id, userId));
+        map.put("count",travelMapper.countFavorites(id));
+        return map;
     }
 }

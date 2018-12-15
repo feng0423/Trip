@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.trip.base.mapper.UserStrategyMapper">
+  <resultMap id="BaseResultMap" type="cn.wolfcode.trip.base.domain.UserStrategy">
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="strategy_id" jdbcType="BIGINT" property="strategyId" />
+  </resultMap>
+  <insert id="insert" parameterType="cn.wolfcode.trip.base.domain.UserStrategy">
+    insert into user_strategy (user_id, strategy_id)
+    values (#{userId,jdbcType=BIGINT}, #{strategyId,jdbcType=BIGINT})
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select user_id, strategy_id
+    from user_strategy
+  </select>
+  <select id="selectRelation" resultMap="BaseResultMap">
+     select user_id, strategy_id
+    from user_strategy
+    WHERE user_id = #{userId} and strategy_id = #{strategyId}
+  </select>
+  <delete id="deleteUserAndStrategy">
+    DELETE FROM user_strategy WHERE user_id = #{userId} and strategy_id = #{strategyId}
+  </delete>
+</mapper>

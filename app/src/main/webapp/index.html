@@ -22,8 +22,8 @@
             //加载侧边栏的时候带上毫秒值.解决缓存问题
             $("#ipage").attr("src", "/mine/simpleProfiles.html?" + new Date().getTime())
 
-            //每周=推荐
-            $.get("/travels/commends", {type: 1, pageSize: 3}, function (data) {
+			//每周=推荐
+			$.get("/travels/commends",{type:1,pageSize:3},function (data) {
                 console.log(data);
                 //获取数据,将数据共享的编辑器中
                 $("#travelsCommends").renderValues(data, {
@@ -161,56 +161,54 @@
         </div>
     </div>
 
-    <hr>
+	<hr>
 
-    <div class="container">
-        <h6 class="module-title">骡窝日报 <a href="#">更多</a></h6>
+	<div class="container">
+		<h6 class="module-title">骡窝日报 <a href="#">更多</a>  </h6>
 
 
-        <div class="news " id="bigger">
-            <a href="#">
-                <img width="100%" src="/upload/8aa4b264-ed40-4227-a9d4-a3b0117b8a2f.jpeg">
-                <div class="caption">
-                    <h5>暑假去哪里旅游凉快？</h5>
-                    <p>
-                        当然是这个地方了
-                    </p>
-                </div>
-            </a>
-        </div>
+		<div class="news " id="bigger">
+			<a href="#">
+				<img width="100%" src="/upload/8aa4b264-ed40-4227-a9d4-a3b0117b8a2f.jpeg">
+				<div class="caption">
+					<h5>暑假去哪里旅游凉快？</h5>
+					<p>
+						当然是这个地方了
+					</p>
+				</div>
+			</a>
+		</div>
 
-        <hr>
-        <div id="smaller">
-            <div style="margin-bottom: 20px">
-                <a href="#">
-                    <div class="row news-detail">
-                        <div class="col-5">
-                            <img src="/upload/e6066b48-85ec-48c2-8c1d-4c2ed41fcacc.jpeg">
-                        </div>
-                        <div class="col-7">
-                            <h4>全球最性感的海滩！</h4>
-                            <p>男人女人都为之疯狂。 </p>
-                        </div>
-                    </div>
-                </a>
-                <hr>
-            </div>
-            <div style="margin-bottom: 20px">
-                <a href="#">
-                    <div class="row news-detail">
-                        <div class="col-5">
-                            <img src="/upload/7e1e1d7c-cdeb-455a-af66-32d021a77138.jpeg">
-                        </div>
-                        <div class="col-7">
-                            <h4>名人眼中旅行的意义</h4>
-                            <p>旅行对我来说，是恢复青春活力的源泉。</p>
-                        </div>
-                    </div>
-                </a>
-                <hr>
-            </div>
-        </div>
-    </div>
+		<hr>
+		<div id="smaller">
+			<div  style="margin-bottom: 20px">
+				<a href="#">
+					<div class="row news-detail">
+						<div class="col-5">
+							<img src="/upload/e6066b48-85ec-48c2-8c1d-4c2ed41fcacc.jpeg">
+						</div>
+						<div class="col-7">
+							<h4>全球最性感的海滩！</h4>
+							<p>男人女人都为之疯狂。 </p>
+						</div>
+					</div>
+				</a>
+				<hr>
+			</div><div style="margin-bottom: 20px">
+			<a href="#">
+				<div class="row news-detail">
+					<div class="col-5">
+						<img src="/upload/7e1e1d7c-cdeb-455a-af66-32d021a77138.jpeg">
+					</div>
+					<div class="col-7">
+						<h4>名人眼中旅行的意义</h4>
+						<p>旅行对我来说，是恢复青春活力的源泉。</p>
+					</div>
+				</div>
+			</a>
+			<hr>
+		</div></div>
+	</div>
 </div>
 
 

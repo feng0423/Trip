@@ -23,6 +23,15 @@
         </ul>
     </li>
     <li class="list-group-item">
+        <a href="#" data-toggle="collapse" data-target="#news_detail">
+            <span>骡友日报管理</span>
+        </a>
+        <ul class="in" id="news_detail">
+            <li class="news"><a href="/news/list.do">日报管理</a></li>
+            <li class="#"><a href="#">日报评论管理</a></li>
+        </ul>
+    </li>
+    <li class="list-group-item">
         <a href="#" data-toggle="collapse" data-target="#system_detail">
             <span>平台管理</span>
         </a>

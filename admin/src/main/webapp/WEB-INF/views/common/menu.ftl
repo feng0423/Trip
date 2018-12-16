@@ -22,6 +22,7 @@
             <li class="travelCommend"><a href="/travelCommend/list.do">游记推荐设置</a></li>
         </ul>
     </li>
+
     <li class="list-group-item">
         <a href="#" data-toggle="collapse" data-target="#news_detail">
             <span>骡友日报管理</span>
@@ -40,6 +41,17 @@
             <li class="region"><a href="/region/list.do">旅游地区管理</a></li>
         </ul>
     </li>
+
+    <li class="list-group-item">
+        <a href="#" data-toggle="collapse" data-target="#system_detail">
+            <span>商城管理</span>
+        </a>
+        <ul class="in" id="system_detail">
+            <li class="tickets"><a href="/tickets/list.do">旅游景点门票管理</a></li>
+            <li class="order"><a href="/order/list.do">门票订单管理</a></li>
+        </ul>
+    </li>
+
 </ul>
 
 <#if currentMenu??>

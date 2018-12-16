@@ -1,0 +1,344 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title id="_title"></title>
+    <link rel="stylesheet" href="css/ticketscss/common-3.0.css">
+    <link rel="stylesheet" href="css/ticketscss/m-search.css">
+    
+   <script type="text/javascript" src="js/tickets/fastclick.js"></script>
+
+    <!--添加js和css-->
+    <link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
+    <script src="/js/jquery/jquery.min.js"></script>
+    <script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/font/css/font-awesome.min.css">
+    <!--<link rel="stylesheet" href="/css/reset.css"/>-->
+    <link rel="stylesheet" href="/css/travel.css"/>
+    <script src="/js/plugins/jrender/jrender.min.js"></script>
+    <link rel="stylesheet" href="/js/plugins/dialog2/dialog.css">
+    <script src="/js/plugins/dialog2/dialog.min.js"></script>
+
+    <!--下拉框css和 js-->
+   <!-- <link rel="stylesheet" href="/css/ticketscss/selecds/htmleaf-demo.css"/>
+    <link rel="stylesheet" href="/css/ticketscss/selecds/nice-select.css"/>
+    <link rel="stylesheet" href="/css/ticketscss/selecds/pintsize.min.css"/>
+
+    <script src="/js/tickets/selecds/fastclick.js"></script>
+    <script src="/js/tickets/selecds/jquery.nice-select.js"></script>
+    <script src="/js/tickets/selecds/jquery-1.11.0.min.js"></script>-->
+
+
+    <script>
+        window.addEventListener('load', function() {
+            FastClick.attach(document.body);
+        }, false);
+    </script>
+
+    <style>
+        body{
+            width: 100%;
+        }
+    </style>
+    <style type="text/css">
+        .container{
+            max-width: 1080px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        .demo--content-block {
+            background-color: #FFFFFF;
+            color: #666;
+            padding: 0.8em ;
+           /* margin: .5em 0;
+            height: 150px;*/
+           /* min-height: 150px;*/
+        }
+    </style>
+    <script>
+        
+       /*门票js*/
+       //发请求获取所有的游记,但是需要做分页的功能
+       $(function () {
+           //需要进行分页操作
+           //当前页
+           var currentPage=1;
+           //总页数
+           var pages;
+           //定义一个接收所有的图片的数组
+           var travelArr = [];
+
+           //获取到option的参数
+          // $("#ticket_searchListUl1").empty("");
+
+           var types=1;
+            $(".wide").change(function () {
+
+               $(".masterplate-list").html();
+                currentPage = 1;
+                types=$(this).val();
+               $(".wide option").attr(this.value);
+                query();
+            })
+
+           function query() {
+               $.get("/tickets", {currentPage:currentPage,type:types}, function (data) {
+
+                   console.log(data)
+                   $.merge(travelArr, data.list);
+                   var json = {
+                       list: travelArr
+                   }
+                   console.log(json);
+                   $(".masterplate-list").renderValues(json,{
+                       getHref:function (item,value) {
+                           console.log(item);
+                           console.log(value);
+                           $(item).attr("href","/mine/tickets_order.html?id="+value)
+                       }
+                   });
+                   pages = data.pages;
+               })
+               currentPage = currentPage+1;
+           }
+
+           query();
+
+           $(window).scroll(function () {
+               if($(window).height() + $(document).scrollTop() +1  >= $(document).height()){
+                   //如果是大于总页数就不发送请求了
+                   if(currentPage <= pages){
+                       query();
+
+                   }else{
+                       $(document).dialog({
+                           type:'notice',
+                           content:'<span class="info-text">亲,已经到底了!</span>',
+                           autoClose:2500
+                       });
+                   }
+               }
+           })
+
+       })
+    </script>
+
+    <!--点击下拉框-->
+   <!-- <script>
+        $(document).ready(function() {
+            $('select:not(.ignore)').niceSelect();
+            FastClick.attach(document.body);
+        });
+    </script>-->
+
+</head>
+<body style="background-color:#f2f2f2;">
+
+<style>
+    body.open .pull-down .pull-nav {
+        height: 185px;
+    }
+    .isDbIn .pull-down .pull-nav {
+        top: 45px!important;
+    }
+
+
+    #container {
+        width: 500px;
+        height: 820px;
+        margin: 0 auto;
+    }
+    div.search {}
+
+    form {
+        position: relative;
+
+        margin: 0 auto;
+    }
+
+    input, button {
+        border: none;
+        outline: none;
+    }
+
+    input {
+        width: 100%;
+        height: 42px;
+        padding-left: 13px;
+    }
+
+    button {
+        height: 42px;
+        width: 42px;
+        cursor: pointer;
+        position: absolute;
+    }
+
+
+    /*搜索框6*/
+    .bar6 {}
+    .bar6 input {
+        border: 2px solid #c5464a;
+        border-radius: 5px;
+        background: transparent;
+        top: 0;
+        right: 0;
+        width: 92%;
+        height: 35px;
+    }
+    .bar6 button {
+        background: #c5464a;
+        border-radius: 0 5px 5px 0;
+        width: 80px;
+        top: 0;
+        right: 0;
+        height: 35px;
+    }
+    .bar6 button:before {
+        content: "搜索";
+        font-size: 13px;
+        color: #F9F0DA;
+    }
+
+</style>
+
+    <!--<div class="headBlank">
+        <div class="headFixed">
+            <div class="searchNav">
+                <nav>
+                    <div class="swiper-container ">
+
+                    </div>
+                </nav>
+
+            </div>
+        </div>
+    </div>-->
+
+<!--
+<script>
+    function showDefaultImg(el) {
+        // 先将onerror设为null，防止默认图片也加载失败导致的死循环
+        el.onerror = null;
+        el.style.width = '81px';
+        el.style.margin = '0 auto';
+        el.src = '//pics.lvjs.com.cn/mobile/node_pro/projects/search/static/images/default.png';
+    }
+</script>
+-->
+
+        <div id="route_container" class="tabChange" style="display: none;">
+            <div class="loader" id="route_loader">
+                <div class="loader-inner ball-beat">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <!--<div class="searchList  ">
+                <article class="masterplate-list"></article>
+                <div class="lvLoading-loading" id="route_onbuttom" style="display: none;"></div>
+            </div>-->
+        </div>
+
+    <div class="col col--12 col__md--12 col__lg--6" style="margin-top: 60px; display: none;">
+        <div class="demo--content-block demo--class-display">
+            <div class="box">
+                <select class="wide">
+                    <option data-display="Select" value="1">综合排序</option>
+                    <option value="2">价格从低到高</option>
+                    <option value="3">价格从高到低</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+<!--<div style="margin-top: 60px;">
+
+<div style="">
+
+    <div class="search bar6">
+        <form>
+            <input type="text" placeholder="" value="qo.keyword">
+            <button type="submit"></button>
+        </form>
+    </div>
+
+</div>
+
+</div>-->
+        <div id="ticket_container" class="tabChange" style="margin-top: 60px;">
+            <div class="searchList ticketList " style="margin: 0;">
+                    <!-- 新家门票大促 -->
+                    <article class="masterplate-list ">
+                            <ul id="ticket_searchListUl1" render-loop="list">
+                                    <li>
+                                            <a class="lvAddBgcolor" render-fun="getHref" render-key="list.id">
+                                                <div class="ml-pro-img">
+                                                    <img render-src="list.coverurl">
+                                                        <span class="dest recommend">推荐</span>
+                                                </div>
+                                                <div class="ml-pro-info">
+                                                    <!--<p><i class="recommend">推荐</i>香港迪士尼乐园</p>-->
+                                                    <p render-html="list.name"></p>
+                                                    <div class="ml-pro-price">
+                                                            <span class="taoChan tcMargin">双旦大促</span>
+                                                        <!-- 7107无保险 -->
+                                                            <span class="huiQuan">优惠</span>
+                                                        <span class="price">
+                                                            <i>¥&nbsp;</i><i render-html="list.price"></i>起
+                                                        </span>
+                                                    </div>
+                                                    <div class="orderNum">
+                                                        <span>98.1%满意</span>
+                                                    </div>
+                                                    <div class="orderNum adress">
+                                                        <span>中国香港 新界</span><span>距您1285.75km</span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+
+                            </ul>
+                    </article>
+
+                <div class="lvLoading-loading" id="ticket_onbuttom" style="display: none;"></div>
+            </div>
+        </div>
+
+
+<div class="start-time-mask"></div>
+
+    <script src="js/tickets/nativeutil-1.9.7.min.js"></script>
+
+    <!--<script src="js/tickets/build.min.js"></script>
+    <script src="js/tickets/build.min_1.js"></script>-->
+    <!--<script src="js/tickets/statisticsutil-3.12.min.js"></script>-->
+
+    <!--<script src="js/tickets/build.min_2.js"></script>-->
+    
+   <script type="text/javascript" src="js/tickets/build.min_3.js"></script>
+   <script>
+
+        lvHeader.setTitle('景点票');
+       /* lvHeader.setRight(["category", "home"]);*/
+        if(searchType == 'lvyue'){
+            lvHeader.setTitle('驴悦亲子');
+           lvHeader.setRight(["category", "home"]);
+        }
+        lvHeader.setHandler("search", function () {
+            window.location.href = headSkipUrl;
+        });
+    </script>
+<!--<script type="text/javascript" src="js/tickets/search-list.js"></script>-->
+
+<!--<script src="js/tickets/build.min_4.js" async></script>
+<script src="js/tickets/build.min_5.js" async></script>-->
+<!--<script async defer type="text/javascript" src="js/tickets/tingyun-rum.js"></script>-->
+
+
+</body>
+</html>

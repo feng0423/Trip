@@ -5,15 +5,26 @@
     <id column="id" property="id" />
     <result column="title" property="title" />
     <result column="content" property="content" />
-    <result column="target_id" property="target_id" />
+    <result column="target_id" property="targetId" />
     <result column="type" property="type" />
-    <result column="create_time" property="create_time" />
+    <result column="create_time" property="createTime" />
     <result column="img_url" property="imgUrl" />
-    <association property="user" javaType="user" column="u_">
+    <association property="user" javaType="user" columnPrefix="u_">
       <id column="id" property="id" />
       <result column="nickName" property="nickName"/>
       <result column="headImgUrl" property="headImgUrl"/>
     </association>
+    <collection property="replies" ofType="replySecond" select="cn.wolfcode.trip.base.mapper.ReplySecondMapper.selectAllByParentId" column="id">
+      <id column="id" property="id" />
+      <result column="content" property="content" />
+      <result column="create_time" property="createTime" />
+      <result column="parent_id" property="parentId" />
+      <association property="user" javaType="user" columnPrefix="u_">
+        <id column="id" property="id" />
+        <result column="nickName" property="nickName"/>
+        <result column="headImgUrl" property="headImgUrl"/>
+      </association>
+    </collection>
   </resultMap>
   
   
@@ -34,13 +45,13 @@
     INSERT INTO reply (title, content, target_id,
       user_id, type, create_time, 
       img_url)
-    VALUES (#{title}, #{content}, #{target_id},
-      #{user.id}, #{type}, #{create_time}, 
+    VALUES (#{title}, #{content}, #{targetId},
+      #{user.id}, #{type}, now(),
       #{imgUrl})
   </insert>
   
   
-    <select id="selectAllByTypeTargetId" resultType="reply">
+    <select id="selectAllByTypeTargetId" resultMap="BaseResultMap">
       SELECT r.id, r.title, r.content, r.target_id, r.user_id, r.type, r.create_time, r.img_url,
             u.id u_id, u.nickName u_nickName, u.headImgUrl u_headImgUrl
       FROM reply r
@@ -50,7 +61,6 @@
           AND r.type=#{type} AND r.target_id=#{targetId}
         </if>
       </where>
-
-      ORDER BY r.create_time DESC
     </select>
+
 </mapper>

@@ -23,11 +23,29 @@
                 if(params.id){
                     //获取该游记的相关信息
                     $.get('/news/'+params.id,function (data) {
-
+                        title = data.title;
                         $(".newsDetail").renderValues(data);
                     })
                 }
 
+                //---------------------------------------------
+                function getReplyCount() {
+
+                    $.get("/news/" + params.id + "/replies", function (data) {
+
+                        var resultMap = data.obj;
+
+                        if (resultMap!=null){
+
+                            $("#commentCount").text(resultMap["count"]);
+                        }
+
+                    })
+                }
+//
+                getReplyCount();
+
+                //---------------------------------
                 //------------------
 
 
@@ -103,7 +121,7 @@
 
 
                         $("#commentBtn").click(function () {
-                            window.location.href = "reply.html?id=" + params.id+"&title="+encodeURI(encodeURI(title));
+                            window.location.href = "reply.html?id=" + params.id+"&title="+encodeURI(encodeURI(title)) +"&type=3";
                         });
 
                         $("#collectBtn").click(function () {
@@ -160,7 +178,7 @@
 				<div class="p-2  flex-fill">
 					<i class="fa fa-thumbs-o-up" id="likeBtn"> <span id="likeCount"></span></i>
 				</div>
-				<div class="p-2  flex-fill"><i class="fa  fa-commenting-o" id="commentBtn"> </i>
+				<div class="p-2  flex-fill"><i class="fa  fa-commenting-o" id="commentBtn"><span id="commentCount"></span></i>
 				</div>
 				<div class="p-2  flex-fill"><i class="fa fa-star-o" id="collectBtn"> <span id="collectCount"></span></i>
 				</div>

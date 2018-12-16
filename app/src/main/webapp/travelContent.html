@@ -27,7 +27,24 @@
             })
 
 
+            //---------------------------------------------
+            function getReplyCount() {
 
+                $.get("/travels/" + params.id + "/replies", function (data) {
+
+                    var resultMap = data.obj;
+
+                    if (resultMap!=null){
+
+                        $("#commentCount").text(resultMap["count"]);
+                    }
+
+                })
+            }
+//
+            getReplyCount();
+
+            //---------------------------------
 
             function like(state) {
 
@@ -77,6 +94,7 @@
             //---------------------------------
 
             $.get("/sessions/isLogined", function (data) {
+
                 // 没登录的话就不显示底部3个按钮
                 if(!data.obj){
                     $("#likeBtn").click(function () {
@@ -89,6 +107,7 @@
                         window.location.href = "login.html";
                     });
                 }else {
+
                     $("#likeBtn").click(function () {
                         // state  -1:查询 0:没按 1:按下
                         var state = 1;
@@ -101,7 +120,7 @@
 
 
                     $("#commentBtn").click(function () {
-                        window.location.href = "reply.html?id=" + params.id+"&title="+encodeURI(encodeURI(title));
+                        window.location.href = "reply.html?id=" + params.id+"&title="+encodeURI(encodeURI(title)) +"&type=1";
                     });
 
                     $("#collectBtn").click(function () {
@@ -196,7 +215,7 @@
         <div class="p-2  flex-fill">
             <i class="fa fa-thumbs-o-up" id="likeBtn"> <span id="likeCount"></span></i>
         </div>
-        <div class="p-2  flex-fill"><i class="fa  fa-commenting-o" id="commentBtn"> </i>
+        <div class="p-2  flex-fill"><i class="fa  fa-commenting-o" id="commentBtn"><span id="commentCount"></span> </i>
         </div>
         <div class="p-2  flex-fill"><i class="fa fa-star-o" id="collectBtn"> <span id="collectCount"></span></i>
         </div>

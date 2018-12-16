@@ -71,4 +71,64 @@
     where us.user_id = #{userId}
   </select>
 
+  <select id="selectLikeById" resultType="map">
+    select user_id, strategy_id, create_time
+    from like_user_strategy
+    WHERE user_id = #{userId} AND strategy_id = #{strategyId}
+
+  </select>
+  <select id="selectFavoriteById" resultType="map">
+
+    select user_id, strategy_id
+    from favorite_user_strategy
+    WHERE user_id = #{userId} AND strategy_id = #{strategyId}
+  </select>
+
+  <select id="countFavorites" resultType="int">
+    select count(1)
+    from favorite_user_strategy
+    WHERE  strategy_id = #{strategyId}
+  </select>
+
+
+  <select id="countLikes" resultType="int">
+    select count(1)
+    from like_user_strategy
+    WHERE  strategy_id = #{strategyId}
+  </select>
+
+
+  <insert id="insertLikeStrategyUserRelation">
+    INSERT INTO like_user_strategy (
+    user_id,
+    strategy_id,
+    create_time
+    ) VALUES (
+    #{userId},
+    #{strategyId},
+    now()
+    )
+  </insert>
+  <insert id="insertFavoriteStrategyUserRelation">
+    INSERT INTO favorite_user_strategy (
+    user_id,
+    strategy_id
+    ) VALUES (
+    #{userId},
+    #{strategyId}
+    )
+  </insert>
+  
+  <delete id="deleteLikeStrategyUserRelation">
+    DELETE FROM like_user_strategy
+    WHERE user_id = #{userId} AND strategy_id = #{strategyId}
+  </delete>
+  
+  <delete id="deleteFavoriteStrategyUserRelation">
+    DELETE FROM favorite_user_strategy
+    WHERE user_id = #{userId} AND strategy_id = #{strategyId}
+  </delete>
+
+
+
 </mapper>

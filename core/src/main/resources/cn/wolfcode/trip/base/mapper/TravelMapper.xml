@@ -158,6 +158,12 @@ DELETE FROM favorite_user_travel
     from like_user_travel
     WHERE  travel_id = #{travelId}
   </select>
+  <select id="countReplies" resultType="int">
+    select count(1)
+    from reply
+    WHERE  target_id = #{travelId} AND type = 1
+  </select>
+
   <select id="selectByStatus" resultMap="BaseResultMap">
     SELECT t.* from travel t where state = #{state} and id in (
       select travel_id from strategy_travel st join strategy s on st.strategy_id = s.id where s.id = #{strategyId}

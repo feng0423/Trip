@@ -28,51 +28,55 @@ public class NewsController {
     }
 
     @GetMapping("/{id}")
-    public News getById(@PathVariable Long id){
+    public News getById(@PathVariable Long id) {
         newsService.update(id);
         return newsService.getById(id);
     }
 
     @GetMapping("/contents")
-    public PageInfo listContents(NewsQueryObject qo){
+    public PageInfo listContents(NewsQueryObject qo) {
         qo.setOrderBy("n.creationTime desc");
-        return  newsService.queryForList(qo);
+        return newsService.queryForList(qo);
     }
 
-   @GetMapping("/content")
-    public PageInfo listContent(NewsQueryObject qo){
-        return  newsService.queryForList(qo);
+    @GetMapping("/content")
+    public PageInfo listContent(NewsQueryObject qo) {
+        return newsService.queryForList(qo);
     }
 
 
     @GetMapping("/{id}/likes/{state}")
     public JsonResult like(@PathVariable Long id, @PathVariable int state) {
-        JsonResult jsonResult = new JsonResult();
 
         Map map;
-        if (state == -1){// 查询
+        if (state == -1) {// 查询
             map = newsService.getLikeById(id);
-        }else{// 插入或删除
+        } else {// 插入或删除
             map = newsService.like(id);
         }
-        jsonResult.setObj(map);
 
-        return jsonResult;
+        return JsonResult.jsonResultWithMap(map);
     }
 
 
     @GetMapping("/{id}/favorites/{state}")
-    public JsonResult favorite(@PathVariable Long id, @PathVariable int state){
-        JsonResult jsonResult = new JsonResult();
+    public JsonResult favorite(@PathVariable Long id, @PathVariable int state) {
 
         Map map;
-        if (state == -1){// 查询
+        if (state == -1) {// 查询
             map = newsService.getFavoriteById(id);
             // 如果页面取此值为null, 即当前没有收藏;反之有收藏
-        }else{// 插入或删除
+        } else {// 插入或删除
             map = newsService.favorite(id);
         }
-        jsonResult.setObj(map);
-        return jsonResult;
+        return JsonResult.jsonResultWithMap(map);
     }
+
+
+    @GetMapping("/{id}/replies")
+    public JsonResult reply(@PathVariable Long id) {
+        return JsonResult.jsonResultWithMap(newsService.getReplyById(id));
+    }
+
+
 }

@@ -67,4 +67,11 @@ public interface INewsService {
      * @return
      */
     Map getFavoriteById(Long id);
+
+    /**
+     * 统计评论了多少条
+     * @param id
+     * @return
+     */
+    Map getReplyById(Long id);
 }

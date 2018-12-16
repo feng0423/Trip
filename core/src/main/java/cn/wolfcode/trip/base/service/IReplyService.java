@@ -4,8 +4,6 @@ import cn.wolfcode.trip.base.domain.Reply;
 import cn.wolfcode.trip.base.query.ReplyQueryObject;
 import com.github.pagehelper.PageInfo;
 
-import java.util.List;
-
 public interface IReplyService {
     void save(Reply reply);
 

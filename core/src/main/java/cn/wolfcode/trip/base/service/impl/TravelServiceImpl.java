@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class TravelServiceImpl implements ITravelService {
+public class TravelServiceImpl implements ITravelService{
 
     @Autowired
     private TravelMapper travelMapper;
@@ -29,8 +29,8 @@ public class TravelServiceImpl implements ITravelService {
     private TravelContentMapper travelContentMapper;
 
     public PageInfo queryForList(TravelQueryObject qo) {
-        PageHelper.startPage(qo.getCurrentPage(), qo.getPageSize(), qo.getOrderBy());
-        List list = travelMapper.selectForList(qo);
+        PageHelper.startPage(qo.getCurrentPage(),qo.getPageSize(),qo.getOrderBy());
+        List list  = travelMapper.selectForList(qo);
         return new PageInfo(list);
     }
 
@@ -38,7 +38,7 @@ public class TravelServiceImpl implements ITravelService {
         Date date = new Date();
         travel.setLastUpdateTime(date);//最后更新时间
 
-        if (travel.getId() != null) {
+        if(travel.getId() != null){
             //更新游记表
             travelMapper.updateByPrimaryKey(travel);
 
@@ -46,7 +46,7 @@ public class TravelServiceImpl implements ITravelService {
             TravelContent travelContent = travel.getTravelContent();
             travelContent.setId(travel.getId());
             travelContentMapper.updateByPrimaryKey(travelContent);
-        } else {
+        }else {
             //保存游记表
             travel.setAuthor(UserContext.getUser());//设置作者
             travel.setCreateTime(date);//创建时间
@@ -64,7 +64,7 @@ public class TravelServiceImpl implements ITravelService {
     }
 
     public PageInfo query(TravelQueryObject qo) {
-        PageHelper.startPage(qo.getCurrentPage(), qo.getPageSize());
+        PageHelper.startPage(qo.getCurrentPage(),qo.getPageSize());
         List list = travelMapper.selectForList(qo);
         return new PageInfo(list);
     }
@@ -74,7 +74,7 @@ public class TravelServiceImpl implements ITravelService {
     }
 
     public void changeState(Long id, Integer state) {
-        travelMapper.chageState(id, state);
+        travelMapper.chageState(id,state);
     }
 
     public Map like(Long id) {
@@ -82,35 +82,25 @@ public class TravelServiceImpl implements ITravelService {
             return null;
         Long userId = UserContext.getUser().getId();
         Map map = new HashMap();
-        if (userId != null) {
+        if (userId !=null){
 
             Map mapSelect = travelMapper.selectLikeById(id, userId);
-            if (mapSelect == null) {
+            if (mapSelect==null) {
                 travelMapper.insertLikeTravelUserRelation(id, userId);
-                map.put("hasClick", true);
-            } else {
+                map.put("hasClick",true);
+            }else {
                 travelMapper.deleteLikeTravelUserRelation(id, userId);
-                map.put("hasClick", false);
+                map.put("hasClick",false);
             }
         }
 
-        map.put("count", travelMapper.countLikes(id));
+
+
+        map.put("count",travelMapper.countLikes(id));
 
         return map;
     }
 
-    public Map getLikeById(Long id) {
-        Map map;
-        if (!UserContext.isLogined()) {
-            map = MapUtil.getNewMap(null);
-            map.put("count", travelMapper.countLikes(id));
-            return map;
-        }
-        Long userId = UserContext.getUser().getId();
-        map = MapUtil.getNewMap(travelMapper.selectLikeById(id, userId));
-        map.put("count", travelMapper.countLikes(id));
-        return map;
-    }
 
     public Map favorite(Long id) {
         if (!UserContext.isLogined())
@@ -118,34 +108,60 @@ public class TravelServiceImpl implements ITravelService {
         Long userId = UserContext.getUser().getId();
 
         Map map = new HashMap();
-        if (userId != null) {
+        if (userId !=null){
             Map mapSelect = travelMapper.selectFavoriteById(id, userId);
-            if (mapSelect == null) {
+            if (mapSelect==null) {
                 travelMapper.insertFavoriteTravelUserRelation(id, userId);
-                map.put("hasClick", true);
-            } else {
+                map.put("hasClick",true);
+            }else {
                 travelMapper.deleteFavoriteTravelUserRelation(id, userId);
-                map.put("hasClick", false);
+                map.put("hasClick",false);
             }
         }
 
-        map.put("count", travelMapper.countFavorites(id));
+        map.put("count",travelMapper.countFavorites(id));
 
         return map;
     }
 
+
+    public Map getLikeById(Long id) {
+        return getCommonMap(id, travelMapper.countLikes(id),1);
+    }
+
     public Map getFavoriteById(Long id) {
+        return getCommonMap(id, travelMapper.countFavorites(id),2);
+    }
+
+    public Map getReplyById(Long id) {
+        return getCommonMap(id, travelMapper.countReplies(id),3);
+    }
+
+
+    public Map getCommonMap(Long id, int count, int type) {
         Map map;
         if (!UserContext.isLogined()) {
             map = MapUtil.getNewMap(null);
-            map.put("count", travelMapper.countFavorites(id));
+            map.put("count",count);
             return map;
         }
 
         Long userId = UserContext.getUser().getId();
 
-        map = MapUtil.getNewMap(travelMapper.selectFavoriteById(id, userId));
-        map.put("count", travelMapper.countFavorites(id));
+        switch (type){
+            case 1: // like
+                map = MapUtil.getNewMap(travelMapper.selectLikeById(id, userId));
+                break;
+            case 2: // favorite
+                map = MapUtil.getNewMap(travelMapper.selectFavoriteById(id, userId));
+                break;
+                default:
+            case 3: // reply
+                map = new HashMap();
+                break;
+        }
+
+        map.put("count",count);
         return map;
     }
 

@@ -36,12 +36,12 @@ public class StrategyController {
     @RequestMapping("/saveOrUpdate")
     @ResponseBody
     public JsonResult saveOrUpdate(Strategy strategy, MultipartFile file) {
-        //判断是否上传文件
-        if(file!=null && file.getSize()>0){
-            String url = UploadUtil.upload(file, UploadUtil.PATH+"/upload");
-            System.out.println(url);
-            strategy.setCoverUrl(url);
-        }
+            //判断是否上传文件
+            if(file!=null && file.getSize()>0){
+                String url = UploadUtil.upload(file, UploadUtil.PATH+"/upload");
+                System.out.println(url);
+                strategy.setCoverUrl(url);
+            }
         strategyService.saveOrUpdate(strategy);
         return new JsonResult();
     }

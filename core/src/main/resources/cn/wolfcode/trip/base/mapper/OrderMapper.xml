@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.trip.base.mapper.OrderMapper">
+  <resultMap id="BaseResultMap" type="cn.wolfcode.trip.base.domain.Order">
+    <result column="id" property="id" />
+
+    <result column="create_time" property="create_time" />
+    <result column="username" property="username" />
+    <result column="phone" property="phone" />
+    <result column="total_prices" property="total_prices" />
+    <association property="user" javaType="User" columnPrefix="u_">
+      <id column="id" property="id"/>
+      <result column="email" property="email"/>
+        <result column="nickName" property="nickName"/>
+    </association>
+    <association property="tickets" javaType="Tickets" columnPrefix="t_">
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="price" property="price"/>
+      <result column="coverurl" property="coverurl"/>
+    </association>
+  </resultMap>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into `order` (
+            user_id,
+            create_time,
+            username,
+            phone,
+            total_prices,
+            tickets_id
+      )
+    values (
+            #{user.id},
+            now(),
+            #{username},
+            #{phone},
+            #{total_prices},
+            #{tickets.id}
+      )
+  </insert>
+
+  <update id="updateByPrimaryKey">
+    update `order`
+    set user_id = #{user.id},
+      create_time = #{create_time},
+      username = #{username},
+      phone = #{phone},
+      total_prices=#{total_prices}
+      tickets_id=#{tickets.id}
+  </update>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, user_id, create_time, username, phone, total_prices, tickets_id
+    from order
+  </select>
+
+    <delete id="deleteByPrimaryKey">
+
+    delete from `order`
+    where id = #{id}
+    </delete>
+  <select id="selectForList" resultMap="BaseResultMap">
+    select d.id,d.user_id, d.create_time,d.username,d.phone,d.total_prices,d.tickets_id,
+    u.id u_id,u.email u_email,u.nickName u_nickName,t.id t_id,t.name t_name,t.price t_price,t.coverurl t_coverurl
+    from `order` d
+    JOIN User u ON d.user_id=u.id
+    JOIN Tickets t ON d.tickets_id=t.id
+      <where>
+
+          <if test="keyword!=null">
+              and (d.username like concat('%',#{keyword},'%')OR t.name LIKE CONCAT('%', #{keyword} ,'%'))
+          </if>
+      </where>
+  </select>
+
+</mapper>

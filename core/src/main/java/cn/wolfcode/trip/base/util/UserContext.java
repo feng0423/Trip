@@ -36,4 +36,5 @@ public class UserContext {
     public static Set<String> getExpressions() {
         return (Set<String>) getSession().getAttribute(EXPRESSION_IN_SESSION);
     }
+
 }

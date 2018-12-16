@@ -171,5 +171,5 @@ $(function () {
             newTime = CurentTimeWithSeconds(new Date());
         });
     }
-    window.setInterval(getNewMessage, 5000);
+    window.setInterval(getNewMessage, 2000);
 });

@@ -177,7 +177,7 @@
 
             function query() {
                 // type = 1 是游记的评论
-                $.get("/replies", {currentPage: currentPage, targetId: params.id, type: 1}, function (data) {
+                $.get("/replies", {currentPage: currentPage, targetId: params.id, type: params.type}, function (data) {
                     console.log(11111111111); // a连接
                     console.log(data); // a连接
 

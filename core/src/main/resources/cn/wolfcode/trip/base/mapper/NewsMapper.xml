@@ -126,6 +126,6 @@
   <select id="countReplies" resultType="int">
     select count(1)
     from reply
-    WHERE  target_id = #{travelId} AND type = 3
+    WHERE  target_id = #{newsId} AND type = 3
   </select>
 </mapper>

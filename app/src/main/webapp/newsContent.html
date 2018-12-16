@@ -23,7 +23,7 @@
                 if(params.id){
                     //获取该游记的相关信息
                     $.get('/news/'+params.id,function (data) {
-
+                        title = data.title;
                         $(".newsDetail").renderValues(data);
                     })
                 }
@@ -31,7 +31,7 @@
                 //---------------------------------------------
                 function getReplyCount() {
 
-                    $.get("/travels/" + params.id + "/replies", function (data) {
+                    $.get("/news/" + params.id + "/replies", function (data) {
 
                         var resultMap = data.obj;
 

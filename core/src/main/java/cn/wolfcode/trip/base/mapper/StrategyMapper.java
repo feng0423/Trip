@@ -3,6 +3,7 @@ package cn.wolfcode.trip.base.mapper;
 import cn.wolfcode.trip.base.domain.Strategy;
 import cn.wolfcode.trip.base.query.QueryObject;
 import cn.wolfcode.trip.base.query.SerachQueryObject;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,4 +22,7 @@ public interface StrategyMapper {
     List<Strategy> selectForList(QueryObject qo); //查询结果集
 
     List<Strategy> selectSearchForList(SerachQueryObject qo);
+
+
+    List selectStrategyByUserId(Long userId);
 }

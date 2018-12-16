@@ -45,4 +45,15 @@ public class StrategyServiceImpl implements IStrategyService{
         List<Strategy> list = strategyMapper.selectSearchForList(qo);
         return new PageInfo(list);
     }
+
+
+    public List selectStrategyByUserId(Long userId) {
+        return strategyMapper.selectStrategyByUserId(userId);
+    }
+
+    public List listLook() {
+        return strategyMapper.selectAll();
+    }
+
+
 }

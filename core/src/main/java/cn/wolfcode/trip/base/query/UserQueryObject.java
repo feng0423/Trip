@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 @Setter
 public class UserQueryObject extends QueryObject {
     private String keyword; //关键字
+    public Long UserId;//用户ID
 
     public String getKeyword(){
         return StringUtils.hasLength(keyword) ? keyword.trim() : null;

@@ -1,6 +1,7 @@
 package cn.wolfcode.trip.base.service.impl;
 
 import cn.wolfcode.trip.base.domain.Strategy;
+import cn.wolfcode.trip.base.domain.Travel;
 import cn.wolfcode.trip.base.domain.User;
 import cn.wolfcode.trip.base.mapper.UserMapper;
 import cn.wolfcode.trip.base.query.QueryObject;
@@ -64,4 +65,9 @@ public class UserServiceImpl implements IUserService{
         List<Strategy> list = userMapper.selectSearchForList(qo);
         return new PageInfo(list);
     }
+
+    public User getUser(Long userId) {
+        return userMapper.selectByPrimaryKey(userId);
+    }
+
 }

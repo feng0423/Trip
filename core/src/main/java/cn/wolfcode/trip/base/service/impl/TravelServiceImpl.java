@@ -5,6 +5,7 @@ import cn.wolfcode.trip.base.domain.TravelContent;
 import cn.wolfcode.trip.base.mapper.TravelContentMapper;
 import cn.wolfcode.trip.base.mapper.TravelMapper;
 import cn.wolfcode.trip.base.query.TravelQueryObject;
+import cn.wolfcode.trip.base.query.UserQueryObject;
 import cn.wolfcode.trip.base.service.ITravelService;
 import cn.wolfcode.trip.base.util.MapUtil;
 import cn.wolfcode.trip.base.util.UserContext;
@@ -148,5 +149,11 @@ public class TravelServiceImpl implements ITravelService{
         map = MapUtil.getNewMap(travelMapper.selectFavoriteById(id, userId));
         map.put("count",travelMapper.countFavorites(id));
         return map;
+    }
+
+    public PageInfo queryTravelByauthorId(UserQueryObject qo) {
+        PageHelper.startPage(qo.getCurrentPage(),qo.getPageSize(),qo.getOrderBy());
+        List list = travelMapper.selectForListByUserId(qo);
+        return new PageInfo(list);
     }
 }

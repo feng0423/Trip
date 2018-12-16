@@ -21,7 +21,6 @@
         $(function () {
             //加载侧边栏的时候带上毫秒值.解决缓存问题
             $("#ipage").attr("src", "/mine/simpleProfiles.html?" + new Date().getTime())
-
 			//每周=推荐
 			$.get("/travels/commends",{type:1,pageSize:3},function (data) {
                 console.log(data);
@@ -37,6 +36,49 @@
                 //first和first的区别主要是前者为父目录第一个 , 后者为父目录下的所有第一个
                 $(".carousel-item:first").addClass("active");
             });
+
+            //查询评论状态为推荐的用户信息
+            $.get("/strategies/commends",{state:1}, function (data) {
+                console.log(data);
+                var json = {
+                    list:data
+                }
+                $("#comments").renderValues(json, {
+                    getHref: function (item, value) {
+                        var url = $(item).data("href");
+                        $(item).attr("href", url + value);
+                    }
+                })
+            });
+
+            //获取日报内容(显示一条)
+            $.get("/news/contents", { pageSize: 1}, function (data) {
+                // console.log(data.list[0]);
+                //渲染数据
+                $("#bigger").renderValues(data.list[0], {
+                    getHref: function (item, value) {
+                        //通过当前的对象获取超链接
+                        var url = $(item).data("href");
+                        //拼接id
+                        $(item).attr("href", url + value);
+                    }
+                });
+            })
+
+            //获取日报内容(显示两条)
+            $.get("/news/content", {pageSize: 2}, function (data) {
+                // console.log(data);
+                //渲染数据
+                $("#smaller").renderValues(data, {
+                    getHref: function (item, value) {
+                        //通过当前的对象获取超链接
+                        var url = $(item).data("href");
+                        //拼接id
+                        $(item).attr("href", url + value);
+                    }
+                });
+            })
+
 
             $("#select").click(function () {
                 var keyword = $("#keyWord").val();
@@ -55,7 +97,6 @@
                     window.location.href = "/search.html";
                 }
             });
-
         })
     </script>
 
@@ -137,23 +178,15 @@
                 <img class="rounded" src="/img/topComment.png" style="width: 50px;">
             </div>
             <div class="col">
-                <div class="Marquee">
+                <div class="Marquee" render-loop="list">
                     <div class="d-flex">
-                        <a href="userProfiles.html">
-                            <img class="rounded-circle dynamic-head"
-                                 src="/upload/6610317b-2077-4bd3-98c7-7d31b6613469.jpg">
+                        <a render-key="list.user.id" render-fun="getHref" data-href="userProfiles.html?id=">
+                            <img class="rounded-circle dynamic-head" render-src="list.user.headImgUrl">
                         </a>
-                        <a href="strategyComment.html" class="dynamic-detail" data-id="1">
-                            <span>叩丁狼</span> 点评了攻略<p>广州攻略</p>
-                        </a>
-                    </div>
-                    <div class="d-flex">
-                        <a href="userProfiles.html">
-                            <img class="rounded-circle dynamic-head"
-                                 src="/upload/23a45130-e59c-4844-bc52-67aed3d57fc1.jpeg">
-                        </a>
-                        <a href="strategyComment.html" class="dynamic-detail">
-                            <span>喵喵</span> 点评了攻略<p>广州攻略</p>
+                        <a render-key="list.id" render-fun="getHref" data-href="strategyComment.html?id="
+                           class="dynamic-detail">
+                            <span render-html="list.user.nickName"></span> 点评了攻略
+                            <p render-html="list.strategy.title"></p>
                         </a>
                     </div>
                 </div>
@@ -163,53 +196,42 @@
 
 	<hr>
 
-	<div class="container">
-		<h6 class="module-title">骡窝日报 <a href="#">更多</a>  </h6>
+    <div class="newsContent">
+        <h6 class="module-title">骡窝日报 <a href="/newsPage.html">更多</a>  </h6>
+        <div class="carousel-inner" render-loop="list">
+            <div class="news " id="bigger">
+                <a render-fun="getHref" render-key="id" data-href="/newsContent.html?id=">
+                    <img width="100%" render-src="coverUrl">
+                    <div class="caption">
+                        <h4 render-html="title"></h4>
+                        <p render-html="creationTime"></p>
+                        浏览量:<span render-html="amount"></span>
+                    </div>
+                </a>
+            </div>
+        </div>
 
-
-		<div class="news " id="bigger">
-			<a href="#">
-				<img width="100%" src="/upload/8aa4b264-ed40-4227-a9d4-a3b0117b8a2f.jpeg">
-				<div class="caption">
-					<h5>暑假去哪里旅游凉快？</h5>
-					<p>
-						当然是这个地方了
-					</p>
-				</div>
-			</a>
-		</div>
-
-		<hr>
-		<div id="smaller">
-			<div  style="margin-bottom: 20px">
-				<a href="#">
-					<div class="row news-detail">
-						<div class="col-5">
-							<img src="/upload/e6066b48-85ec-48c2-8c1d-4c2ed41fcacc.jpeg">
-						</div>
-						<div class="col-7">
-							<h4>全球最性感的海滩！</h4>
-							<p>男人女人都为之疯狂。 </p>
-						</div>
-					</div>
-				</a>
-				<hr>
-			</div><div style="margin-bottom: 20px">
-			<a href="#">
-				<div class="row news-detail">
-					<div class="col-5">
-						<img src="/upload/7e1e1d7c-cdeb-455a-af66-32d021a77138.jpeg">
-					</div>
-					<div class="col-7">
-						<h4>名人眼中旅行的意义</h4>
-						<p>旅行对我来说，是恢复青春活力的源泉。</p>
-					</div>
-				</div>
-			</a>
-			<hr>
-		</div></div>
-	</div>
-</div>
+        <hr>
+        <div id="smaller">
+            <div  render-loop="list">
+                <div  style="margin-bottom: 20px" >
+                    <a render-fun="getHref" render-key="list.id" data-href="/newsContent.html?id=">
+                        <div class="row news-detail">
+                            <div class="col-5">
+                                <img render-src="list.coverUrl">
+                            </div>
+                            <div class="col-7">
+                                <h4 render-html="list.title"></h4>
+                                <p render-html="list.creationTime"></p>
+                                浏览量:<span render-html="list.amount"></span>
+                            </div>
+                        </div>
+                    </a>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 <script>

@@ -121,4 +121,11 @@
     from like_user_news
     WHERE  news_id = #{newsId}
   </select>
+
+
+  <select id="countReplies" resultType="int">
+    select count(1)
+    from reply
+    WHERE  target_id = #{travelId} AND type = 3
+  </select>
 </mapper>

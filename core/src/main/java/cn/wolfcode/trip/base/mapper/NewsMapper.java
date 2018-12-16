@@ -47,4 +47,6 @@ public interface NewsMapper {
     void insertFavoriteTravelUserRelation(@Param("newsId") Long newsId, @Param("userId") Long userId);
 
     void deleteFavoriteTravelUserRelation(@Param("newsId") Long newsId, @Param("userId") Long userId);
+
+    int countReplies(Long id);
 }

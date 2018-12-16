@@ -49,6 +49,14 @@ body {
     position: relative;
 }
 
+.head2home .btn_back {
+    display: block;
+    padding: 0px 0px;
+    width: 35px;
+    height: 32px;
+    background: url(/img/reply/btn_back.png) center center no-repeat;
+}
+
 .head2home .logo {
     display: block;
     padding: 10px 15px;
@@ -326,6 +334,6 @@ img {
     text-align: left;
     outline: 0;
     border: 1px solid #fff;
-    margin-top: 48px;
+    margin-top: 20px;
 }
 

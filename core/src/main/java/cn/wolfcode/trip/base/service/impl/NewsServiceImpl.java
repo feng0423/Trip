@@ -92,18 +92,6 @@ public class NewsServiceImpl implements INewsService{
         return map;
     }
 
-    public Map getLikeById(Long id) {
-        Map map;
-        if (!UserContext.isLogined()) {
-            map = MapUtil.getNewMap(null);
-            map.put("count",newsMapper.countLikes(id));
-            return map;
-        }
-        Long userId = UserContext.getUser().getId();
-        map = MapUtil.getNewMap(newsMapper.selectLikeById(id, userId));
-        map.put("count",newsMapper.countLikes(id));
-        return map;
-    }
 
     public Map favorite(Long id) {
         if (!UserContext.isLogined())
@@ -127,18 +115,45 @@ public class NewsServiceImpl implements INewsService{
         return map;
     }
 
+
+
+    public Map getLikeById(Long id) {
+        return getCommonMap(id, newsMapper.countLikes(id),1);
+    }
+
     public Map getFavoriteById(Long id) {
+        return getCommonMap(id, newsMapper.countFavorites(id),2);
+    }
+
+    public Map getReplyById(Long id) {
+        return getCommonMap(id, newsMapper.countReplies(id),3);
+    }
+
+
+    public Map getCommonMap(Long id, int count, int type) {
         Map map;
         if (!UserContext.isLogined()) {
             map = MapUtil.getNewMap(null);
-            map.put("count",newsMapper.countFavorites(id));
+            map.put("count",count);
             return map;
         }
 
         Long userId = UserContext.getUser().getId();
 
-        map = MapUtil.getNewMap(newsMapper.selectFavoriteById(id, userId));
-        map.put("count",newsMapper.countFavorites(id));
+        switch (type){
+            case 1: // like
+                map = MapUtil.getNewMap(newsMapper.selectLikeById(id, userId));
+                break;
+            case 2: // favorite
+                map = MapUtil.getNewMap(newsMapper.selectFavoriteById(id, userId));
+                break;
+            default:
+            case 3: // reply
+                map = new HashMap();
+                break;
+        }
+
+        map.put("count",count);
         return map;
     }
 

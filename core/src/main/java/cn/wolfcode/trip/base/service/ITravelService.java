@@ -51,7 +51,6 @@ public interface ITravelService {
     /**
      * 点赞或取消点赞
      * @param id
-     * @param state true的话就插入值, false就delete记录
      */
     Map like(Long id);
 
@@ -65,7 +64,6 @@ public interface ITravelService {
     /**
      * 收藏或取消收藏
      * @param id
-     * @param state
      */
     Map favorite(Long id);
 
@@ -75,6 +73,14 @@ public interface ITravelService {
      * @return
      */
     Map getFavoriteById(Long id);
+
+
+    /**
+     * 统计评论了多少条
+     * @param id
+     * @return
+     */
+    Map getReplyById(Long id);
 
     List<Travel> selectByStatus(Long strategyId, Integer state);
 

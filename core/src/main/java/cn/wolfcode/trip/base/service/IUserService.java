@@ -1,6 +1,7 @@
 package cn.wolfcode.trip.base.service;
 
 import cn.wolfcode.trip.base.domain.User;
+import cn.wolfcode.trip.base.domain.UserChat;
 import cn.wolfcode.trip.base.query.QueryObject;
 import com.github.pagehelper.PageInfo;
 
@@ -36,4 +37,13 @@ public interface IUserService {
      * 查询所有user
      */
     List<User> selectAll();
+
+    /**
+     * 获取私信的人
+     * @param id
+     * @return
+     */
+    List<User> listUserById(Long id);
+
+    User selectByUser(Long id);
 }

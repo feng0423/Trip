@@ -24,4 +24,8 @@ public interface UserMapper {
     List<User> selectForList(QueryObject qo); //查询结果集
 
     User selectByEmailAndPassword(@Param("email") String email, @Param("password") String password);
+
+
+    List<User> listUserById(@Param("id") Long id);
+
 }

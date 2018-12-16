@@ -104,6 +104,14 @@ public class UserController {
         return list;
     }
 
-
+    /**
+     * 查询user的数据
+     * @param qo
+     * @return
+     */
+    @GetMapping("/{receiverId}")
+    public User getUser( @PathVariable("receiverId") Long receiverId) {
+        return userService.selectByUser(receiverId);
+    }
 
 }

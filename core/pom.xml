@@ -59,6 +59,16 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-websocket</artifactId>
+            <version>8.1.0.v20120127</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-websocket</artifactId>
+            <version>8.1.0.v20120127</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -77,6 +87,12 @@
                         <groupId>mysql</groupId>
                         <artifactId>mysql-connector-java</artifactId>
                         <version>5.1.21</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-websocket</artifactId>
+                        <version>5.0.8.RELEASE</version>
                     </dependency>
                 </dependencies>
             </plugin>

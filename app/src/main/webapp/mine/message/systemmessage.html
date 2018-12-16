@@ -47,8 +47,8 @@
 							<i class="fa fa-calendar"></i>
 							<span render-html="list.createTime"></span>
 						</div>
-						<div class="p-2  flex-fill">
-							<a href="#" >
+						<div id="travelsCommends" class="p-2  flex-fill">
+							<a href="/travelContent.html?id=7" >
 								<i class="fa fa-money"></i> 查看详情
 							</a>
 						</div>
@@ -63,6 +63,13 @@
             $(function () {
                 $.get("/users/messages/systemMessage",function (data) {
                     $(".travel").renderValues({list:data})
+                    $("#travelsCommends").renderValues(data,{
+                        //渲染数据
+                        getHref:function (item, value) {
+                            var url = $(item).data("href");
+                            $(item).attr("href", url + value);
+                        }
+                    });
                 })
             })
 		</script>

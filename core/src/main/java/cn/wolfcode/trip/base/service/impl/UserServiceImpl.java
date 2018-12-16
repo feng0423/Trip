@@ -1,6 +1,7 @@
 package cn.wolfcode.trip.base.service.impl;
 
 import cn.wolfcode.trip.base.domain.User;
+import cn.wolfcode.trip.base.domain.UserChat;
 import cn.wolfcode.trip.base.mapper.UserMapper;
 import cn.wolfcode.trip.base.query.QueryObject;
 import cn.wolfcode.trip.base.service.IUserService;
@@ -60,4 +61,16 @@ public class UserServiceImpl implements IUserService{
     public List<User> selectAll() {
         return userMapper.selectAll();
     }
+
+    @Override
+    public List<User> listUserById(Long id) {
+        return userMapper.listUserById(id);
+    }
+
+    @Override
+    public User selectByUser(Long id) {
+        return userMapper.selectByPrimaryKey(id);
+    }
+
+
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/strategies")
@@ -80,5 +81,34 @@ public class StrategyController {
    @GetMapping("/{strategyId}/travels")
     public List<Travel> getTravel(@PathVariable Long strategyId ,Integer state) {
         return travelService.selectByStatus(strategyId,state);
+    }
+
+
+    @GetMapping("/{id}/likes/{state}")
+    public JsonResult like(@PathVariable Long id, @PathVariable int state) {
+
+        Map map;
+        if (state == -1) {// 查询
+            map = strategyService.getLikeById(id);
+        } else {// 插入或删除
+            map = strategyService.like(id);
+        }
+
+        return JsonResult.jsonResultWithMap(map);
+    }
+
+
+    @GetMapping("/{id}/favorites/{state}")
+    public JsonResult favorite(@PathVariable Long id, @PathVariable int state) {
+
+        Map map;
+        if (state == -1) {// 查询
+            map = strategyService.getFavoriteById(id);
+            // 如果页面取此值为null, 即当前没有收藏;反之有收藏
+        } else {// 插入或删除
+            map = strategyService.favorite(id);
+        }
+
+        return JsonResult.jsonResultWithMap(map);
     }
 }

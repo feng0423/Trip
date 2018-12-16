@@ -56,15 +56,15 @@ public class Reply extends  BaseDomain{
         map.put("id",id);
         map.put("title",title);
         map.put("content",content);
-        map.put("travelId",targetId);
+        map.put("targetId",targetId);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        map.put("create_time",sdf.format(createTime));
+        map.put("createTime",sdf.format(createTime));
         map.put("type",type);
         map.put("imgUrl",imgUrl);
         if(user!=null){
-            map.put("id",user.getId());
-            map.put("nickName",user.getNickName());
-            map.put("headImgUrl",user.getHeadImgUrl());
+            map.put("user.id",user.getId());
+            map.put("user.nickName",user.getNickName());
+            map.put("user.headImgUrl",user.getHeadImgUrl());
         }
         return JSONUtils.toJSONString(map);
     }

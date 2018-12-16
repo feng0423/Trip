@@ -201,17 +201,18 @@
                             $(item).attr('href', '/mine/userProfiles.html?id=' + value);
                         },
                         getReplyBtn: function (item, value) {
-                            console.log(4444444444444444444444444444444444444); // a连接
                             console.log(item); // a连接
                             console.log(value); // id值
                             // console.log(66666); // id值
                             if(value){
                                 var j = JSON.parse(value)
+                                console.log(66666666666666666666666); // a连接
+                                console.log(j['user.id']); // a连接
                                 // id值
 
                                 // console.log(777777); // id值
                                 // if (j.parentId == null) {
-                                    var n = "回复"+j.nickName+"：";
+                                    var n = "回复"+j['user.nickName']+"：";
                                     $(item).attr('href', 'javascript:openEditByBtn(\"'+n+'\",'+j.id+');');
 
                                     $("#titleR").text(n);

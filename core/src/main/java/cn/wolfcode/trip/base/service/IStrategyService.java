@@ -29,4 +29,18 @@ public interface IStrategyService {
      * @return
      */
     Strategy getStrategyById(Long id);
+
+
+
+    /**
+     * 根据用户ID查询该用户所收藏的攻略
+     * @param userId
+     */
+    List selectStrategyByUserId(Long userId);
+
+    /**
+     * 查询攻略查看最多的
+     * @return
+     */
+    List listLook();
 }

@@ -3,8 +3,10 @@ package cn.wolfcode.trip.base.service;
 import cn.wolfcode.trip.base.domain.Travel;
 import cn.wolfcode.trip.base.domain.TravelContent;
 import cn.wolfcode.trip.base.query.TravelQueryObject;
+import cn.wolfcode.trip.base.query.UserQueryObject;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ITravelService {
@@ -73,4 +75,15 @@ public interface ITravelService {
      * @return
      */
     Map getFavoriteById(Long id);
+
+    List<Travel> selectByStatus(Long strategyId, Integer state);
+
+    /**
+     * 根据用户ID查出所有游记  高查分页
+     * @param qo
+     * @return
+     */
+    PageInfo queryTravelByauthorId(UserQueryObject qo);
+
+
 }

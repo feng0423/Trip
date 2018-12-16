@@ -55,28 +55,35 @@
                     //获取json数据
                     $.get("/strategies/" + params.id + "/commends", {currentPage: currentPage}, function (data) {
                         $.merge(commendArr, data.list);
-                        var json = {
-                            list: commendArr
-                        }
-                        $("#comment").renderValues(json,{
-                            getStar:function (item,value) {
-                                var temp = "";
-                                //实心
-                                for(var i=0;i<value;i++){
-                                    temp += '<i class="fa fa-star""></i>'
-                                }
-                                //空心
-                                for(var i=0;i<5-value;i++){
-                                    temp += '<i class="fa fa-star-o" "></i>'
-                                }
-                                $(".comment-star").html(temp);
-                            }
-                        })
-                        pages = data.pages;
-                    })
-
-                    currentPage = currentPage + 1;
+                var json = {
+                    list: commendArr
                 }
+                $("#comment").renderValues(json,{
+                    getStar:function (item,value) {
+                        var temp = "";
+                        //实心
+                        for(var i=0;i<value;i++){
+                            temp += '<i class="fa fa-star""></i>'
+                        }
+                        //空心
+                        for(var i=0;i<5-value;i++){
+                            temp += '<i class="fa fa-star-o" "></i>'
+                        }
+                        $(".comment-star").html(temp);
+                    },
+                    getUserId:function (item, value) {
+                        var temp = ''; //跳转页面
+                        var url = $(item).data("href");//路径
+                        $(item).attr('href',url + value);
+                    }
+
+                })
+                pages = data.pages;
+
+            })
+
+        currentPage = currentPage + 1;
+        }
                 query();
                 $(window).scroll(function () {
                     if ($(window).height() + $(document).scrollTop() + 1 >= $(document).height()) {
@@ -95,7 +102,54 @@
                 $("#commentBtn").click(function () {
                     window.location.href="/mine//addComment.html?id="+params.id;
                 });
+
+                //大家都在看
+                $.get("/strategies/" + params.id + "/travels", {state: 2}, function (data) {
+                    console.log(data);
+                    var json = {
+                        list:data
+                    }
+                    $(".hot").renderValues(json, {
+                        getHref: function (item, value) {
+                            var url = $(item).data("href");
+                            $(item).attr("href", url + value);
+                        }
+                    });
+                });
             }
+
+
+            //加入我的旅行表单
+          /*  $('#travel').click(function () {
+
+                if(sessionStorage.getItem('user')){//获取当前用户判断是否登陆
+                    var strategy = getParams().id; //获取大攻略ID
+                    alert(strategy)
+                }else{
+                    window.location.href = '/login.html';
+                }
+            })*/
+
+            var user = JSON.parse(sessionStorage.getItem("user"));
+            //加入我的旅行表单
+            $("#travel").click(function () {
+                if (user) {
+                    $.get("/users/" + user.id + "/strategies/" + params.id, function (data) {
+                        if(data){
+                            alert("该表单已存在")
+                        }else {
+                            //新增关系
+                            $.post("/users/" + user.id + "/strategies/" + params.id, function (data){
+                                alert("已添加")
+                            });
+                        }
+                    });
+                }
+            });
+
+
+
+
         })
     </script>
 
@@ -143,15 +197,13 @@
     <div class="tab-pane fade show active" id="pills-catalog">
         <div class="container hot">
             <h6>大家都在看</h6>
-            <div>
-                <a href="travelContent.html">
-                    <button class="btn">上下九</button>
-                </a><a href="travelContent.html">
-                <button class="btn">入住长隆熊猫酒店，天天都是儿童节</button>
-            </a><a href="travelContent.html">
-                <button class="btn">飞到羊城，只为一场最地道的早茶之旅</button>
-            </a></div>
+            <div render-loop="list">
+                <a data-href="travelContent.html?id=" render-key="list.id" render-fun="getHref">
+                    <button class="btn" render-html="list.title"></button>
+                </a>
+            </div>
         </div>
+        <!--分类-->
         <div class="catalogs">
             <div>
                 <div render-loop="list">
@@ -181,7 +233,7 @@
             <div render-loop="list">
                 <div class="container row comment">
                     <div class="col-2 comment-head">
-                        <a     href="userProfiles.html">
+                        <a data-href="userProfiles.html?id=" render-fun="getUserId" render-key="list.user.id">
                             <img class="rounded-circle" render-src="list.user.headImgUrl">
                         </a>
                     </div>
@@ -219,7 +271,7 @@
 </div>
 
 <div class="operation">
-    <button class="btn">加入旅行单</button>
+    <button class="btn" id="travel">加入旅行单</button>
     <button class="btn" id="commentBtn">点评</button>
 </div>
 

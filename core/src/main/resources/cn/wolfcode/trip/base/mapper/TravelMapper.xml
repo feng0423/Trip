@@ -128,6 +128,9 @@ DELETE FROM favorite_user_travel
       <if test="travelId!=null">
         and t.id = #{travelId}
       </if>
+      <if test="keyword!=null">
+        and title like concat('%',#{keyword},'%')
+      </if>
     </where>
   </select>
   <select id="selectLikeById" resultType="map">
@@ -155,5 +158,16 @@ DELETE FROM favorite_user_travel
     from like_user_travel
     WHERE  travel_id = #{travelId}
   </select>
+  <select id="selectByStatus" resultMap="BaseResultMap">
+    SELECT t.* from travel t where state = #{state} and id in (
+      select travel_id from strategy_travel st join strategy s on st.strategy_id = s.id where s.id = #{strategyId}
+    )
+  </select>
 
+    <select id="selectForListByUserId" resultMap="BaseResultMap">
+       select id, title, travelTime, perExpends, days, person, author_id, createTime, releaseTime,
+    isPublic, place_id, coverUrl, lastUpdateTime, state
+    from travel
+    WHERE author_id = #{UserId}
+    </select>
 </mapper>

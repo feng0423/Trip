@@ -2,6 +2,7 @@ package cn.wolfcode.trip.base.mapper;
 
 import cn.wolfcode.trip.base.domain.Travel;
 import cn.wolfcode.trip.base.query.TravelQueryObject;
+import cn.wolfcode.trip.base.query.UserQueryObject;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -36,4 +37,7 @@ public interface TravelMapper {
 
     int countFavorites(Long travelId);
     int countLikes(Long travelId);
+
+    List<Travel> selectByStatus(@Param("strategyId") Long strategyId, @Param("state") Integer state);
+    List selectForListByUserId(UserQueryObject qo);
 }

@@ -16,13 +16,18 @@
       <result column="headImgUrl" property="headImgUrl" />
       <result column="nickName" property="nickName" />
     </association>
+    <association property="strategy" javaType="strategy" columnPrefix="s_">
+      <id column="id" property="id" />
+      <result column="title" property="title" />
+      <result property="coverUrl" column="coverUrl"/>
+    </association>
   </resultMap>
   <delete id="deleteByPrimaryKey">
     delete from strategycomment
     where id = #{id}
   </delete>
   <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-    insert into strategycomment (user_id, createTime, content, imgUrls, starNum, strategy_id, 
+    insert into strategycomment (user_id, createTime, content, imgUrls, starNum, strategy_id,
       state, commendTime)
     values (#{user.id}, #{createTime}, #{content}, #{imgUrls}, #{starNum}, #{strategy.id},
       #{state}, #{commendTime})
@@ -43,6 +48,11 @@
       commendTime = #{commendTime}
     where id = #{id}
   </update>
+  <update id="changeState">
+    update strategycomment
+    set state = #{state}
+    where id = #{id}
+  </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap">
     select id, user_id, createTime, content, imgUrls, starNum, strategy_id, state, commendTime
     from strategycomment
@@ -54,12 +64,30 @@
   </select>
   <select id="selectForList" resultMap="BaseResultMap">
     select sc.id, sc.user_id, sc.createTime, sc.content, sc.imgUrls, sc.starNum, sc.strategy_id, sc.state, sc.commendTime,
-    u.id u_id,u.nickName u_nickName,u.headImgUrl u_headImgUrl
+    u.id u_id,u.nickName u_nickName,u.headImgUrl u_headImgUrl,s.id s_id,s.title s_title
     from strategycomment sc join user u on sc.user_id = u.id
+    join strategy s on s.id = sc.strategy_id
     <where>
       <if test="strategyId != null">
         and  sc.strategy_id = #{strategyId}
       </if>
     </where>
   </select>
+    <select id="selectByStatus" resultMap="BaseResultMap">
+        select sc.id, sc.user_id, sc.createTime, sc.content, sc.imgUrls, sc.starNum, sc.strategy_id, sc.state,
+        sc.commendTime,
+        u.id u_id,u.nickName u_nickName,u.headImgUrl u_headImgUrl,s.id s_id,s.title s_title
+        from strategycomment sc join user u on sc.user_id = u.id
+        join strategy s on s.id = sc.strategy_id
+        where sc.state = #{state}
+    </select>
+    <select id="selectFqueryStrategycommentsByUserIdorList" resultMap="BaseResultMap">
+        select sc.id, sc.user_id, sc.createTime, sc.content, sc.imgUrls, sc.starNum, sc.strategy_id, sc.state, sc.commendTime,
+        s.id s_id, s.title s_title , s.coverUrl s_coverUrl,
+        u.id u_id,u.headImgUrl u_headImgUrl
+        from strategycomment sc
+        LEFT JOIN strategy s ON sc.strategy_id = s.id
+        LEFT JOIN user u ON sc.user_id = u.id
+        WHERE sc.user_id = #{UserId}
+    </select>
 </mapper>

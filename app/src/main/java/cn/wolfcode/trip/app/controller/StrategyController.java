@@ -22,7 +22,8 @@ public class StrategyController {
     @Autowired
     private IStrategyDetailService strategyDetailService;
     @Autowired
-    private IStrategyCommentService strategyCommendService;
+    private ITravelService travelService;
+
 
     @Autowired
     private IStrategyCommentService strategyCommentService;
@@ -64,11 +65,20 @@ public class StrategyController {
    @GetMapping("/{strategyId}/commends")
     public PageInfo queryComments(StrategyCommentQueryObject qo) {
         qo.setOrderBy("sc.commendTime desc");
-        return strategyCommendService.query(qo);
+        return strategyCommentService.query(qo);
     }
    @PostMapping("/{strategy.id}/commends")
     public JsonResult saveComment(StrategyComment strategyComment,String[] tags ) {
        strategyCommentService.save(strategyComment,tags);
         return new JsonResult();
+    }
+
+    @GetMapping("/commends")
+    public List<StrategyComment> getComment(Integer state) {
+        return strategyCommentService.selectByStatus(state);
+    }
+   @GetMapping("/{strategyId}/travels")
+    public List<Travel> getTravel(@PathVariable Long strategyId ,Integer state) {
+        return travelService.selectByStatus(strategyId,state);
     }
 }

@@ -56,4 +56,19 @@
 
       </where>
     </select>
+  <select id="selectSearchForList" resultMap="BaseResultMap">
+    select id, place_id, title, subTitle, coverUrl, state
+    from strategy
+    <where>
+      <if test="keyword!=null">
+        and title like concat('%',#{keyword},'%')
+      </if>
+    </where>
+  </select>
+  <select id="selectStrategyByUserId" resultMap="BaseResultMap">
+    select id, place_id, title, subTitle, coverUrl, state
+    from strategy s LEFT JOIN user_strategy us ON s.id = us.strategy_id
+    where us.user_id = #{userId}
+  </select>
+
 </mapper>

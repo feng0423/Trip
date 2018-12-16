@@ -21,6 +21,8 @@ public class StrategyController {
     private IStrategyCatalogService strategyCatalogService;
     @Autowired
     private IStrategyDetailService strategyDetailService;
+    @Autowired
+    private ITravelService travelService;
 
 
     @Autowired
@@ -69,5 +71,14 @@ public class StrategyController {
     public JsonResult saveComment(StrategyComment strategyComment,String[] tags ) {
        strategyCommentService.save(strategyComment,tags);
         return new JsonResult();
+    }
+
+    @GetMapping("/commends")
+    public List<StrategyComment> getComment(Integer state) {
+        return strategyCommentService.selectByStatus(state);
+    }
+   @GetMapping("/{strategyId}/travels")
+    public List<Travel> getTravel(@PathVariable Long strategyId ,Integer state) {
+        return travelService.selectByStatus(strategyId,state);
     }
 }

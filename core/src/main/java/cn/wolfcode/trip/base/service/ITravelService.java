@@ -6,6 +6,7 @@ import cn.wolfcode.trip.base.query.TravelQueryObject;
 import cn.wolfcode.trip.base.query.UserQueryObject;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ITravelService {
@@ -75,6 +76,7 @@ public interface ITravelService {
      */
     Map getFavoriteById(Long id);
 
+    List<Travel> selectByStatus(Long strategyId, Integer state);
 
     /**
      * 根据用户ID查出所有游记  高查分页

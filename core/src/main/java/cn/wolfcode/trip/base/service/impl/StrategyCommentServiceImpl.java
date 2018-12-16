@@ -53,6 +53,10 @@ public class StrategyCommentServiceImpl implements IStrategyCommentService {
         strategyCommentMapper.changeState(id,state);
     }
 
+    public List<StrategyComment> selectByStatus(Integer state) {
+        return strategyCommentMapper.selectByStatus(state);
+    }
+
     public PageInfo queryStrategycommentsByUserId(UserQueryObject qo) {
         PageHelper.startPage(qo.getCurrentPage(),qo.getPageSize(),qo.getOrderBy());
         List list  = strategyCommentMapper.selectFqueryStrategycommentsByUserIdorList(qo);

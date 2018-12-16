@@ -102,6 +102,20 @@
                 $("#commentBtn").click(function () {
                     window.location.href="/mine//addComment.html?id="+params.id;
                 });
+
+                //大家都在看
+                $.get("/strategies/" + params.id + "/travels", {state: 2}, function (data) {
+                    console.log(data);
+                    var json = {
+                        list:data
+                    }
+                    $(".hot").renderValues(json, {
+                        getHref: function (item, value) {
+                            var url = $(item).data("href");
+                            $(item).attr("href", url + value);
+                        }
+                    });
+                });
             }
 
 
@@ -183,15 +197,13 @@
     <div class="tab-pane fade show active" id="pills-catalog">
         <div class="container hot">
             <h6>大家都在看</h6>
-            <div>
-                <a href="travelContent.html">
-                    <button class="btn">上下九</button>
-                </a><a href="travelContent.html">
-                <button class="btn">入住长隆熊猫酒店，天天都是儿童节</button>
-            </a><a href="travelContent.html">
-                <button class="btn">飞到羊城，只为一场最地道的早茶之旅</button>
-            </a></div>
+            <div render-loop="list">
+                <a data-href="travelContent.html?id=" render-key="list.id" render-fun="getHref">
+                    <button class="btn" render-html="list.title"></button>
+                </a>
+            </div>
         </div>
+        <!--分类-->
         <div class="catalogs">
             <div>
                 <div render-loop="list">

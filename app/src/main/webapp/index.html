@@ -23,7 +23,6 @@
             $("#ipage").attr("src", "/mine/simpleProfiles.html?" + new Date().getTime())
 			//每周=推荐
 			$.get("/travels/commends",{type:1,pageSize:3},function (data) {
-                console.log(data);
                 //获取数据,将数据共享的编辑器中
                 $("#travelsCommends").renderValues(data, {
                     //渲染数据
@@ -183,7 +182,7 @@
                         <a render-key="list.user.id" render-fun="getHref" data-href="userProfiles.html?id=">
                             <img class="rounded-circle dynamic-head" render-src="list.user.headImgUrl">
                         </a>
-                        <a render-key="list.id" render-fun="getHref" data-href="strategyComment.html?id="
+                        <a render-key="list.id" render-fun="getHref" data-href="strategyCatalogs.html?id="
                            class="dynamic-detail">
                             <span render-html="list.user.nickName"></span> 点评了攻略
                             <p render-html="list.strategy.title"></p>

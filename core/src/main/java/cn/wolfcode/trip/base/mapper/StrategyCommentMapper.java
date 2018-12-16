@@ -25,4 +25,6 @@ public interface StrategyCommentMapper {
     List selectFqueryStrategycommentsByUserIdorList(UserQueryObject qo);
 
     void changeState(@Param("id") Long id, @Param("state") Integer state);
+
+    List<StrategyComment> selectByStatus(@Param("state") Integer state);
 }

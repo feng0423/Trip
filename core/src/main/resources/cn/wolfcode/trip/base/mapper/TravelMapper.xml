@@ -158,6 +158,11 @@ DELETE FROM favorite_user_travel
     from like_user_travel
     WHERE  travel_id = #{travelId}
   </select>
+  <select id="selectByStatus" resultMap="BaseResultMap">
+    SELECT t.* from travel t where state = #{state} and id in (
+      select travel_id from strategy_travel st join strategy s on st.strategy_id = s.id where s.id = #{strategyId}
+    )
+  </select>
 
     <select id="selectForListByUserId" resultMap="BaseResultMap">
        select id, title, travelTime, perExpends, days, person, author_id, createTime, releaseTime,

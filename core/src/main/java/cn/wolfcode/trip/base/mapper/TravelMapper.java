@@ -37,5 +37,7 @@ public interface TravelMapper {
 
     int countFavorites(Long travelId);
     int countLikes(Long travelId);
+
+    List<Travel> selectByStatus(@Param("strategyId") Long strategyId, @Param("state") Integer state);
     List selectForListByUserId(UserQueryObject qo);
 }

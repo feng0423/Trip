@@ -8,6 +8,7 @@ import cn.wolfcode.trip.base.service.IStrategyService;
 import cn.wolfcode.trip.base.util.JsonResult;
 import cn.wolfcode.trip.base.util.UploadUtil;
 import com.github.pagehelper.PageInfo;
+//import com.sun.org.apache.xpath.internal.operations.Mult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,4 +58,11 @@ public class StrategyController {
         model.addAttribute("regions",regions);
         return "/strategy/list";
     }
+    @RequestMapping("/strategyLook")
+    public String listLook(Model model) {
+        model.addAttribute("strategies" ,  strategyService.listLook() );
+        return "/strategyTravel/list";
+    }
+
+
 }

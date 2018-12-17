@@ -1,9 +1,12 @@
 package cn.wolfcode.trip.base.service.impl;
 
+import cn.wolfcode.trip.base.domain.Strategy;
+import cn.wolfcode.trip.base.domain.Travel;
 import cn.wolfcode.trip.base.domain.User;
 import cn.wolfcode.trip.base.domain.UserChat;
 import cn.wolfcode.trip.base.mapper.UserMapper;
 import cn.wolfcode.trip.base.query.QueryObject;
+import cn.wolfcode.trip.base.query.SerachQueryObject;
 import cn.wolfcode.trip.base.service.IUserService;
 import cn.wolfcode.trip.base.util.UserContext;
 import com.github.pagehelper.PageHelper;
@@ -72,5 +75,16 @@ public class UserServiceImpl implements IUserService{
         return userMapper.selectByPrimaryKey(id);
     }
 
+
+
+    public PageInfo queryList(SerachQueryObject qo) {
+        PageHelper.startPage(qo.getCurrentPage(),qo.getPageSize());
+        List<Strategy> list = userMapper.selectSearchForList(qo);
+        return new PageInfo(list);
+    }
+
+    public User getUser(Long userId) {
+        return userMapper.selectByPrimaryKey(userId);
+    }
 
 }

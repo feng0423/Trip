@@ -1,6 +1,7 @@
 package cn.wolfcode.trip.base.util;
 
 import cn.wolfcode.trip.base.domain.User;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -36,4 +37,16 @@ public class UserContext {
     public static Set<String> getExpressions() {
         return (Set<String>) getSession().getAttribute(EXPRESSION_IN_SESSION);
     }
+
+    /**
+     * 判断是否已经登录
+     * @return
+     */
+    public static Boolean isLogined(){
+        if (getUser() == null){
+            return false;
+        }
+        return true;
+    }
+
 }

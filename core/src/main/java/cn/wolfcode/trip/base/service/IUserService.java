@@ -46,4 +46,15 @@ public interface IUserService {
     List<User> listUserById(Long id);
 
     User selectByUser(Long id);
+
+
+
+    /**
+     * 通过ID查询指定用户
+     * @param userId
+     * @return
+     */
+    User getUser(Long userId);
+
+
 }

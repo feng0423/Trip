@@ -20,6 +20,43 @@
     insert into news ( title, creationTime, coverUrl, amount)
     values ( #{title}, #{creationTime}, #{coverUrl}, #{amount})
   </insert>
+
+
+
+
+  <insert id="insertLikeTravelUserRelation">
+    INSERT INTO like_user_news (
+    user_id,
+    news_id,
+    create_time
+    ) VALUES (
+    #{userId},
+    #{newsId},
+    now()
+    )
+  </insert>
+  <insert id="insertFavoriteTravelUserRelation">
+    INSERT INTO favorite_user_news (
+    user_id,
+    news_id
+    ) VALUES (
+    #{userId},
+    #{newsId}
+    )
+
+  </insert>
+
+
+  <delete id="deleteLikeTravelUserRelation">
+    DELETE FROM like_user_news
+    WHERE user_id = #{userId} AND news_id = #{newsId}
+  </delete>
+  <delete id="deleteFavoriteTravelUserRelation">
+    DELETE FROM favorite_user_news
+    WHERE user_id = #{userId} AND news_id = #{newsId}
+
+  </delete>
+  
   <update id="updateByPrimaryKey">
     update news
     set
@@ -56,5 +93,39 @@
     select n.id,  n.title, n.creationTime, n.coverUrl, n.amount,c.content c_content
      from news n
      JOIN newscontent c ON n.id = c.id
+  </select>
+
+
+  <select id="selectLikeById" resultType="map">
+    select user_id, news_id, create_time
+    from like_user_news
+    WHERE user_id = #{userId} AND news_id = #{newsId}
+
+  </select>
+  <select id="selectFavoriteById" resultType="map">
+
+    select user_id, news_id
+    from favorite_user_news
+    WHERE user_id = #{userId} AND news_id = #{newsId}
+  </select>
+
+  <select id="countFavorites" resultType="int">
+    select count(1)
+    from favorite_user_news
+    WHERE  news_id = #{newsId}
+  </select>
+
+
+  <select id="countLikes" resultType="int">
+    select count(1)
+    from like_user_news
+    WHERE  news_id = #{newsId}
+  </select>
+
+
+  <select id="countReplies" resultType="int">
+    select count(1)
+    from reply
+    WHERE  target_id = #{newsId} AND type = 3
   </select>
 </mapper>

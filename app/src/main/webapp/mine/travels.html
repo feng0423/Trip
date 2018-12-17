@@ -34,6 +34,9 @@
             var travelArr = []
             function query() {
                 //获取我的游记
+
+                console.log("后吼吼吼吼吼吼");
+                console.log(currentPage);
                 $.get("/users/" + user.id + "/travels", {currentPage: currentPage}, function (data) {
                     console.log(data);
                     //将第二个数组合并第一数组中

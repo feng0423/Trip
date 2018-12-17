@@ -3,10 +3,13 @@ package cn.wolfcode.trip.app.controller;
 import cn.wolfcode.trip.base.domain.SystemMessage;
 import cn.wolfcode.trip.base.domain.User;
 import cn.wolfcode.trip.base.query.QueryObject;
+import cn.wolfcode.trip.base.domain.*;
 import cn.wolfcode.trip.base.query.TravelQueryObject;
 import cn.wolfcode.trip.base.service.ISystemMessageService;
 import cn.wolfcode.trip.base.service.ITravelService;
 import cn.wolfcode.trip.base.service.IUserService;
+import cn.wolfcode.trip.base.query.UserQueryObject;
+import cn.wolfcode.trip.base.service.*;
 import cn.wolfcode.trip.base.util.JsonResult;
 import cn.wolfcode.trip.base.util.UserContext;
 import com.github.pagehelper.PageInfo;
@@ -17,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -30,6 +36,15 @@ public class UserController {
     private IUserService userService;
     @Autowired
     private ITravelService travelService;
+    @Autowired
+    private IStrategyCommentService strategyCommentService;
+    @Autowired
+    private IAttentionService attentionService;
+    @Autowired
+    private IUserStrategyService userStrategyService;
+    @Autowired
+    private IStrategyService strategyService;
+
 
     @Autowired
     private ISystemMessageService systemMessageService;
@@ -113,5 +128,77 @@ public class UserController {
     public User getUser( @PathVariable("receiverId") Long receiverId) {
         return userService.selectByUser(receiverId);
     }
+
+    @GetMapping("/{UserId}")
+    public User getUserById(@PathVariable Long UserId) {
+
+        return userService.getUser(UserId);
+    }
+    @GetMapping("/{UserId}/travelsByUserId")
+    public PageInfo travelByauthorId(UserQueryObject qo) {
+        qo.setOrderBy("lastUpdateTime desc");
+        return travelService.queryTravelByauthorId(qo);
+    }
+
+
+    @GetMapping("/{UserId}/strategycommentByUserId")
+    public PageInfo queryStrategycommentsByUserId(UserQueryObject qo) {
+        qo.setOrderBy("createTime desc");
+        return strategyCommentService.queryStrategycommentsByUserId(qo);
+    }
+    //新增关注数
+    @PostMapping("/{visitorId}/{authorId}")
+    public JsonResult attention(@PathVariable Long visitorId , @PathVariable Long authorId) {
+        attentionService.attention(visitorId,authorId);
+        return new JsonResult();
+    }
+    //查看是否关注,
+    @GetMapping("/{visitorId}/{authorId}")
+    public Attention getAttention(@PathVariable Long visitorId , @PathVariable Long authorId) {
+        return attentionService.gatAttention(visitorId,authorId);
+    }
+
+    //删除关注关联
+    @PostMapping("/{visitorId}/{authorId}/delete")
+    public JsonResult DeleteAttention(@PathVariable Long visitorId , @PathVariable Long authorId) {
+        attentionService.DeleteAttention(visitorId,authorId);
+        return new JsonResult();
+    }
+
+
+
+    //查询粉丝数量和关注数
+    @GetMapping("/{userId}/attention")
+    public Map<String,Object> get(@PathVariable Long userId) {
+        return attentionService.selectAttentionByUserId(userId);
+
+    }
+
+    //查询是否有用户与游记记录
+    @GetMapping("/{userId}/strategies/{strategyId}")
+    public UserStrategy selectStrategiesByUserId(@PathVariable Long userId , @PathVariable Long strategyId) {
+
+        UserStrategy userStrategy = userStrategyService.gatUserStrategy(userId, strategyId);
+
+        return userStrategy;
+
+    }
+    //新增游记和用户关系
+    @PostMapping("/{userId}/strategies/{strategyId}")
+    public JsonResult saveStrategiesByUserId(@PathVariable Long userId ,@PathVariable Long strategyId ) {
+
+        userStrategyService.saveUserStrategy(userId,strategyId);
+        return new JsonResult();
+
+    }
+
+    //通过用户ID查询该用户收藏的游记
+    @GetMapping("/{userId}/strategy")
+    public List selectStrategiesByUserId(@PathVariable Long userId) {
+
+        return strategyService.selectStrategyByUserId(userId);
+
+    }
+
 
 }

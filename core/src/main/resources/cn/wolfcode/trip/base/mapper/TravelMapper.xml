@@ -31,20 +31,55 @@
     </association>
   </resultMap>
   <delete id="deleteByPrimaryKey">
-    delete from travel
-    where id = #{id}
+    DELETE FROM travel
+    WHERE id = #{id}
   </delete>
   <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-    insert into travel (title, travelTime, perExpends, days, person, author_id, 
+    INSERT INTO travel (title, travelTime, perExpends, days, person, author_id,
       createTime, releaseTime, isPublic, place_id, coverUrl, lastUpdateTime, 
       state)
-    values (#{title}, #{travelTime}, #{perExpends}, #{days}, #{person}, #{author.id},
+    VALUES (#{title}, #{travelTime}, #{perExpends}, #{days}, #{person}, #{author.id},
       #{createTime}, #{releaseTime}, #{isPublic}, #{place.id}, #{coverUrl}, #{lastUpdateTime},
       #{state})
   </insert>
+
+
+  <insert id="insertLikeTravelUserRelation">
+      INSERT INTO like_user_travel (
+          user_id,
+          travel_id,
+          create_time
+      ) VALUES (
+          #{userId},
+          #{travelId},
+          now()
+      )
+  </insert>
+  <insert id="insertFavoriteTravelUserRelation">
+    INSERT INTO favorite_user_travel (
+          user_id,
+          travel_id
+      ) VALUES (
+          #{userId},
+          #{travelId}
+      )
+
+  </insert>
+
+
+  <delete id="deleteLikeTravelUserRelation">
+      DELETE FROM like_user_travel
+        WHERE user_id = #{userId} AND travel_id = #{travelId}
+  </delete>
+  <delete id="deleteFavoriteTravelUserRelation">
+DELETE FROM favorite_user_travel
+        WHERE user_id = #{userId} AND travel_id = #{travelId}
+
+  </delete>
+
   <update id="updateByPrimaryKey">
-    update travel
-    set title = #{title},
+    UPDATE travel
+    SET title = #{title},
       travelTime = #{travelTime},
       perExpends = #{perExpends},
       days = #{days},
@@ -54,26 +89,26 @@
       coverUrl = #{coverUrl},
       lastUpdateTime = #{lastUpdateTime},
       state = #{state}
-    where id = #{id}
+    WHERE id = #{id}
   </update>
   <update id="chageState">
-    update travel
-    set
+    UPDATE travel
+    SET
        state = #{state}
-    where id = #{id}
+    WHERE id = #{id}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap">
-    select t.*,tc.content,r.id r_id,r.name r_name,
+    SELECT t.*,tc.content,r.id r_id,r.name r_name,
           u.id u_id, u.nickName u_nickName,u.headImgUrl u_headImgUrl
-    from travel t join travelcontent tc on tc.id = t.id
-    join region r on t.place_id = r.id
-    join user u on t.author_id = u.id
-    where t.id = #{id}
+    FROM travel t JOIN travelcontent tc ON tc.id = t.id
+    JOIN region r ON t.place_id = r.id
+    JOIN user u ON t.author_id = u.id
+    WHERE t.id = #{id}
   </select>
   <select id="selectAll" resultMap="BaseResultMap">
-    select id, title, travelTime, perExpends, days, person, author_id, createTime, releaseTime, 
+    SELECT id, title, travelTime, perExpends, days, person, author_id, createTime, releaseTime,
     isPublic, place_id, coverUrl, lastUpdateTime, state
-    from travel
+    FROM travel
   </select>
   <select id="selectForList" resultMap="BaseResultMap">
     select t.*,r.id r_id,r.name r_name,u.id u_id, u.nickName u_nickName,u.headImgUrl u_headImgUrl
@@ -93,6 +128,52 @@
       <if test="travelId!=null">
         and t.id = #{travelId}
       </if>
+      <if test="keyword!=null">
+        and title like concat('%',#{keyword},'%')
+      </if>
     </where>
   </select>
+  <select id="selectLikeById" resultType="map">
+    select user_id, travel_id, create_time
+    from like_user_travel
+    WHERE user_id = #{userId} AND travel_id = #{travelId}
+
+  </select>
+  <select id="selectFavoriteById" resultType="map">
+
+    select user_id, travel_id
+    from favorite_user_travel
+    WHERE user_id = #{userId} AND travel_id = #{travelId}
+  </select>
+
+    <select id="countFavorites" resultType="int">
+      select count(1)
+    from favorite_user_travel
+    WHERE  travel_id = #{travelId}
+    </select>
+
+
+  <select id="countLikes" resultType="int">
+    select count(1)
+    from like_user_travel
+    WHERE  travel_id = #{travelId}
+  </select>
+  <select id="countReplies" resultType="int">
+    select count(1)
+    from reply
+    WHERE  target_id = #{travelId} AND type = 1
+  </select>
+
+  <select id="selectByStatus" resultMap="BaseResultMap">
+    SELECT t.* from travel t where state = #{state} and id in (
+      select travel_id from strategy_travel st join strategy s on st.strategy_id = s.id where s.id = #{strategyId}
+    )
+  </select>
+
+    <select id="selectForListByUserId" resultMap="BaseResultMap">
+       select id, title, travelTime, perExpends, days, person, author_id, createTime, releaseTime,
+    isPublic, place_id, coverUrl, lastUpdateTime, state
+    from travel
+    WHERE author_id = #{UserId}
+    </select>
 </mapper>

@@ -1,7 +1,9 @@
 package cn.wolfcode.trip.base.mapper;
 
+import cn.wolfcode.trip.base.domain.Strategy;
 import cn.wolfcode.trip.base.domain.User;
 import cn.wolfcode.trip.base.query.QueryObject;
+import cn.wolfcode.trip.base.query.SerachQueryObject;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -28,4 +30,6 @@ public interface UserMapper {
 
     List<User> listUserById(@Param("id") Long id);
 
+
+    List<Strategy> selectSearchForList(SerachQueryObject qo);
 }

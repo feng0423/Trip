@@ -39,10 +39,94 @@
                         }
                     })
                 });
-                $.get("/strategies/" + params.id+"/tags", function (data) {
-                    $(".tag").renderValues({tags:data})
+                $.get("/strategies/" + params.id + "/tags", function (data) {
+                    $(".tag").renderValues({tags: data})
 
                 });
+
+                //---------------------------------
+
+                function like(state) {
+
+                    $.get("/strategies/" + params.id + "/likes/" + state, function (data) {
+
+                        // 回显
+                        var resultMap = data.obj;
+                        if (resultMap!=null){
+                            if (!resultMap["hasClick"]) {
+
+                                $("#likeBtn").removeClass("fa-thumbs-up").addClass("fa-thumbs-o-up")
+                            } else {
+                                $("#likeBtn").removeClass("fa-thumbs-o-up").addClass("fa-thumbs-up")
+                            }
+                            $("#likeCount").text(resultMap["count"]);
+                        }
+                    })
+                }
+//
+                like(-1);
+
+                //---------------------------------------------
+                function favorite(state) {
+
+                    $.get("/strategies/" + params.id + "/favorites/"+ state, function (data) {
+
+                        var resultMap = data.obj;
+
+                        if (resultMap!=null){
+                            if (!resultMap["hasClick"]) {
+                                $("#collectBtn").removeClass("fa-heart").addClass("fa-heart-o")
+                            } else {
+                                $("#collectBtn").removeClass("fa-heart-o").addClass("fa-heart")
+                            }
+
+
+
+                            $("#collectCount").text(resultMap["count"]);
+                        }
+
+
+                    })
+                }
+//
+                favorite(-1);
+                //--------------------
+                var user = JSON.parse(sessionStorage.getItem("user"));
+                if(user){
+
+                    $("#likeBtn").click(function () {
+                        // state  -1:查询 0:没按 1:按下
+                        var state = 1;
+                        var has = $(this).hasClass("fa-thumbs-o-up");
+                        if(has){
+                            state = 0;
+                        }
+                        like(state);
+                    })
+
+                    $("#collectBtn").click(function () {
+                        // state  -1:查询 0:没按 1:按下
+                        var state = 1;
+                        var has = $(this).hasClass("fa-heart-o");
+                        if(has){
+                            state = 0;
+                        }
+                        favorite(state);
+                    })
+
+                }else{
+                    // 没登录的话就不显示底部3个按钮
+
+                    $("#likeBtn").click(function () {
+                        window.location.href = "login.html";
+                    });
+
+                    $("#bottomBtn").click(function () {
+                        window.location.href = "login.html";
+                    });
+                }
+                //---------------------------------
+
                 //获取全部攻略进行分页
                 //当前页
                 var currentPage = 1;
@@ -58,25 +142,33 @@
                         var json = {
                             list: commendArr
                         }
-                        $("#comment").renderValues(json,{
-                            getStar:function (item,value) {
+                        $("#comment").renderValues(json, {
+                            getStar: function (item, value) {
                                 var temp = "";
                                 //实心
-                                for(var i=0;i<value;i++){
+                                for (var i = 0; i < value; i++) {
                                     temp += '<i class="fa fa-star""></i>'
                                 }
                                 //空心
-                                for(var i=0;i<5-value;i++){
+                                for (var i = 0; i < 5 - value; i++) {
                                     temp += '<i class="fa fa-star-o" "></i>'
                                 }
                                 $(".comment-star").html(temp);
+                            },
+                            getUserId: function (item, value) {
+                                var temp = ''; //跳转页面
+                                var url = $(item).data("href");//路径
+                                $(item).attr('href', url + value);
                             }
+
                         })
                         pages = data.pages;
+
                     })
 
                     currentPage = currentPage + 1;
                 }
+
                 query();
                 $(window).scroll(function () {
                     if ($(window).height() + $(document).scrollTop() + 1 >= $(document).height()) {
@@ -93,9 +185,54 @@
                     }
                 })
                 $("#commentBtn").click(function () {
-                    window.location.href="/mine//addComment.html?id="+params.id;
+                    window.location.href = "/mine//addComment.html?id=" + params.id;
+                });
+
+                //大家都在看
+                $.get("/strategies/" + params.id + "/travels", {state: 2}, function (data) {
+                    console.log(data);
+                    var json = {
+                        list: data
+                    }
+                    $(".hot").renderValues(json, {
+                        getHref: function (item, value) {
+                            var url = $(item).data("href");
+                            $(item).attr("href", url + value);
+                        }
+                    });
                 });
             }
+
+
+            //加入我的旅行表单
+            /*  $('#travel').click(function () {
+
+                  if(sessionStorage.getItem('user')){//获取当前用户判断是否登陆
+                      var strategy = getParams().id; //获取大攻略ID
+                      alert(strategy)
+                  }else{
+                      window.location.href = '/login.html';
+                  }
+              })*/
+
+            var user = JSON.parse(sessionStorage.getItem("user"));
+            //加入我的旅行表单
+            $("#travel").click(function () {
+                if (user) {
+                    $.get("/users/" + user.id + "/strategies/" + params.id, function (data) {
+                        if (data) {
+                            alert("该表单已存在")
+                        } else {
+                            //新增关系
+                            $.post("/users/" + user.id + "/strategies/" + params.id, function (data) {
+                                alert("已添加")
+                            });
+                        }
+                    });
+                }
+            });
+
+
         })
     </script>
 
@@ -121,8 +258,8 @@
     <h5 class="title"></h5>
     <small><span>0</span>人阅读过此攻略</small>
     <div class="focus">
-        <i class="fa fa-heart"><span> 0</span> 收藏</i>
-        <i class="fa fa-thumbs-up"><span> 0</span> 点赞</i>
+        <i class="fa fa-heart" id="collectBtn"><span id="collectCount"></span> 收藏</i>
+        <i class="fa fa-thumbs-up" id="likeBtn"><span id="likeCount"></span> 点赞</i>
         <button class="btn">想去</button>
         <button class="btn">去过</button>
     </div>
@@ -143,15 +280,13 @@
     <div class="tab-pane fade show active" id="pills-catalog">
         <div class="container hot">
             <h6>大家都在看</h6>
-            <div>
-                <a href="travelContent.html">
-                    <button class="btn">上下九</button>
-                </a><a href="travelContent.html">
-                <button class="btn">入住长隆熊猫酒店，天天都是儿童节</button>
-            </a><a href="travelContent.html">
-                <button class="btn">飞到羊城，只为一场最地道的早茶之旅</button>
-            </a></div>
+            <div render-loop="list">
+                <a data-href="travelContent.html?id=" render-key="list.id" render-fun="getHref">
+                    <button class="btn" render-html="list.title"></button>
+                </a>
+            </div>
         </div>
+        <!--分类-->
         <div class="catalogs">
             <div>
                 <div render-loop="list">
@@ -181,7 +316,7 @@
             <div render-loop="list">
                 <div class="container row comment">
                     <div class="col-2 comment-head">
-                        <a     href="userProfiles.html">
+                        <a data-href="userProfiles.html?id=" render-fun="getUserId" render-key="list.user.id">
                             <img class="rounded-circle" render-src="list.user.headImgUrl">
                         </a>
                     </div>
@@ -196,7 +331,7 @@
                         </span>
                         <span class="comment-date" render-html="list.commendTime"></span>
                         <div class="comment-content">
-                            <a href="strategyComment.html"><p render-html="list.content"></p></a>
+                            <a href="reply.html" render-fun="getHref" render-key="list.starNum"><p render-html="list.content"></p></a>
                         </div>
 
                         <ul class="comment-img" render-loop="list.imgArr">
@@ -219,7 +354,7 @@
 </div>
 
 <div class="operation">
-    <button class="btn">加入旅行单</button>
+    <button class="btn" id="travel">加入旅行单</button>
     <button class="btn" id="commentBtn">点评</button>
 </div>
 

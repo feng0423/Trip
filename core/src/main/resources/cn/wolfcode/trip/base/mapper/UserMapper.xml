@@ -57,4 +57,13 @@
         select  * from user where id in (
         SELECT receiver_id from userchat where sender_id = #{id})
     </select>
+    <select id="selectSearchForList" resultMap="BaseResultMap">
+        select id, email, nickName, password, place, headImgUrl, gender, coverImgUrl, sign
+        from user
+        <where>
+            <if test="keyword!=null">
+                and (email LIKE concat('%',#{keyword},'%') OR nickName LIKE CONCAT('%', #{keyword} ,'%'))
+            </if>
+        </where>
+    </select>
 </mapper>

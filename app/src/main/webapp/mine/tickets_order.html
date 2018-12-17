@@ -1,0 +1,463 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title id="_title"></title>
+    <link rel="stylesheet" href="/css/ticketscss/ticketall.css">
+    <link rel="stylesheet" href="/css/ticketscss/order.min.css">
+    <link rel="stylesheet" href="/css/ticketscss/m-search.css">
+    <link rel="stylesheet" href="/css/ticketscss/common-3.0.css">
+    <link rel="stylesheet" href="/css/ticketscss/ticketall2.css">
+    <link rel="stylesheet" href="/css/ticketscss/ticketall3.css">
+
+    <!--填写订单-->
+    <link rel="stylesheet" href="/css/order/order_new.css">
+    <script src="/js/order/jquery-2.1.4.min.js"></script>
+    <script src="/js/order/min_com.js"></script>
+    <script src="/js/order/order_xianlu.js"></script>
+
+    <script src="/js/plugins/form/jquery.form.js"></script>
+    <script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/font/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/reset.css"/>
+    <link rel="stylesheet" href="/css/travelContent.css"/>
+    <script src="/js/plugins/jrender/jrender.min.js"></script>
+    <script src="/js/plugins/common.js"></script>
+
+    <!--日期时间-->
+
+   <!--<link rel="stylesheet" href="/css/order/index.css">-->
+    <link rel="stylesheet" href="/js/order/LCalendar/css/LCalendar.css">
+    <!--<link rel="stylesheet" href="/js/order/LCalendar/css/LCalendar.min.css">-->
+    <script src="/js/order/LCalendar/js/LCalendar.js"></script>
+    <style>
+        .viewspot-infos.borderRedius {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            margin-top: -22px;
+            margin-bottom: 10px;
+        }
+        .viewspot-infos {
+            background: #fff;
+            font-size: .24rem;
+            color: #666;
+        }
+        .viewspot-infos .productName {
+            position: relative;
+            background-color: #fff;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+
+        .list-module .name {
+            max-height: .8rem;
+            max-width: 72%;
+            font-size: 14px;
+            color: #333;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+         .tuangou {
+            background: url(../../images/tuangou_icon.png) no-repeat;
+            width: 24px;
+            height: 12px;
+            -webkit-background-size: 100% 100%;
+            background-size: 100% 100%;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        .list-module .tips {
+            overflow: hidden;
+            height: auto;
+            padding-left: 0;
+            max-width: 72%;
+        }
+
+        .list-module .tips span {
+            font-size: .2rem;
+            color: #f80;
+            position: relative;
+            padding: 0 3px;
+            margin-right: 5px;
+            float: left;
+            line-height: 15px;
+            height: 15px;
+            margin-top: 5px;
+        }
+
+        .right-part .btn {
+            width: 60px;
+            height: 24px;
+            line-height: 24px;
+            background-color:#F60;
+            background-size: 100%;
+            -webkit-background-size: 100%;
+            color: #fff;
+            text-align: center;
+            position: absolute;
+            right: 0;
+            top: 0;
+            border-radius:5px;
+        }
+
+    </style>
+
+    <!--js提交到后台-->
+    <script>
+        $(function () {
+            /*查询所有的数据*/
+            var params = getParams();
+            $.get("/tickets/"+params.id,function (data) {
+                console.log(data);
+                $(".tops_heads").renderValues(data);
+                console.log(data);
+            })
+            /**/
+            /*提交表单*/
+            //把表单变成异步请求表单
+            $("#save").click(function () {
+
+                $("#detailForm").ajaxForm({
+                beforeSubmit: function (arr) { //提交表单之前会执行该函数
+                    console.log(arr);
+                    //arr代表提交表单是传递的数据
+                    //arr.push({name: "user.id",value:$("#userid").text()});//总价格
+                    arr.push({name: "tickets.name", value: $("#ticketsname").text()});//标题
+                    arr.push({name: "tickets.coverurl", value: $("#coverurl").attr("src")});//图片
+                    arr.push({name: "create_time",value: $("#start_date").val()});//时间
+
+                    arr.push({name: "total_prices",value:$("#total_prices").text()});//总价格
+
+                    arr.push({name: "tickets.id",value:$("#tickets_id").text()});//总价格
+                   console.log(arr);
+
+                },
+                success: function (data) { //表单提交成功后执行的函数
+                    if (data.success) {
+                       var p =  $("#total_prices").text();
+                       window.location.href = "/mine/payment.html?totalprices="+p;//我的游记
+                    }
+
+                }
+            });
+            });
+            //草稿
+          /*  $("#save").click(function () {
+                //提交表单
+                $("#detailForm").submit();
+            });*/
+
+        })
+    </script>
+</head>
+<body>
+
+<div class="tops_heads" >
+   <form id="detailForm" action="/order/orderform" method="post">
+       <input type="hidden" name="_method" name="id">
+
+       <div id="tickets_id" name="id" render-html="id" style="display:none;"></div>
+
+<header class="lvHeader-main" style="display: block; box-shadow: none;">
+    <div class="lvHeader-left">
+        <div class="lvHeader-back" style="position: absolute; left: 0px; bottom: 0px;">
+            <a href="javascript:history.go(-1);">
+                <img src="/img/ticketsimg/images/back_icon.png">
+            </a>
+
+        </div>
+    </div>
+    <span class="lvHeader-title" render-html="name" id="ticketsname"></span>
+    <div class="lvHeader-right">
+     <div class="lvHeader-favourite" style="position: absolute; right: 0px; bottom: 0px;">
+
+    </div>
+    </div>
+</header>
+
+<div class="banner">
+    <div class="banner-header">
+        <div></div>
+        <div></div>
+    </div>
+    <div id="mySwipe" class="swipe" style="visibility: visible;">
+        <div class="swipe-wrap" style="width: 4140px;">
+            <div class="swiper-slide" data-index="0" style="width: 414px; left: 0px; transition-duration: 0ms; transform: translate(0px, 0px) translateZ(0px);">
+                <div class="swipe-image" style="" >
+                    <img id="coverurl" render-src="coverurl">
+                </div>
+
+                <div class="imgCount long">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="detail-page">
+<div class="viewspot-infos borderRedius">
+    <!--<div class="productName">
+        <p render-html="tickets.name"></p>
+    </div>-->
+
+   <!-- <div class="addressWrap"><p class="address">香港大屿山香港迪士尼乐园度假区</p></div>-->
+
+    <div class="intro-main">
+        <div class="left">
+            <p>景区须知</p>
+            <span>开放时间、入园须知</span>
+            <div></div>
+        </div>
+        <div class="right">
+            <p><i>98.1</i>%满意度</p>
+            <span>共有15717条评论</span>
+        </div>
+    </div>
+
+    <div class="notice">重要提示：
+        1、香港迪士尼产品预订成功出票2小时后方可正常使用；
+        2、单门票及组合套票（含门票+餐券）每张订单预订总票数最多不超过14张门票（门票和餐券总数），否则将无法收到换票证（例如：双人票每张订单最多预订7份；2大1小家庭票每张订单最多预订4份；等等...）；如有超过14张票（门票和餐券总数），请分开下单；如因客人自身原因下单超过订单限制张数导致无法出票，恕不做任何额外补偿，敬请知悉！为了不影响您的正常游玩，请下单时注意一张订单中门票和餐券总数量不超过14张，感谢配合！
+        3、您在驴妈妈平台预定的不同票种：如优惠套票、常规门票后一起提交，会收到不同票种的换票证，即如预定特惠套票+常规1日门票一起提交的订单，您预留的邮箱会收到两份凭证。请仔细核对换票证的信息。
+        重要提示：
+        2018年11月7日开始，香港迪士尼乐园的神奇迅达票换票机会暂停使用。之后的门票和餐券会在门口闸机扫码兑换入园。</div>
+</div>
+
+
+    <div class="viewspot-details hasFreeTour">
+        <div class="tablist">
+            <nav class="normalNav">
+                <ul class="tab-title">
+                    <li class="active"><span>订票</span></li>
+                    <li><span>须知</span></li>
+                    <li lv-if="routeList.length>0"><span>景+酒</span></li>
+                    <li><span>点评</span></li>
+                </ul>
+            </nav>
+            <section>
+                <article class="tabChange order-ticket comment pdb0">
+                    <!--推荐产品 <=3个-->
+                    <div class="goods-main">
+                        <div class="adult-ticket hasGoods PROMOTESALE">
+                            <div class="title PROMOTESALE">
+                                购票
+                                <span class="proActivityDate">&nbsp;&nbsp;</span>
+                            </div>
+                            <div class="list ">
+                                <div class="list-module">
+
+                                    <div class="tips">
+                                        <span>立减</span>
+                                    </div>
+                                    <div class="notes">
+                                        <span>18:00前可订今日票</span>
+                                    </div>
+                                    <div class="notes passLimit">
+                                        <span>预订成功后2小时可入园</span>
+                                    </div>
+                                    <div class="showExplain">
+
+                                    </div>
+                                    <div class="right-part ">
+                                        <div class="price TUANGOU">
+                                            <span><i>¥</i><i render-html="price"></i><qi>起</qi></span>
+                                            <div class="tag-box">
+                                                <div class="fan">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="btn TUANGOU">
+                                            <span>预订</span>
+                                            <span class="special">立即抢</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--组合套餐-->
+                </article>
+
+            </section>
+
+        </div>
+    </div>
+
+</div>
+
+<!--输入表-->
+
+<div class="j_main m-main">
+
+        <div class="tit">
+            <i></i>填写出游信息
+        </div>
+        <div class="txt">
+
+            <div class="main_page">
+
+                <div class="select_start_date">
+                    <div class="start_date_right">
+                     <span style="font-size: 15px;">旅游时间:</span><input type="text" name="create_time" id="start_date" placeholder="选择开始日期" readonly="readonly" style="width:70%;font-size: 15px; margin-left: 12px;"/>
+                    </div>
+                </div>
+            </div>
+
+            <dl class="J_price" style="padding: 0rem 0; margin-bottom: 10px">
+                <dt>成人</dt>
+                <dd class="box-flex-1 price pd0" id="adult_price_span">
+                    <span>￥ <span id="price_d" render-html="price"></span>
+                    </span>
+                </dd>
+                <dd class="box-flex-2">
+                    <span class="subadd j_num">
+                        <span class="sub" data-type="adults"></span>
+                        <input id="j_price_d_num" type="number" min="1" max="99" class="text_num" value="1">
+                        <span class="add" data-type="adults">
+
+                        </span>
+                    </span>
+                </dd>
+            </dl>
+
+        </div>
+        <div class="tit">
+            <i></i>保险信息<br>
+            <span>注：购买保险需如实填写被保险人姓名与身份证号</span>
+        </div>
+        <div class="txt txt2 J_baoxian">
+        </div>
+        <script type="text" id="j_baoxian_con"> <dl> <dt> <a href="javascript:;" class="j_baoxian_tit J_baoxian_info">*title*</a> <input type="hidden" name="*name1*" value="*id*" /> <input type="hidden" name="*name2*" value="*price*" /> </dt> <dd> <font><span class="j_baoxian_c">*price_c*</span><i class="more"></i></font> </dd> </dl> </script>
+        <script></script>
+        <div class="tit">
+            <i></i>填写联系人信息
+        </div>
+        <div class="txt">
+            <dl>
+                <dt>联系人</dt>
+                <dd>
+                    <input maxlength="20" type="text" name="username" id="UserName" class="o_man" placeholder="真实姓名（必填)"></dd>
+            </dl>
+            <dl>
+                <dt>手机号码</dt>
+                <dd class="pd0">
+                    <input type="text" name="phone" id="PhoneModer" class="o_number" maxlength="11" placeholder="手机号码（必填)">
+                </dd>
+                <dd style="width:8rem;-webkit-box-flex:inherit"></dd>
+            </dl>
+
+        </div>
+        <div class="tourist_box j_youke_main">
+            <div class="tit">
+                <i></i>填写游客信息
+            </div>
+            <div class="txt" id="j_kehu_list">
+            </div>
+        </div>
+        <script type="text" id="j_kehu_c"> <dl class="j_kehu_open"> <dt> <span>游客*i*</span> <div class="none"> <input maxlength="20" type="hidden" class="o_man tourist_name" name="insurance_username[]" placeholder="游客姓名（必填）"> <input type="hidden" class="o_man tourist_phone_number" name="phone_number[]" placeholder="手机号码（选填）"> <input type="hidden" class="o_man tourist_identity_card" name="idcard_no[]" placeholder="身份证号码（必填）">  </div> </dt> <dd> <font class="corBlue"><span>填写信息</span><i class="more fr"></i></font> </dd> </dl> </script>
+        <script></script>
+        <div class="txt txt2">
+            <dl>
+                <dt>国庆满减活动</dt>
+                <dd class="box-flex-2"><span class="gq_type"></span></dd>
+            </dl>
+        </div>
+        <div class="coupon_con" id="j_youhui">
+            <div class="coupon_txt">
+                <dl data-coupon-id="" data-amount="">
+                    <dd><money>&yen;1253</money>
+                        <p>
+                            优惠券
+                        </p>
+                    </dd>
+                    <dt><i class="checkbox"></i></dt>
+                </dl>
+            </div>
+        </div>
+        <div class="booking_notes">
+            <label><i class="on"></i>我已阅读并同意此产品的</label><a href="javascript:;" class="btn_notes">预订须知</a>
+            <p>
+                温馨提示：为了保障您的出游权益，请务必在线支付订单。
+            </p>
+        </div>
+
+    <div class="submintFix">
+        <dl>
+            <dt>
+                <div class="price">
+                    订单总额 <span>￥<em class="j_all_money" id="total_prices" name="total_prices"></em></span>
+                </div>
+            </dt>
+            <dd class="sbmFix"><button id="save">提交订单</button></dd>
+        </dl>
+    </div>
+</div>
+
+
+   </form>
+</div>
+<script type="text/javascript">
+    var calendar = new LCalendar();
+    calendar.init({
+        'trigger': '#start_date', //标签id
+        'type': 'date', //date 调出日期选择 datetime 调出日期时间选择 time 调出时间选择 ym 调出年月选择,
+        'minDate': (new Date().getFullYear()-3) + '-' + 1 + '-' + 1, //最小日期
+        'maxDate': (new Date().getFullYear()+3) + '-' + 12 + '-' + 31 //最大日期
+    });
+    var calendar = new LCalendar();
+    calendar.init({
+        'trigger': '#end_date', //标签id
+        'type': 'date', //date 调出日期选择 datetime 调出日期时间选择 time 调出时间选择 ym 调出年月选择,
+        'minDate': (new Date().getFullYear()-3) + '-' + 1 + '-' + 1, //最小日期
+        'maxDate': (new Date().getFullYear()+3) + '-' + 12 + '-' + 31 //最大日期
+    });
+
+</script>
+<script>
+    var is_dijie = '0'; /*预定须知弹窗*/
+    var cart_type_num = 0;
+    var myScroll;
+    var mobiletel_regexp = /^1[3|4|5|7|8|9][0-9]\d{8}$/;
+
+    function loaded() {
+        myScroll = new iScroll('contentWrapper');
+    }
+    function bodyscroll(e) {
+        e.preventDefault();
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(loaded, 200);
+    }, false);
+    $('.btn_notes').click(function() {
+        $('.notes_con').show();
+        setTimeout(loaded, 300);
+        document.addEventListener('touchmove', bodyscroll, false);
+    });
+    $('.notes_con').click(function() {
+        $(this).hide();
+        document.removeEventListener('touchmove', bodyscroll, false);
+    });
+
+        /*改变证件类型事件*/
+       $('#j_kehu_list').on('change', '.tourist_box .certificate_type', function() {
+
+            placeholder = mark + '号码（必填）';
+            cur.closest('dl').next('dl').find('dt').html(mark).siblings('dd').find('input[type="text"]').attr('placeholder', placeholder);
+        });
+
+
+    function guoqing_yh() {
+
+    }
+</script>
+</body>
+</html>

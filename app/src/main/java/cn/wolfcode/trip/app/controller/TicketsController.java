@@ -18,7 +18,6 @@ public class TicketsController {
     @Autowired
     private ITicketsService ticketsService;
 
-
     @PostMapping
     public JsonResult save(Tickets tickets) {
         ticketsService.saveOrUpdate(tickets);

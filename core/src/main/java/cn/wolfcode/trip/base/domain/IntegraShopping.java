@@ -5,7 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-
 public class IntegraShopping  extends BaseDomain{
 
     private String productName;//商品名称
@@ -14,6 +13,5 @@ public class IntegraShopping  extends BaseDomain{
 
     private String coverUrl;//商城图片
 
-    //private Integer sign_id;
-
+    private Sign sign;
 }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.trip.base.mapper.IntegraOrderMapper">
+  <resultMap id="BaseResultMap" type="cn.wolfcode.trip.base.domain.IntegraOrder">
+    <id column="id" property="id" />
+
+    <result column="contactName" property="contactName" />
+    <result column="contactNumber" property="contactNumber"/>
+    <result column="shippingAddress" property="shippingAddress" />
+
+    <result column="integrasum" property="integrasum"/>
+
+    <association property="user" javaType="User" columnPrefix="u_">
+      <id column="id" property="id"/>
+      <result column="email" property="email"/>
+      <result column="nickName" property="nickName"/>
+    </association>
+
+    <association property="integrashopping" javaType="Integrashopping" columnPrefix="p_">
+      <id column="id" property="id"/>
+      <result column="productName" property="productName"/>
+      <result column="productDescription" property="productDescription"/>
+      <result column="coverUrl" property="coverUrl"/>
+    </association>
+    
+  </resultMap>
+  <delete id="deleteByPrimaryKey">
+    delete from integraorder
+    where id = #{id}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into integraorder (
+        user_id,
+        contactName, contactNumber, shippingAddress,integrasum,integrashopping_id
+      )
+    values (#{user.id}, #{contactName}, #{contactNumber}, #{shippingAddress},#{integrasum}, #{integrashopping.id}
+      )
+  </insert>
+  <update id="updateByPrimaryKey">
+    update integraorder
+    set user_id = #{user.id},
+      contactName = #{contactName},
+      contactNumber = #{contactNumber},
+      shippingAddress = #{shippingAddress},
+      integrasum=#{integrasum}
+      integrashopping_id = #{integrashopping.id}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select id, user_id,contactName, contactNumber, shippingAddress,integrasum,integrashopping_id
+    from integraorder
+    where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, user_id, contactName, contactNumber, shippingAddress,integrasum,integrashopping_id
+    from integraorder
+  </select>
+  <select id="selectForList" resultMap="BaseResultMap">
+     select id, user_id, contactName, contactNumber, shippingAddress,integrasum,integrashopping_id
+    from integraorder
+  </select>
+</mapper>

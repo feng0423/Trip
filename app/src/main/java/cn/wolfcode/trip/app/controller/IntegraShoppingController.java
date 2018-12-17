@@ -2,15 +2,13 @@ package cn.wolfcode.trip.app.controller;
 
 
 import cn.wolfcode.trip.base.domain.IntegraShopping;
+import cn.wolfcode.trip.base.domain.Tickets;
 import cn.wolfcode.trip.base.query.IntegraShoppingQueryObject;
 import cn.wolfcode.trip.base.service.IIntegraShoppingService;
 import cn.wolfcode.trip.base.util.JsonResult;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/integraShopping")
@@ -36,6 +34,11 @@ public class IntegraShoppingController {
 
         PageInfo query = integraShoppingService.query(qo);
         return query;
+    }
+    @GetMapping("/{id}")
+    public IntegraShopping get(@PathVariable Long id) {
+        IntegraShopping IntegraShoppingId = integraShoppingService.get(id);
+        return IntegraShoppingId;
     }
 
 }

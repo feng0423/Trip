@@ -6,14 +6,18 @@
     <result column="productName" property="productName" />
     <result column="productDescription" property="productDescription" />
     <result column="coverUrl" property="coverUrl" />
+    <association property="sign" javaType="Sign" columnPrefix="s_">
+      <id column="id" property="id"/>
+      <result column="score" property="score"/>
+    </association>
   </resultMap>
   <delete id="deleteByPrimaryKey">
     delete from integrashopping
     where id = #{id}
   </delete>
   <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-    insert into integrashopping (productName, productDescription, coverUrl)
-    values (#{productName}, #{productDescription}, #{coverUrl})
+    insert into integrashopping (productName, productDescription, coverUrl,sign_id)
+    values (#{productName}, #{productDescription}, #{coverUrl},#{sign.id})
 
   </insert>
   <!--#{sign_id}-->
@@ -22,25 +26,26 @@
     set productName = #{productName},
       productDescription = #{productDescription},
       coverUrl = #{coverUrl},
+      sign_id=#{sign.id}
     where id = #{id}
   </update>
   <!--sign_id = #{sign_id}-->
   <select id="selectByPrimaryKey" resultMap="BaseResultMap">
-    select id, productName, productDescription, coverUrl
-    from integrashopping
-    where id = #{id}
+    select sp.id,sp.productName,sp.productDescription,sp.coverUrl,sp.sign_id,s.id s_id,s.score s_score
+    from integrashopping sp JOIN sign s ON sp.sign_id=s.id
+    where sp.id = #{id}
   </select>
 
   <!--sign_id-->
   <select id="selectAll" resultMap="BaseResultMap">
-    select id, productName, productDescription, coverUrl
+    select id, productName, productDescription, coverUrl,sign_id
     from integrashopping
   </select>
   <!--sign_id-->
-
+  <!--关联查询积分表获取到积分数-->
   <select id="selectForList" resultMap="BaseResultMap">
-    select id, productName, productDescription, coverUrl
-    from integrashopping
+    select sp.id,sp.productName,sp.productDescription,sp.coverUrl,sp.sign_id,s.id s_id,s.score s_score
+    from integrashopping sp JOIN sign s ON sp.sign_id=s.id
   </select>
 
 </mapper>

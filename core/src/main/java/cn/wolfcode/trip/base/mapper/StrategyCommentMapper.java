@@ -2,6 +2,7 @@ package cn.wolfcode.trip.base.mapper;
 
 import cn.wolfcode.trip.base.domain.StrategyComment;
 import cn.wolfcode.trip.base.query.QueryObject;
+import cn.wolfcode.trip.base.query.UserQueryObject;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface StrategyCommentMapper {
     List selectForList(QueryObject qo);
 
     void insertRelation(@Param("commentId") Long commentId, @Param("tagId") Long tagId);
+
+    List selectFqueryStrategycommentsByUserIdorList(UserQueryObject qo);
 }

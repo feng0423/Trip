@@ -16,6 +16,11 @@
       <result column="headImgUrl" property="headImgUrl" />
       <result column="nickName" property="nickName" />
     </association>
+    <association property="strategy" javaType="Strategy" columnPrefix="s_">
+      <id column="id" property="id"/>
+      <result column="title" property="title"/>
+      <result property="coverUrl" column="coverUrl"/>
+    </association>
   </resultMap>
   <delete id="deleteByPrimaryKey">
     delete from strategycomment
@@ -62,4 +67,13 @@
       </if>
     </where>
   </select>
+    <select id="selectFqueryStrategycommentsByUserIdorList" resultMap="BaseResultMap">
+       select sc.id, sc.user_id, sc.createTime, sc.content, sc.imgUrls, sc.starNum, sc.strategy_id, sc.state, sc.commendTime,
+       s.id s_id, s.title s_title , s.coverUrl s_coverUrl,
+       u.id u_id,u.headImgUrl u_headImgUrl
+    from strategycomment sc
+    LEFT JOIN strategy s ON sc.strategy_id = s.id
+   LEFT JOIN user u ON sc.user_id = u.id
+    WHERE sc.user_id = #{UserId}
+    </select>
 </mapper>

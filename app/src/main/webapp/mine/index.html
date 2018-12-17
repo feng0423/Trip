@@ -1,0 +1,402 @@
+<!DOCTYPE HTML> 
+
+<html>
+
+<head>
+
+    <title>我的朋友圈</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link href="/csss/1_style.css" rel="stylesheet">
+    <script src="/csss/jquery-1.8.3.min.js"></script>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
+    <script src="/js/jquery/jquery.min.js"></script>
+    <script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/font/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/reset.css"/>
+    <link rel="stylesheet" href="/css/userProfiles.css"/>
+    <script src="/js/plugins/jrender/jrender.min.js"></script>
+    <script src="/js/common.js"></script>
+    <link rel="stylesheet" href="/js/plugins/dialog2/dialog.css"/>
+    <script src="/js/plugins/dialog2/dialog.min.js"></script>
+    <script>
+        $(function () {
+
+            var circleId;//朋友圈
+            var replyUserId;//评论人
+            var targetUserId;//被评论人
+            var commentsss;
+
+            //当前页h
+            var currentPage = 1;
+            //总页数
+            var pages;
+            var travelArr = [];
+
+            function query() {
+                //回显朋友圈
+                var user = JSON.parse(sessionStorage.getItem("user"));
+                $.get('/circleOfFriendsService/' + user.id, {currentPage: currentPage}, function (data) {
+                    $.merge(travelArr, data.list);
+                    var json = {list: travelArr};
+                    $('#main').renderValues(json, {
+                        getImgs: function (item, value) {
+                            //图片展示
+                            var imgUrls = value;
+                            var imgs = imgUrls.split(";");
+                            for (var i = 0; i < imgs.length; i++) {
+                                $(item).append("<img src='" + imgs[i] + "' width='100px' style='margin-right:10px'/>");
+                            }
+                        },
+                        getComments: function (item, value) {
+                            if (value.length > 0) {
+                                var temp = "";
+                                $.each(value, function (index, ele) {//遍历数组
+                                    if (ele.targetUser == null) {//判断被评论的人是不是作者
+                                        temp += '<p class="reply" data-replyId="' + ele.replyUser.id + '" data-circle="' + ele.circle.id + '"><span  data-circle="' + ele.circle.id + '"  data-replyId="' + ele.replyUser.id + '">' + ele.replyUser.nickName + '：</span>' + ele.content + '</p>'//回复朋友圈作者
+                                        //console.log(temp);
+                                    } else {//回复别人的时候
+                                        temp += '<p  class="reply" data-replyId="' + ele.replyUser.id + '" data-circle="' + ele.circle.id + '"><span  data-circle="' + ele.circle.id + '"  data-replyId="' + ele.replyUser.id + '"  class="data-name" >' + ele.replyUser.nickName + '</span> 回复 <span  >' + ele.targetUser.nickName + '</span><span>：</span>' + ele.content + '</p>'
+                                    }
+                                });
+                                $(item).html(temp);//追加
+                            }
+                        }
+                    })
+                    pages = data.pages;
+                    console.log(pages);
+                    //点击评论
+                    $('.friendComment').click(function () {
+                        circleId = $(this).data("id");
+                        $('#commentModal').modal('show')
+
+                        //点击评论发送请求新增评论
+                        $('#commentStrategyBtn').click(function () {
+                            commentsss = {
+                                content: $('input[name=content]').val(),
+                                'replyUser.id': user.id,
+                                'circle.id': circleId
+                            }
+                           // console.log(commentsss);
+                           // console.log({friendComment: commentsss});
+                            $.post('/circleOfFriendsService/friendComment', commentsss, function () {
+                                window.location.reload();
+                            })
+
+                        })
+                    })
+                    //点击回复
+                    $('.reply').click(function () {
+                        circleId = $(this).data("circle");
+                        targetUserId = $(this).data("replyid");
+                        console.log(targetUserId);
+                        $('#commentModal').modal('show')
+
+                        //点击评论发送请求新增评论
+                        $('#commentStrategyBtn').click(function () {
+                            console.log(circleId);
+                            console.log(user.id);
+                            var comment = {
+                                content: $('input[name=content]').val(),
+                                'replyUser.id': user.id,
+                                'circle.id': circleId,
+                                'targetUser.id': targetUserId
+
+                            }
+                            $.post('/circleOfFriendsService/friendComment', comment, function () {
+                                window.location.reload();
+                            })
+                        });
+
+
+                    })
+
+
+                })
+                currentPage = currentPage + 1;
+            }
+
+            query();
+
+
+            $(window).scroll(function () {
+                if ($(window).height() + $(document).scrollTop() + 1 >= $(document).height()) {
+                    if (currentPage <= pages) {
+                        query()
+                    } else {
+                        $(document).dialog({
+                            type: 'notice',
+                            content: '<span class="info-text">到底了</span>',
+                            autoClose: 1000
+                        });
+                    }
+                }
+            });
+
+
+            //回显背景和我的头像
+            $.get('/users/' + JSON.parse(sessionStorage.getItem('user')).id, function (data) {
+                $('#userH').renderValues(data);
+            })
+
+
+        })
+    </script>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
+    <script src="/js/jquery/jquery.min.js"></script>
+    <script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/font/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/reset.css"/>
+    <link rel="stylesheet" href="/css/userProfiles.css"/>
+    <script src="/js/plugins/jrender/jrender.min.js"></script>
+    <script src="/js/common.js"></script>
+    <link rel="stylesheet" href="/js/plugins/dialog2/dialog.css"/>
+    <script src="/js/plugins/dialog2/dialog.min.js"></script>
+    <script>
+        $(function () {
+
+            var circleId;//朋友圈
+            var replyUserId;//评论人
+            var targetUserId;//被评论人
+            var commentsss;
+
+            //当前页h
+            var currentPage = 1;
+            //总页数
+            var pages;
+            var travelArr = [];
+
+            function query() {
+                //回显朋友圈
+                var user = JSON.parse(sessionStorage.getItem("user"));
+                $.get('/circleOfFriendsService/' + user.id, {currentPage: currentPage}, function (data) {
+                    $.merge(travelArr, data.list);
+                    var json = {list: travelArr};
+                    $('#main').renderValues(json, {
+                        getImgs: function (item, value) {
+                            //图片展示
+                            var imgUrls = value;
+                            var imgs = imgUrls.split(";");
+                            for (var i = 0; i < imgs.length; i++) {
+                                $(item).append("<img src='" + imgs[i] + "' width='100px' style='margin-right:10px'/>");
+                            }
+                        },
+                        getComments: function (item, value) {
+                            if (value.length > 0) {
+                                var temp = "";
+                                $.each(value, function (index, ele) {//遍历数组
+                                    if (ele.targetUser == null) {//判断被评论的人是不是作者
+                                        temp += '<p class="reply" data-replyId="' + ele.replyUser.id + '" data-circle="' + ele.circle.id + '"><span  data-circle="' + ele.circle.id + '"  data-replyId="' + ele.replyUser.id + '">' + ele.replyUser.nickName + '：</span>' + ele.content + '</p>'//回复朋友圈作者
+                                        //console.log(temp);
+                                    } else {//回复别人的时候
+                                        temp += '<p  class="reply" data-replyId="' + ele.replyUser.id + '" data-circle="' + ele.circle.id + '"><span  data-circle="' + ele.circle.id + '"  data-replyId="' + ele.replyUser.id + '"  class="data-name" >' + ele.replyUser.nickName + '</span> 回复 <span  >' + ele.targetUser.nickName + '</span><span>：</span>' + ele.content + '</p>'
+                                    }
+                                });
+                                $(item).html(temp);//追加
+                            }
+                        }
+                    })
+                    pages = data.pages;
+                    console.log(pages);
+                    //点击评论
+                    $('.friendComment').click(function () {
+                        circleId = $(this).data("id");
+                        $('#commentModal').modal('show')
+
+                        //点击评论发送请求新增评论
+                        $('#commentStrategyBtn').click(function () {
+                            commentsss = {
+                                content: $('input[name=content]').val(),
+                                'replyUser.id': user.id,
+                                'circle.id': circleId
+                            }
+                            console.log(commentsss);
+                            console.log({friendComment: commentsss});
+                            $.post('/circleOfFriendsService/friendComment', commentsss, function () {
+                                window.location.reload();
+                            })
+
+                        })
+                    })
+                    //点击回复
+                    $('.reply').click(function () {
+                        circleId = $(this).data("circle");
+                        targetUserId = $(this).data("replyid");
+                        console.log(targetUserId);
+                        $('#commentModal').modal('show')
+
+                        //点击评论发送请求新增评论
+                        $('#commentStrategyBtn').click(function () {
+                            console.log(circleId);
+                            console.log(user.id);
+                            var comment = {
+                                content: $('input[name=content]').val(),
+                                'replyUser.id': user.id,
+                                'circle.id': circleId,
+                                'targetUser.id': targetUserId
+
+                            }
+                            $.post('/circleOfFriendsService/friendComment', comment, function () {
+                                window.location.reload();
+                            })
+                        });
+
+
+                    })
+
+
+                })
+                currentPage = currentPage + 1;
+            }
+
+            query();
+
+
+            $(window).scroll(function () {
+                if ($(window).height() + $(document).scrollTop() + 1 >= $(document).height()) {
+                    if (currentPage <= pages) {
+                        query()
+                    } else {
+                        $(document).dialog({
+                            type: 'notice',
+                            content: '<span class="info-text">到底了</span>',
+                            autoClose: 1000
+                        });
+                    }
+                }
+            });
+
+
+            //回显背景和我的头像
+            $.get('/users/' + user.id, function (data) {
+                $('#userH').renderValues(data);
+            })
+
+
+        })
+    </script>
+</head>
+
+<body>
+<div class="nav-search">
+    <a href="/mine/profiles.html">
+        <span><i class="fa fa-angle-left fa-2x"></i></span>
+    </a>
+</div>
+<!--文件上传的设置方法,包括文件的类型,并且隐藏-->
+<form action="/images" method="post" id="fileFrom" enctype="multipart/form-data">
+    <!--修改头像-->
+    <input type="file" style="display: none" id="fileInput" name="file">
+</form>
+
+
+<!--评论模态框-->
+<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">编辑回复框</h4>
+            </div>
+            <div class="modal-body">
+                <form action="#" method="post" id="commentForm">
+                    <input name="friend.id" type="hidden">
+                    <div class="form-group">
+                        <!--评论的内容-->
+                        <label for="recipient-name" class="control-label">内容:</label>
+                        <input type="text" class="form-control" id="recipient-name" name="content">
+                        <!--评论人的id-->
+                        <input type="hidden" name="replyUser.id">
+                        <!--被评论人的id-->
+                        <input type="hidden" name="targetUser.id">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="commentStrategyBtn">评论</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+</script>
+
+
+<header>
+    <div id="userH">
+        <img id="bg" render-src="coverImgUrl">
+        <p id="user-name" class="data-name"></p>
+        <img id="avt" class="data-avt" render-src="headImgUrl">
+    </div>
+</header>
+
+<div id="main">
+    <!--<div id="share_show">
+        <img src="http://pjm6lgm9s.bkt.clouddn.com/FkZtL61fQ0gB7X5z-1uO8sVTHsJ6" style="width:90%;" />
+    </div>-->
+    <div id="list" render-loop="list">
+        <ul>
+
+            <li>
+                <div class="po-avt-wrap">
+                    <img class="po-avt data-avt" render-src="list.user.headImgUrl">
+                </div>
+
+                <div class="po-cmt">
+
+                    <div class="po-hd">
+                        <p class="po-name"><span class="data-name"></span></p>
+                        <p class="post" render-html="list.content">过两天开party，都有谁来咧？</p>
+                        <p render-key="list.pictureUrl" render-fun="getImgs"></p>
+
+                        <p class="time" render-html="list.releaseTime">刚刚</p>
+                    </div>
+                    <div class="r"></div>
+
+                    <div class="cmt-wrap">
+                        <div class="cmt-list" render-key="list.comments" render-fun="getComments">
+                        </div>
+
+                        <div class="friendComment" render-attr="data-id=list.id">
+                            <button>评论</button>
+                        </div>
+                    </div>
+
+                </div>
+            </li>
+
+        </ul>
+    </div>
+
+    <div id="share">
+
+        <a href="/mine/addDynamic.html">发布朋友圈</a>
+
+
+    </div>
+
+    <div id="guide" class="hide"></div>
+
+</div>
+
+<script id="man" type="text/template">
+
+    </script>
+
+<script id="woman" type="text/template">
+    </script>
+
+
+<style>body > span {
+    display: none;
+}</style>
+
+
+</body>
+
+</html>

@@ -136,7 +136,7 @@
                         <h4 render-html="list.title"></h4>
                     </a>
                     <p>
-                        <a href="userProfiles.html">
+                        <a data-href="userProfiles.html"  render-fun="getHref" render-key="list.id">
                             <img class="rounded-circle head-img" render-src="list.author.headImgUrl">
                             <span render-html="list.author.nickName"></span> </a> 在
                         <span class="addr" render-html="list.place.name"></span>

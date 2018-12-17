@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<title>找攻略</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
+	<script src="/js/jquery/jquery.min.js"></script>
+	<script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="/css/font/css/font-awesome.min.css"/>
+	<link rel="stylesheet" href="/css/reset.css"/>
+	<link rel="stylesheet" href="/css/myStrategyComment.css"/>
+	<script src="/js/plugins/jrender/jrender.min.js"></script>
+	<link rel="stylesheet" href="/js/plugins/dialog2/dialog.css"/>
+	<script src="/js/plugins/dialog2/dialog.min.js"></script>
+	<script src="/js/plugins/form/jquery.form.js"></script>
+	<script src="/js/common.js"></script>
+	<script>
+		$(function () {
+            var user =  JSON.parse(sessionStorage.getItem("user"));
+            console.log(user.id);
+
+            var rect;
+		    //图片上传,帮定点击事件弹出隐藏的文件上传框
+			$(".rect").click(function () {
+			    //当前点击的上传图片框
+			    rect = $(this)
+				$("#file").click();
+            });
+			//文件框改变事件
+			$("#file").change(function () {
+				if ($(this).val()){
+				    //上传图片到图片上传控制器
+				    $("#fileForm").ajaxSubmit(function (data) {
+						if (data.status == 1){
+						    //回显到当前上传图片框中的照片
+							rect.html('<img src="'+data.url+'"/>');
+						}
+                    });
+				}
+            });
+			//禁用数组提交时带[] 的功能
+            jQuery.ajaxSettings.traditional = true;
+            var params = getParams();
+			//提交数据,没有表单,新建一个json,将所有数据带上,再提交
+			$("#submitBtn").click(function () {
+				//获取到上传的图片,有img属性说明这里有图片
+				var imgs = $(".imgs img");
+				var imgUrls = "";
+				for (var i = 0; i < imgs.length; i++){
+				    //将图片src拼接字符串
+                    imgUrls += $(imgs[i]).attr("src")+";";
+				}
+
+
+
+                var CircleOfFriends={
+                    content: $('[name="content"]').val(), // 评价内容
+                    pictureUrl: imgUrls,
+					'user.id':user.id
+				};
+                //保存评论时,添加某个攻略的评论
+				$.post("/circleOfFriendsService",CircleOfFriends,function (data) {
+                    if (data.success) {
+                       window.location.href="/mine/index.html";
+                    }
+                });
+            });
+		})
+	</script>
+</head>
+
+<body>
+<form id="fileForm" action="/images" method="post" enctype="multipart/form-data">
+	<input type="file" name="file" id="file" style="display: none">
+</form>
+<div class="search-head">
+	<div class="row nav-search">
+		<div class="col">
+			<a href="javascript:window.history.go(-1)">
+				<span><i class="fa fa-chevron-left" ></i></span>
+			</a>
+		</div>
+		<div class="col">
+			<span>发布朋友圈</span>
+		</div>
+		<div class="col"></div>
+	</div>
+</div>
+<div class="comment">
+		<textarea name="content" class="form-control" rows="5" placeholder="这一刻的想法..."></textarea>
+	</div>
+	<div class="container imgs ">
+		<p>上传图片</p>
+		<div class="row">
+			<div class="col-3 rect">
+				<span>上传</span>
+			</div>
+			<div class="col-3 rect">
+				<span>上传</span>
+			</div>
+			<div class="col-3 rect">
+				<span>上传</span>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="operation">
+	<button class="btn" onclick="window.history.go(-1)">放弃发布</button>
+	<button class="btn" id="submitBtn">发布动态</button>
+</div>
+</body>
+</html>

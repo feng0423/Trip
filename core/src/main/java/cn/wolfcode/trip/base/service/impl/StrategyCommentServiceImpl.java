@@ -5,6 +5,7 @@ import cn.wolfcode.trip.base.domain.Tag;
 import cn.wolfcode.trip.base.mapper.StrategyCommentMapper;
 import cn.wolfcode.trip.base.mapper.TagMapper;
 import cn.wolfcode.trip.base.query.StrategyCommentQueryObject;
+import cn.wolfcode.trip.base.query.UserQueryObject;
 import cn.wolfcode.trip.base.service.IStrategyCommentService;
 import cn.wolfcode.trip.base.util.UserContext;
 import com.github.pagehelper.PageHelper;
@@ -46,6 +47,12 @@ public class StrategyCommentServiceImpl implements IStrategyCommentService {
             //关联中间表
             strategyCommentMapper.insertRelation(strategyComment.getId(),tag.getId());
         }
+    }
+
+    public PageInfo queryStrategycommentsByUserId(UserQueryObject qo) {
+        PageHelper.startPage(qo.getCurrentPage(),qo.getPageSize(),qo.getOrderBy());
+        List list  = strategyCommentMapper.selectFqueryStrategycommentsByUserIdorList(qo);
+        return new PageInfo(list);
     }
 
 }

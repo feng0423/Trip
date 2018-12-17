@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.trip.base.mapper.CircleOfFriendsMapper">
+  <resultMap id="BaseResultMap" type="cn.wolfcode.trip.base.domain.CircleOfFriends">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="releaseTime" jdbcType="DATE" property="releaseTime" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="pictureUrl" jdbcType="VARCHAR" property="pictureUrl" />
+    <result column="pictureUrl" jdbcType="VARCHAR" property="pictureUrl" />
+    <association property="user" javaType="User" columnPrefix="u_">
+      <id column="id" property="id"/>
+      <result column="headImgUrl" property="headImgUrl"/>
+    </association>
+    <collection property="comments" column="id"  select="cn.wolfcode.trip.base.mapper.FriendCommentMapper.selectByCommtentId"></collection>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from circle_of_friends
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.wolfcode.trip.base.domain.CircleOfFriends" useGeneratedKeys="true">
+    insert into circle_of_friends (user_id, releaseTime, content, 
+      pictureUrl, comment_id)
+    values (#{user.id,jdbcType=BIGINT}, now(), #{content,jdbcType=VARCHAR},
+      #{pictureUrl,jdbcType=VARCHAR}, #{comment.id,jdbcType=BIGINT})
+  </insert>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, user_id, releaseTime, content, pictureUrl, comment_id
+    from circle_of_friends
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, user_id, releaseTime, content, pictureUrl, comment_id
+    from circle_of_friends
+  </select>
+  <select id="selectForList" resultMap="BaseResultMap">
+
+
+select cof.id, cof.user_id, DATE_FORMAT(cof.releaseTime,'%Y-%m-%d %H:%i:%S') releaseTime, cof.content, cof.pictureUrl, cof.comment_id,
+    u.id u_id,u.headImgUrl u_headImgUrl
+    from circle_of_friends cof LEFT
+    JOIN user u ON cof.user_id = u.id
+    WHERE u.id in (
+	select author_id FROM attention WHERE visitor_id = #{userId}
+) or u.id = #{userId}
+
+  </select>
+</mapper>

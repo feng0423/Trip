@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.trip.base.mapper.FriendCommentMapper">
+  <resultMap id="BaseResultMap" type="cn.wolfcode.trip.base.domain.FriendComment">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+
+    <association property="targetUser" javaType="user" columnPrefix="target_">
+      <id property="id" column="id"/>
+      <result column="nickName" property="nickName"/>
+    </association>
+
+    <association property="replyUser" javaType="user" columnPrefix="reply_">
+      <id property="id" column="id"/>
+      <result column="nickName" property="nickName"/>
+    </association>
+    <association property="circle" javaType="circleOfFriends" columnPrefix="cof_">
+      <id column="id" property="id"/>
+    </association>
+
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from friendcomment
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.wolfcode.trip.base.domain.FriendComment" useGeneratedKeys="true">
+    insert into friendcomment (replyUser_id, targetUser_id, circle_id,
+      content)
+    values (#{replyUser.id,jdbcType=BIGINT}, #{targetUser.id,jdbcType=BIGINT}, #{circle.id,jdbcType=BIGINT},
+      #{content,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.wolfcode.trip.base.domain.FriendComment">
+    update friendcomment
+    set replyUser_id = #{replyUser.id,jdbcType=BIGINT},
+      targetUser_id = #{targetUser.id,jdbcType=BIGINT},
+      circle_id = #{circle.id,jdbcType=BIGINT},
+      content = #{content,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, replyUser_id, targetUser_id, circle_id, content
+    from friendcomment
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, replyUser_id, targetUser_id, circle_id, content
+    from friendcomment
+  </select>
+  <select id="selectByCommtentId" resultMap="BaseResultMap">
+        select fc.id, fc.replyUser_id, fc.targetUser_id, fc.content,fc.circle_id,
+        reply.id reply_id, reply.nickName reply_nickName,
+        target.id target_id , target.nickName target_nickName,
+        cof.id cof_id
+    from friendcomment fc LEFT JOIN user reply ON fc.replyUser_id = reply.id
+   LEFT JOIN user target ON fc.targetUser_id = target.id
+   LEFT JOIN circle_of_friends cof ON fc.circle_id = cof.id
+    WHERE fc.circle_id = #{id}
+  </select>
+</mapper>

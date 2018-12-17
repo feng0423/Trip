@@ -70,6 +70,11 @@ public class StrategyComment extends BaseDomain {
         HashMap<String, Object> map = new HashMap();
         map.put("id",id);
         map.put("state",state);
+        if (user!=null){
+            map.put("user.id",user.getId());
+            map.put("user.nickName",user.getNickName());
+            map.put("user.headImgUrl",user.getHeadImgUrl());
+        }
         return JSONUtils.toJSONString(map);
     }
 

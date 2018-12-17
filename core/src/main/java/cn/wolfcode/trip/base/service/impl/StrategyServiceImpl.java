@@ -1,6 +1,8 @@
 package cn.wolfcode.trip.base.service.impl;
 
 import cn.wolfcode.trip.base.domain.Strategy;
+import cn.wolfcode.trip.base.domain.StrategyComment;
+import cn.wolfcode.trip.base.mapper.StrategyCommentMapper;
 import cn.wolfcode.trip.base.mapper.StrategyMapper;
 import cn.wolfcode.trip.base.query.SerachQueryObject;
 import cn.wolfcode.trip.base.query.StrategyQueryObject;
@@ -21,6 +23,9 @@ public class StrategyServiceImpl implements IStrategyService{
 
     @Autowired
     private StrategyMapper strategyMapper;
+
+    @Autowired
+    private StrategyCommentMapper commentMapper;
 
     public PageInfo query(StrategyQueryObject qo) {
         PageHelper.startPage(qo.getCurrentPage(),qo.getPageSize(),true,false,null);
@@ -117,6 +122,9 @@ public class StrategyServiceImpl implements IStrategyService{
         return getCommonMap(id, strategyMapper.countFavorites(id),2);
     }
 
+    public StrategyComment getCommentById(Long strategyCommentId) {
+        return commentMapper.selectByPrimaryKey(strategyCommentId);
+    }
 
 
     public Map getCommonMap(Long id, int count, int type) {

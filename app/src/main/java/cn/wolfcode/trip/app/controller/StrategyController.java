@@ -96,6 +96,18 @@ public class StrategyController {
 
         return JsonResult.jsonResultWithMap(map);
     }
+    @GetMapping("/{id}/likes/{state}/comments")
+    public JsonResult likeComments(@PathVariable Long id, @PathVariable int state) {
+
+        Map map;
+        if (state == -1) {// 查询
+            map = strategyCommentService.getLikeById(id);
+        } else {// 插入或删除
+            map = strategyCommentService.like(id);
+        }
+
+        return JsonResult.jsonResultWithMap(map);
+    }
 
 
     @GetMapping("/{id}/favorites/{state}")
@@ -111,4 +123,15 @@ public class StrategyController {
 
         return JsonResult.jsonResultWithMap(map);
     }
+    @GetMapping("/{strategyCommentId}/replies")
+    public JsonResult reply(@PathVariable Long strategyCommentId) {
+
+        JsonResult jsonResult = new JsonResult();
+        StrategyComment comment = strategyService.getCommentById(strategyCommentId);
+        jsonResult.setObj(comment);
+
+        return jsonResult;
+    }
+
+
 }

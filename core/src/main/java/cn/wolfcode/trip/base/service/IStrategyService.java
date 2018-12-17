@@ -1,6 +1,7 @@
 package cn.wolfcode.trip.base.service;
 
 import cn.wolfcode.trip.base.domain.Strategy;
+import cn.wolfcode.trip.base.domain.StrategyComment;
 import cn.wolfcode.trip.base.query.StrategyQueryObject;
 import com.github.pagehelper.PageInfo;
 
@@ -70,4 +71,13 @@ public interface IStrategyService {
      * @return
      */
     Map getFavoriteById(Long id);
+
+    /**
+     * 在评论页面得到某条点评的数据
+     * @param strategyCommentId
+     * @return
+     */
+    StrategyComment getCommentById(Long strategyCommentId);
+
+
 }

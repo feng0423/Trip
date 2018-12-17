@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/css/comment.css">
     <link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="/css/reset.css"/>
+    <link rel="stylesheet" href="/css/strategyCatalogs.css"/>
 
     <script src="/js/jquery/jquery.min.js"></script>
     <script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
@@ -61,7 +64,45 @@
 
             var params = getParams();
 
+            if (params.type==2){
+                // 获取攻略点评的数据
+                $.get("/strategies/" + params.id + "/replies", function (data) {
+                    // $(".title").html(data.title)
+                    console.log(44444444444444444444444)
+                    console.log(data.obj)
+                    var user = data.obj.user;
+                    $("#titleH").css("display","none")
+                    $("#strategyComment").css("display","flex")
+                    $("#commentUserId").attr("href","userProfiles.html?id="+user.id);
+                    $("#commentHadImgUrl").attr("src",user.headImgUrl);
+                    $("#commentUserNickName").html(user.nickName);
+                    $("#commentCommendTime").html(data.obj.commendTime);
 
+                    var temp = "";
+                    //实心
+                    for (var i = 0; i < data.obj.starNum; i++) {
+                        temp += '<i class="fa fa-star""></i>'
+                    }
+                    //空心
+                    for (var i = 0; i < 5 - data.obj.starNum; i++) {
+                        temp += '<i class="fa fa-star-o" "></i>'
+                    }
+                    $(".comment-star").html(temp);
+
+                    $("#commentContent").html(data.obj.content)
+
+                    //-------------------------
+                    imgUrls=data.obj.imgArr; //字符分割
+
+                    var temp = "";
+                    for (var i = 0; i < imgUrls.length; i++) {
+                        temp += "<li><img src='"+imgUrls[i]+"'></li>";
+                    }
+                    console.log(temp)
+                    $("#commentImgs").html(temp)
+                });
+            }
+            //------------------------------------------
             function getTypeName() {
                 var typeName = "";
                 var title = "";
@@ -302,6 +343,34 @@
         <article class="comment">
             <section class="comment_detail">
                 <h1 id="titleH"></h1>
+                <!--针对攻略点评-->
+                <div class="container row comment" style="background-color: #EFEFEF;margin-left: 0px;margin-right: 0px;display: none;padding-top: 20px;padding-left: 0px; padding-bottom: 20px;" id="strategyComment">
+                    <div class="col-2 comment-head">
+                        <a id="commentUserId">
+                            <img class="rounded-circle"  id="commentHadImgUrl">
+                        </a>
+                    </div>
+                    <div class="col comment-right">
+                        <p class="authorName"><span id="commentUserNickName"></span></p>
+                        <span class="comment-star" >
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-o"></i>
+                        </span>
+                        <span class="comment-date" id="commentCommendTime"></span>
+                        <div class="comment-content">
+                            <p id="commentContent"></p>
+                        </div>
+
+                        <ul class="comment-img" id="commentImgs">
+                        </ul>
+
+
+                    </div>
+                </div>
+                <!--针对攻略点评-->
                 <ul class="comment_lsit" id="_j_commentlist" render-loop="list">
                     <li style="padding: 16px 0px 13px 0;margin-left: 40px;">
                         <a class="cl_ava" render-fun="getHref"

@@ -54,10 +54,16 @@
     where id = #{id}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap">
-    select id, user_id, createTime, content, imgUrls, starNum, strategy_id, state, commendTime
-    from strategycomment
-    where id = #{id}
+    select sc.id, sc.user_id, sc.createTime, sc.content, sc.imgUrls, sc.starNum, sc.strategy_id, sc.state, sc.commendTime,
+        u.id u_id,u.nickName u_nickName,u.headImgUrl u_headImgUrl,
+        s.id s_id,s.title s_title
+    from strategycomment sc
+     join user u on sc.user_id = u.id
+     join strategy s on s.id = sc.strategy_id
+    where sc.id = #{id}
   </select>
+
+
   <select id="selectAll" resultMap="BaseResultMap">
     select id, user_id, createTime, content, imgUrls, starNum, strategy_id, state, commendTime
     from strategycomment
@@ -90,4 +96,38 @@
         LEFT JOIN user u ON sc.user_id = u.id
         WHERE sc.user_id = #{UserId}
     </select>
+
+
+
+  <insert id="insertLikeStrategyCommentUserRelation">
+    INSERT INTO like_user_strategycomment (
+    user_id,
+    strategycomment_id,
+    create_time
+    ) VALUES (
+    #{userId},
+    #{strategycommentId},
+    now()
+    )
+  </insert>
+
+
+  <delete id="deleteLikeStrategyCommentUserRelation">
+    DELETE FROM like_user_strategycomment
+    WHERE user_id = #{userId} AND strategycomment_id = #{strategycommentId}
+  </delete>
+
+
+  <select id="countLikes" resultType="int">
+    select count(1)
+    from like_user_strategycomment
+    WHERE  strategycomment_id = #{strategycommentId}
+  </select>
+
+  <select id="selectLikeById" resultType="map">
+    select user_id, strategycomment_id, create_time
+    from like_user_strategycomment
+    WHERE user_id = #{userId} AND strategycomment_id = #{strategycommentId}
+
+  </select>
 </mapper>

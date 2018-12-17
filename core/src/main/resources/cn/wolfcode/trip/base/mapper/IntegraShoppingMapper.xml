@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.trip.base.mapper.IntegraShoppingMapper">
+  <resultMap id="BaseResultMap" type="cn.wolfcode.trip.base.domain.IntegraShopping">
+    <id column="id" property="id" />
+    <result column="productName" property="productName" />
+    <result column="productDescription" property="productDescription" />
+    <result column="coverUrl" property="coverUrl" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey">
+    delete from integrashopping
+    where id = #{id}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into integrashopping (productName, productDescription, coverUrl)
+    values (#{productName}, #{productDescription}, #{coverUrl})
+
+  </insert>
+  <!--#{sign_id}-->
+  <update id="updateByPrimaryKey">
+    update integrashopping
+    set productName = #{productName},
+      productDescription = #{productDescription},
+      coverUrl = #{coverUrl},
+    where id = #{id}
+  </update>
+  <!--sign_id = #{sign_id}-->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select id, productName, productDescription, coverUrl
+    from integrashopping
+    where id = #{id}
+  </select>
+
+  <!--sign_id-->
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, productName, productDescription, coverUrl
+    from integrashopping
+  </select>
+  <!--sign_id-->
+
+  <select id="selectForList" resultMap="BaseResultMap">
+    select id, productName, productDescription, coverUrl
+    from integrashopping
+  </select>
+
+</mapper>

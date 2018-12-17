@@ -44,7 +44,9 @@
                     });
                 }
             }
+
             button();
+
             function getNub() {
                 //回显粉丝和关注
                 $.get('/users/' + params.id + '/attention', function (data) {
@@ -53,28 +55,34 @@
                     $('#spanFans').text(data.fans)
                 })
             }
+
             getNub();
             //点击关注/取消关注加减
             $('#followBtn').click(function () {
-                //if(visitorId.id !=  authorId) {
-                    if (sessionStorage.getItem('user')) {
-                        if(visitorId.id !=  authorId) {
-                        if (attention) {
+                if (sessionStorage.getItem('user')) {
+                    if (visitorId.id != authorId) {
+                        var str = $('#followBtn').html()
+
+
+                        if ("取消关注" == str) {
                             $.post('/users/' + visitorId.id + '/' + authorId + '/delete');//删除关联
-                            getNub();
-                            button()
+                            var fan = parseInt($('#spanAttention').html())
+                            $('#spanAttention').html(fan-1)
+
                         } else {
                             $.post('/users/' + visitorId.id + '/' + authorId);//新增关联
-                            getNub();
-                            button();
+                            var fan = parseInt($('#spanAttention').html())
+                            $('#spanAttention').html(fan+1)
                         }
+                        getNub();
+                        button();
                     } else {
                         //window.location.href = '/login.html';
-                            alert("你每天都在关注自己,别太自恋了")
+                        alert("你每天都在关注自己,别太自恋了")
                     }
-                }else {
+                } else {
 
-                        window.location.href = '/login.html';
+                    window.location.href = '/login.html';
                 }
             })
 
@@ -104,6 +112,7 @@
                 })
                 currentPage = currentPage + 1;
             }
+
             queryTravel();
 
             $(window).scroll(function () {
@@ -152,6 +161,7 @@
                 })
                 commentsCurrentPage = commentsCurrentPage + 1;
             }
+
             query()
 
             $(window).scroll(function () {
@@ -170,10 +180,10 @@
             })
 
             //我的旅行表单,通过用户ID查询
-            $.get('/users/'+ params.id+"/strategy",function (data) {
-                var json = {list:data}
+            $.get('/users/' + params.id + "/strategy", function (data) {
+                var json = {list: data}
                 console.log(json);
-                $('#pills-newsreview').renderValues(json,{
+                $('#pills-newsreview').renderValues(json, {
                     getHref: function (item, value) {
                         //通过当前的对象获取超链接
                         var url = $(item).data("href");
@@ -228,17 +238,17 @@
         role="tablist">
         <li class="nav-item">
             <a class="nav-link active" id="travels-tab" data-toggle="pill" href="#travels">
-                TA的游记[<span>1</span>]
+                TA的游记
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link " id="comments-tab" data-toggle="pill" href="#comments">
-                TA的点评[<span>1</span>]
+                TA的点评
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact">
-                TA的旅行单[<span>0</span>]
+                TA的旅行单
             </a>
         </li>
     </ul>
@@ -252,7 +262,7 @@
                         <img render-src="list.coverUrl">
                         <p><span class="list.title" render-html="list.title"></span>
                             <span class="span-right">
-                                <span>0</span> <i class="fa fa-thumbs-o-up"></i></span>
+                                <span></span> <i class="fa fa-thumbs-o-up"></i></span>
                         </p>
                     </a>
                 </dd>
@@ -307,12 +317,13 @@
             <div class="tab-pane fade show" id="pills-newsreview">
                 <div class="row" render-loop="list">
                     <div class="col-6">
-                        <a data-href="/strategyCatalogs.html?id=" render-fun="getHref" render-key="list.id">  <!--data-href="/strategyCatalogs.html?id=" render-fun="getHref" render-key="list.id"-->
+                        <a data-href="/strategyCatalogs.html?id=" render-fun="getHref" render-key="list.id">
+                            <!--data-href="/strategyCatalogs.html?id=" render-fun="getHref" render-key="list.id"-->
                             <img class="rounded" width="100%" height="110px" render-src="list.coverUrl">
                         </a>
                         <div class="caption">
                             <span render-html="list.createTime">他很懒,什么也没有</span>
-                            <a > <!--data-href="/strategyCatalogs.html?id=" render-fun="getHref" render-key="list.id"-->
+                            <a> <!--data-href="/strategyCatalogs.html?id=" render-fun="getHref" render-key="list.id"-->
                                 <p render-html="list.title"></p>
                             </a>
                         </div>

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML> 
 
 <html>
 
@@ -10,6 +10,141 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <link href="/csss/1_style.css" rel="stylesheet">
     <script src="/csss/jquery-1.8.3.min.js"></script>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
+    <script src="/js/jquery/jquery.min.js"></script>
+    <script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/font/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/reset.css"/>
+    <link rel="stylesheet" href="/css/userProfiles.css"/>
+    <script src="/js/plugins/jrender/jrender.min.js"></script>
+    <script src="/js/common.js"></script>
+    <link rel="stylesheet" href="/js/plugins/dialog2/dialog.css"/>
+    <script src="/js/plugins/dialog2/dialog.min.js"></script>
+    <script>
+        $(function () {
+
+            var circleId;//朋友圈
+            var replyUserId;//评论人
+            var targetUserId;//被评论人
+            var commentsss;
+
+            //当前页h
+            var currentPage = 1;
+            //总页数
+            var pages;
+            var travelArr = [];
+
+            function query() {
+                //回显朋友圈
+                var user = JSON.parse(sessionStorage.getItem("user"));
+                $.get('/circleOfFriendsService/' + user.id, {currentPage: currentPage}, function (data) {
+                    $.merge(travelArr, data.list);
+                    var json = {list: travelArr};
+                    $('#main').renderValues(json, {
+                        getImgs: function (item, value) {
+                            //图片展示
+                            var imgUrls = value;
+                            var imgs = imgUrls.split(";");
+                            for (var i = 0; i < imgs.length; i++) {
+                                $(item).append("<img src='" + imgs[i] + "' width='100px' style='margin-right:10px'/>");
+                            }
+                        },
+                        getComments: function (item, value) {
+                            if (value.length > 0) {
+                                var temp = "";
+                                $.each(value, function (index, ele) {//遍历数组
+                                    if (ele.targetUser == null) {//判断被评论的人是不是作者
+                                        temp += '<p class="reply" data-replyId="' + ele.replyUser.id + '" data-circle="' + ele.circle.id + '"><span  data-circle="' + ele.circle.id + '"  data-replyId="' + ele.replyUser.id + '">' + ele.replyUser.nickName + '：</span>' + ele.content + '</p>'//回复朋友圈作者
+                                        //console.log(temp);
+                                    } else {//回复别人的时候
+                                        temp += '<p  class="reply" data-replyId="' + ele.replyUser.id + '" data-circle="' + ele.circle.id + '"><span  data-circle="' + ele.circle.id + '"  data-replyId="' + ele.replyUser.id + '"  class="data-name" >' + ele.replyUser.nickName + '</span> 回复 <span  >' + ele.targetUser.nickName + '</span><span>：</span>' + ele.content + '</p>'
+                                    }
+                                });
+                                $(item).html(temp);//追加
+                            }
+                        }
+                    })
+                    pages = data.pages;
+                    console.log(pages);
+                    //点击评论
+                    $('.friendComment').click(function () {
+                        circleId = $(this).data("id");
+                        $('#commentModal').modal('show')
+
+                        //点击评论发送请求新增评论
+                        $('#commentStrategyBtn').click(function () {
+                            commentsss = {
+                                content: $('input[name=content]').val(),
+                                'replyUser.id': user.id,
+                                'circle.id': circleId
+                            }
+                           // console.log(commentsss);
+                           // console.log({friendComment: commentsss});
+                            $.post('/circleOfFriendsService/friendComment', commentsss, function () {
+                                window.location.reload();
+                            })
+
+                        })
+                    })
+                    //点击回复
+                    $('.reply').click(function () {
+                        circleId = $(this).data("circle");
+                        targetUserId = $(this).data("replyid");
+                        console.log(targetUserId);
+                        $('#commentModal').modal('show')
+
+                        //点击评论发送请求新增评论
+                        $('#commentStrategyBtn').click(function () {
+                            console.log(circleId);
+                            console.log(user.id);
+                            var comment = {
+                                content: $('input[name=content]').val(),
+                                'replyUser.id': user.id,
+                                'circle.id': circleId,
+                                'targetUser.id': targetUserId
+
+                            }
+                            $.post('/circleOfFriendsService/friendComment', comment, function () {
+                                window.location.reload();
+                            })
+                        });
+
+
+                    })
+
+
+                })
+                currentPage = currentPage + 1;
+            }
+
+            query();
+
+
+            $(window).scroll(function () {
+                if ($(window).height() + $(document).scrollTop() + 1 >= $(document).height()) {
+                    if (currentPage <= pages) {
+                        query()
+                    } else {
+                        $(document).dialog({
+                            type: 'notice',
+                            content: '<span class="info-text">到底了</span>',
+                            autoClose: 1000
+                        });
+                    }
+                }
+            });
+
+
+            //回显背景和我的头像
+            $.get('/users/' + JSON.parse(sessionStorage.getItem('user')).id, function (data) {
+                $('#userH').renderValues(data);
+            })
+
+
+        })
+    </script>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
@@ -213,6 +348,7 @@
                 </div>
 
                 <div class="po-cmt">
+
                     <div class="po-hd">
                         <p class="po-name"><span class="data-name"></span></p>
                         <p class="post" render-html="list.content">过两天开party，都有谁来咧？</p>

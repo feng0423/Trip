@@ -19,9 +19,9 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.wolfcode.trip.base.domain.CircleOfFriends" useGeneratedKeys="true">
     insert into circle_of_friends (user_id, releaseTime, content, 
-      pictureUrl, comment_id)
+      pictureUrl)
     values (#{user.id,jdbcType=BIGINT}, now(), #{content,jdbcType=VARCHAR},
-      #{pictureUrl,jdbcType=VARCHAR}, #{comment.id,jdbcType=BIGINT})
+      #{pictureUrl,jdbcType=VARCHAR})
   </insert>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select id, user_id, releaseTime, content, pictureUrl, comment_id

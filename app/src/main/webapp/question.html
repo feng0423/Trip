@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>旅行有问题,首选骡窝窝</title>
+    <meta name="viewport"
+          content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no,address=no">
+    <link href="/css/question.css" rel="stylesheet" type="text/css">
+    <link href="/css/questioncomment.css" rel="stylesheet" type="text/css">
+    <script src="/js/jquery/jquery.min.js"></script>
+    <script src="/js/plugins/form/jquery.form.js"></script>
+    <script src="/js/plugins/jrender/jrender.min.js"></script>
+    <link rel="stylesheet" href="/js/plugins/dialog2/dialog.css"/>
+    <script src="/js/plugins/dialog2/dialog.min.js"></script>
+    <script>
+        $(function () {
+            var currentPage = 1;
+            var pages;
+            var questionData = [];
+            function query() {
+                $.get("/questions",{currentPage:currentPage},function (data) {
+                    $.merge(questionData,data.list);
+                    pages = data.pages;
+                    var json = {
+                        list:questionData
+                    };
+                    $("#questions").renderValues(json,{
+                        getHref:function (item,value) {
+                            var href = $(item).data("href");
+                            $(item).attr("href", href + value);
+                        }
+                    });
+                })
+                currentPage ++;
+            }
+            query();
+
+            $(window).scroll(function () {
+                if ($(window).height() + $(document).scrollTop() >= $(document).height()-1) {
+                    //alert(1);
+                    if (currentPage <= pages) {
+                        query();
+                    }else {
+                        $(document).dialog({
+                            type : 'notice',
+                            infoText: '亲,已经到底了!',
+                            autoClose: 1500,
+                            position: 'bottom'  // center: 居中; bottom: 底部
+                        });
+                    }
+                }
+            })
+
+        })
+    </script>
+</head>
+<body>
+<div id="pos38"></div>
+<header class="MfwHead">
+    <div class="LBtn">
+        <a class="btn back"
+           href="/index.html"
+           id="_j_top_history_back"><img src="/img/back.jpg" style="height: 45px"></a>
+    </div>
+    <div class="CBtn"><h1>骡窝窝问答</h1></div>
+    <div class="RBtn">
+    </div>
+</header>
+
+<section class="ans-list" id="questions">
+    <ul class="_j_pager_box"  render-loop="list">
+        <li>
+            <a data-href="/askComment.html?id=" render-key="list.id" render-fun="getHref">
+                <h2 render-html="list.title"></h2>
+                <div class="clearfix">
+                    <div class="user-img clearfix" data-uid="46376914">
+                        <p>
+                            <img render-src="list.user.headImgUrl">
+                        </p>
+
+                        <span  render-html="list.user.nickName"></span>
+                        <span>发布于</span>
+                        <span class="comment-date" render-html="list.createTime"></span>
+                    </div>
+                    <div class="ans-nr">
+                        <div class="clearfix">
+                            <div class="col bigimg">
+                                <img render-src="list.coverUrl">
+                            </div>
+                            <p render-html="list.content">
+                            </p>
+                        </div>
+                       <!-- <div class="clearfix">
+                            <span class="fl-l" render-html="list.region"></span>
+                            <span class="fl-r"><b render-html="list.browse"></b>次浏览<b render-html="list.praiseCount"></em></b><em>人顶</em></span>
+                        </div>-->
+                        <div class="clearfix">
+                            <span render-html="list.user.place"></span>
+                        </div>
+                        <div class="clearfix">
+                            <span class="fl-r"><b></b>回复</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </li>
+    </ul>
+</section>
+<br/>
+<br/>
+<br/>
+
+<section class="askfoot">
+    <a href="/issue.html" class="btn-que"><i></i>
+        我要提问
+    </a>
+</section>
+
+
+</body>
+</html>

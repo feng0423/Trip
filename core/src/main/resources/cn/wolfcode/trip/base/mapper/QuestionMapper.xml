@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.trip.base.mapper.QuestionMapper">
+  <resultMap id="BaseResultMap" type="cn.wolfcode.trip.base.domain.Question">
+    <result column="id" property="id" />
+    <result column="title" property="title" />
+    <result column="content" property="content" />
+    <result column="coverUrl" property="coverUrl" />
+    <result column="state" property="state" />
+    <result column="createTime" property="createTime" />
+    <association property="user" javaType="User" columnPrefix="u_">
+      <result column="id" property="id" />
+      <result column="nickName" property="nickName" />
+      <result column="place" property="place" />
+      <result column="headImgUrl" property="headImgUrl" />
+    </association>
+  </resultMap>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into question (id,title, coverUrl, user_id, state, createTime,content)
+    values (#{id},#{title}, #{coverUrl}, #{user.id}, #{state}, #{createTime},#{content})
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, title, coverUrl, user_id, state, createTime,content
+    from question
+    ORDER  BY id DESC,state
+  </select>
+  <select id="selectForList" resultMap="BaseResultMap">
+    select q.id, q.title, q.coverUrl, q.user_id, q.state, q.createTime,content,u.id u_id,u.nickName u_nickName,u.place u_place,u.headImgUrl u_headImgUrl
+    from question q JOIN  user u
+    ON q.user_id = u.id
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+      select q.id, q.title, q.coverUrl, q.user_id, q.state, q.createTime,content,u.id u_id,u.nickName u_nickName,u.place u_place,u.headImgUrl u_headImgUrl
+    from question q JOIN  user u
+    ON q.user_id = u.id
+    WHERE q.id=#{id}
+  </select>
+</mapper>

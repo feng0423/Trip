@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.trip.base.mapper.AttentionMapper">
+  <resultMap id="BaseResultMap" type="cn.wolfcode.trip.base.domain.Attention">
+    <result column="visitor_id" jdbcType="BIGINT" property="visitorId" />
+    <result column="author_id" jdbcType="BIGINT" property="authorId" />
+  </resultMap>
+  <insert id="insert" parameterType="cn.wolfcode.trip.base.domain.Attention">
+    insert into attention (visitor_id, author_id)
+    values (#{visitorId,jdbcType=BIGINT}, #{authorId,jdbcType=BIGINT})
+  </insert>
+  <delete id="delete">
+    DELETE FROM attention
+    WHERE visitor_id = #{visitorId} AND author_id = #{authorId}
+  </delete>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select visitor_id, author_id
+    from attention
+  </select>
+  <select id="gatAttention" resultMap="BaseResultMap">
+     select visitor_id, author_id
+    from attention WHERE visitor_id=#{visitorId} AND author_id =#{authorId}
+  </select>
+  <select id="selectAttention" resultType="int">
+    select count(author_id) attentionNub
+    from attention WHERE author_id = #{userId}
+  </select>
+  <select id="selectFans" resultType="int">
+    select count(visitor_id) fansNub
+    from attention WHERE visitor_id = #{userId}
+  </select>
+
+</mapper>

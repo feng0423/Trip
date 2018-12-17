@@ -1,0 +1,389 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/css/comment.css">
+    <link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
+
+    <script src="/js/jquery/jquery.min.js"></script>
+    <script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
+    <script src="/js/plugins/form/jquery.form.js"></script>
+    <script src="/js/plugins/jrender/jrender.min.js"></script>
+    <link rel="stylesheet" href="/js/plugins/dialog2/dialog.css">
+    <script src="/js/plugins/dialog2/dialog.min.js"></script>
+    <script src="/js/common.js"></script>
+
+    <style>
+        .tts{
+            width: 100%;
+            height:18em;
+            background:url("/img/reply/z_add.png");
+            background-size: 100% 100%;
+            float: left;
+            /*margin-right: 0.2rem;*/
+        }
+        .tts img {
+            width:100%;
+            height:18em;
+        }
+        .level2{
+            background-color: #eEeEeE;
+            margin-top: 0px;
+            padding-top: 6px;
+            padding-bottom: 6px;
+            padding-right: 8px;
+            padding-left: 8px;
+        }
+        .level2 a {
+            font-size: smaller;
+            color: #005cbf;
+        }
+        .level2 span {
+            font-size: smaller;
+        }
+    </style>
+    <script>
+
+        function openEditByBtn(rName, pId) {
+
+            $("#_j_replyinput").click()
+            $("#imgUpload").css("display", "none");
+
+            $("._j_submit").attr("data-rName",rName);
+            $("._j_submit").attr("data-pId",pId);
+            console.log(30910831803108);
+            console.log($("._j_submit"));
+        }
+
+
+        $(function () {
+
+            var params = getParams();
+
+
+            function getTypeName() {
+                var typeName = "";
+                var title = "";
+                if (params.title) {
+                    title = decodeURI(decodeURI(params.title));
+                }
+
+                if (params.type) {
+
+                    switch (params.type) {
+                        case "1":
+                            typeName = "回复游记：" + title;
+                            break;
+                        case "2":
+                            typeName = "回复攻略：" + title;
+                            break;
+                        case "3":
+                            typeName = "回复日报：" + title;
+                            break;
+                    }
+                }
+                return typeName;
+            }
+
+            $("#titleR").text(getTypeName());
+
+
+
+            //------------------------------------
+
+            $("#_j_replyinput").click(function () {
+                $("#imgUpload").css("display", "block");
+                $("#_js_replyBox").css("display", "block")
+
+            });
+
+            $("._j_close").click(function () {
+                $("#_js_replyBox").css("display", "none")
+            });
+
+
+            //定义一个变量接收当前点击图片的对象
+            var rent;
+            //上传图片
+            $(".rect").click(function () {
+                rent = $(this);
+                //弹出上传图片的框
+                $("#fileInput").click();
+            })
+
+            var imgUrl = ""
+            //判断是否发生改变
+            $("#fileInput").change(function () {
+
+                //如果有图片就提交
+                if ($(this).val()) {
+
+                    $("#fileFrom").ajaxSubmit(function (data) {
+
+                        if (data.status == 1) {
+                            rent.html('<img src="' + data.url + '"/>')
+                            imgUrl = data.url;
+
+                        }
+                    })
+                }
+            })
+
+            // -----------------
+
+            function afterPost(data) {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    window.location.href = "login.html";
+                }
+
+            }
+
+            $("._j_submit").click(function () {
+                var text = $("#_j_replyarea").val();
+                var replyPName =$(this).attr("data-rName");
+                var parentIdToPost = $(this).attr("data-pId");
+                // console.log(getPostParams(replyPName, text, null, parentIdToPost))
+                if (replyPName){
+
+                    // console.log(getPostParams(replyPName, text, null, parentIdToPost))
+                    // 2级回复
+                    $.post("/replies/saveLevel2", {content: text, parentId: parentIdToPost},
+                        function (data) {
+                            afterPost(data);
+                        }, "json");
+
+                }else {
+                    // 1级回复
+                    $.post("/replies/save", {type: params.type, title: getTypeName(), content: text, targetId: params.id, imgUrl: imgUrl},
+                        function (data) {
+                            afterPost(data);
+                        }, "json");
+                }
+
+
+            })
+
+            //----------------------------------------
+
+
+
+            var currentPage = 1;
+            var pages;
+
+            var replyArr = [];
+
+            function query() {
+                // type = 1 是游记的评论
+                $.get("/replies", {currentPage: currentPage, targetId: params.id, type: params.type}, function (data) {
+                    console.log(11111111111); // a连接
+                    console.log(data); // a连接
+
+
+                    var title = "";
+                    if (params.title) {
+                        title = decodeURI(decodeURI(params.title));
+                        $("#titleH").text("回复主题：" + title);
+                    }
+
+                    $.merge(replyArr, data.list);
+                    console.log(replyArr); // a连接
+
+                    // 渲染数据
+                    $(".comment_detail").renderValues({list: replyArr}, {
+                        getHref: function (item, value) {
+
+                            console.log(item); // a连接
+                            console.log(value); // id值
+
+                            $(item).attr('href', '/mine/userProfiles.html?id=' + value);
+                        },
+                        getReplyBtn: function (item, value) {
+                            console.log(item); // a连接
+                            console.log(value); // id值
+                            // console.log(66666); // id值
+                            if(value){
+                                var j = JSON.parse(value)
+                                console.log(66666666666666666666666); // a连接
+                                console.log(j['user.id']); // a连接
+                                // id值
+
+                                // console.log(777777); // id值
+                                // if (j.parentId == null) {
+                                    var n = "回复"+j['user.nickName']+"：";
+                                    $(item).attr('href', 'javascript:openEditByBtn(\"'+n+'\",'+j.id+');');
+
+                                    $("#titleR").text(n);
+                                // }
+                            }
+                        }
+                        // ,
+                        // getLevel2: function (item, value) {
+
+                            // console.log(4444444444444444444444444444444444444); // a连接
+                            // console.log(item); // a连接
+                            // console.log(value); // id值
+                            // // console.log(66666); // id值
+                            // if(value){
+                            //     // var replies = JSON.parse(value)
+                            //     var htmlText = "";
+                            //     for (var i = 0; i < value.length; i++){
+                            //         var one = value[i];
+                            //         var user =  one.user;
+                            //         console.log(user.nickName)
+                            //
+                            //         var url = '/mine/userProfiles.html?id='+user.id;
+                            //         htmlText += "<div style=\"clear: both\">\n" +
+                            //                             "<a href=\""+url+"\">"+user.nickName+"</a>\n" +
+                            //                             "<span>:"+one.content+"</span>\n" +
+                            //                         "</div>";
+                            //
+                            //     }
+                            //
+                            //     if(htmlText.length>0){
+                            //
+                            //         $(item).removeClass("display").addClass("display","block");
+                            //         $(item).html(htmlText);
+                            //     }
+                            //
+                            //
+                            // }
+                        // }
+                    });
+                    // 获取总页数
+                    pages = data.pages;
+                })
+                currentPage++;
+            }
+
+            // 默认查询第一页
+            query();
+
+            // 给window绑定滚动事件
+            $(window).scroll(function () {
+                if ($(window).height() + $(document).scrollTop() + 1 >= $(document).height()) {
+                    console.log(currentPage);
+                    // 如果是大于总页数就不发送请求了
+                    if (currentPage <= pages) {
+                        query();
+                    } else {
+                        $(document).dialog({
+                            type: 'notice',
+                            content: '<span class="info-text">亲，已经到底了！</span>',
+                            autoClose: 700
+                        });
+                    }
+                }
+            })
+//------------
+
+        })
+
+    </script>
+</head>
+<body>
+
+<div class="body_b">
+    <div id="pos38"></div>
+    <div class="wrapper">
+        <header class="head2home" style="margin-left: 15px; margin-top: 10px">
+            <a href="javascript:history.go(-1);" class="btn_back"></a>
+            <div class="rBtn">
+                <a href="/index.html" class="logo" style="margin-right: 15px"></a>
+            </div>
+        </header>
+    </div>
+    <section class="container">
+
+        <input id="_j_uid" type="hidden" value="">
+        <input id="_j_redirecturl" type="hidden" value="">
+        <article class="comment">
+            <section class="comment_detail">
+                <h1 id="titleH"></h1>
+                <ul class="comment_lsit" id="_j_commentlist" render-loop="list">
+                    <li style="padding: 16px 0px 13px 0;margin-left: 40px;">
+                        <a class="cl_ava" render-fun="getHref"
+                           render-key="list.user.id">
+
+                            <img class="rounded-circle" style="width: 10%;left:-40px;" render-src="list.user.headImgUrl">
+                        </a>
+                        <a href="" class="cl_name" render-html="list.user.nickName" render-fun="getHref"
+                           render-key="list.user.id"></a>
+
+                        <a role="button" class="cl_reply _j_reply" data-id="list.id" data-nickName="list.user.nickName"
+                           render-fun="getReplyBtn" render-key="list.json" >回复</a>
+
+                        <div class="cl_time" render-html="list.timeString"></div>
+
+                        <div class="cl_con" style="margin-top:0;">
+                            <div class="cl_quote cl_quote_img">
+                                <!--<span>引用 <span render-html="list.user.nickName"></span> 的图片：</span>-->
+                                <img render-src="list.imgUrl" class="replace-file-img">
+                            </div>
+                            <div class="cl_con" render-html="list.content" style="margin-top:0;line-height: 40px;">
+
+                            </div>
+
+                            <!--<div class="level2" style="display:none" render-fun="getLevel2" render-key="list.replies">-->
+                            <div  render-loop="list.replies">
+                                <div class="level2">
+                                    <div style="clear: both">
+                                        <a render-html="list.replies.user.nickName" render-fun="getHref" render-key="list.replies.user.id"></a>
+                                        <span>:</span>
+                                        <span render-html="list.replies.content">:</span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </li>
+
+                </ul>
+
+            </section>
+        </article>
+
+    </section>
+
+    <section class="reply_box bgef" id="_js_replyBox">
+        <div class="reply_title">
+            <div class="re-hd">我要回复</div>
+            <div class="btn">
+                <a class="close _j_close"><i></i></a>
+                <a class="submit _j_submit"><i></i></a>
+            </div>
+        </div>
+        <div style="margin-top: 60px;margin-left: 10px;margin-right: 10px;" id="titleR"></div>
+        <div class="reply-wrap">
+            <span id="titleTextarea"></span>
+            <textarea id="_j_replyarea"></textarea>
+
+            <form id="fileFrom" action="/images" method="post" enctype="multipart/form-data">
+                <input type="file" id="fileInput" name="file" style="display: none">
+
+            </form>
+
+            <div class="container imgs " style=" padding-right:0px;padding-left:0px;margin-top: 15px;" id="imgUpload">
+                <!--<div>-->
+                    <!--<img src="/img/reply/loading.gif">-->
+                <!--</div>-->
+                <div class="rect tts">
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer footer_comment foot-bar-reply">
+        <div class="comment_replay"><input id="_j_replyinput" type="text" placeholder="回复"></div>
+    </footer>
+</div>
+<script>
+
+</script>
+</body>
+</html>

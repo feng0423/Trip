@@ -8,7 +8,7 @@
             <li class="strategyCatalog"><a href="/strategyCatalog/list.do">攻略分类管理</a></li>
             <li class="strategyDetail"><a href="/strategyDetail/list.do">攻略文章管理</a></li>
             <li class="strategyComment"><a href="/strategyComment/list.do">攻略评论管理</a></li>
-            <li class="strategyTravel"><a href="/strategyTravel/list.do">大家都在看</a></li>
+            <li class="strategyTravel"><a href="/strategy/strategyLook.do">大家都在看</a></li>
         </ul>
     </li>
 
@@ -23,6 +23,15 @@
         </ul>
     </li>
 
+    <li class="list-group-item">
+        <a href="#" data-toggle="collapse" data-target="#news_detail">
+            <span>骡友日报管理</span>
+        </a>
+        <ul class="in" id="news_detail">
+            <li class="news"><a href="/news/list.do">日报管理</a></li>
+            <li class="#"><a href="#">日报评论管理</a></li>
+        </ul>
+    </li>
     <li class="list-group-item">
         <a href="#" data-toggle="collapse" data-target="#system_detail">
             <span>平台管理</span>

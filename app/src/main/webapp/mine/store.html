@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <title>积分商城</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/js/bootstrap/css/bootstrap.css">
+    <script src="/js/bootstrap/js/bootstrap.js"></script>
+    <script src="/js/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/font/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="/css/reset.css"/>
+    <link rel="stylesheet" href="/css/news.css"/>
+    <script src="/js/plugins/jrender/jrender.js"></script>
+    <link rel="stylesheet" href="/js/plugins/dialog/dialog.css">
+    <script src="/js/plugins/dialog/dialog.min.js"></script>
+    <script src="/js/plugins/jquery-form/jquery.form.js"></script>
+    <script src="/js/common.js"></script>
+
+    <script>
+        var currentPage = 1;//当前页
+        var pages;//总页数
+        var travels;//当前页面的游记对象
+        var user = JSON.parse(sessionStorage.getItem("user"));
+        $(function () {
+
+
+            //获取当前登录用户的信息
+
+            var userId = user.id;
+            $.get("/stores/" + user.id + "/score", function (data) {
+                var userScore = data.userScore;
+                console.log(userScore);
+            });
+
+
+            //获取全部商品
+            $.get("/stores", {pageSize: 4}, function (data) {
+                console.log(data);
+                var list = data.list;
+                renderValues(data);
+                pages = data.pages;
+                travels = data.list;
+            });
+            //滚动
+            $(window).scroll(function () {
+                if (isEnd()) {
+                    if (currentPage < pages) {
+                        currentPage++;
+                        $.get("/stores", {currentPage: currentPage, pageSize: 4}, function (data) {
+                            //console.log(data);
+                            $.merge(travels, data.list);
+                            renderValues({list: travels});
+                        }, "json");
+                    }
+                }
+            });
+
+            function renderValues(data) {
+                $("#store").renderValues(data);
+            }
+        })
+
+        function shop(obj){
+            var productId =$(obj).find("span").data("id");
+            $.post("/stores/products/"+productId+"/users/"+user.id,function (data) {
+                if (data.success) {
+                    //登录失败
+                    $(document).dialog({
+                        titleShow: false,
+                        style: "IOS",
+                        content: "恭喜您,兑换成功!",
+                        autoClose: 1500
+                    });
+                } else {
+                    //登录失败
+                    $(document).dialog({
+                        titleShow: false,
+                        style: "IOS",
+                        content: data.msg,
+                        autoClose: 1500
+                    });
+                }
+             })
+        }
+    </script>
+
+</head>
+
+<body>
+<input type="hidden" id="currentPage" name="currentPage" value="1">
+<input type="hidden" id="pageSize" name="pageSize" value="3">
+<div class="search-head">
+    <div class="row nav-search">
+        <div class="col-2">
+            <a href="/mine/profiles.html">
+                <span><i class="fa fa-chevron-left fa-2x"></i></span>
+            </a>
+        </div>
+        <div class="col-10">
+            <div class="input-group-sm search">
+                <input class="form-control searchBtn" id="keyword" placeholder="搜索商品">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="background-color: #ffd700">
+    <div class="col-4">
+    </div>
+    <div class="col-6">
+        <h3 class="top_1">积分商城</h3>
+    </div>
+</div>
+<br>
+
+<div class="container all">
+    <div id="store">
+        <div class="row store" render-loop="list">
+            <div class="col-6">
+                <img class="rounded" width="150px" height="150px" render-src="list.coverUrl">
+                <div class="caption">
+                    <br>
+                    <span render-html="list.name" style="color: #000000;font-size: large;font-weight: 600"></span>
+                    </br>
+
+                    <span style="color:#ff0000;font-size: inherit;font-weight: 600">积分:</span> <span
+                        render-html="list.score" style="font-weight: 700"></span>
+
+                    <a href="javascript:void(0)" onclick="shop(this)"><span render-attr="data-id=list.id">兑换</span></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -54,8 +54,6 @@
                         }
 					});
                 })
-
-
         })
 	</script>
 
@@ -135,7 +133,7 @@
 							<a render-fun="getHref" render-key="list.id">
 								<div class="zuo clearfloat fl box-s">
 									<p class="tit text" render-html="list.productDescription"></p>
-									<p><span>积分:</span><span class="over db red">1000000</span></p>
+									<p><span>积分:</span><span class="over db red" render-html="list.sign.score"></span></p>
 									<p class="tit text" render-html="list.productName"></p>
 								</div>
 								<div class="tu clearfloat fr">
@@ -145,6 +143,7 @@
 							</a>
 							</div>
 						</div>
+
 
 					</div>
 
@@ -604,7 +603,7 @@
 		<footer class="page-footer fixed-footer" id="footer">
 			<ul>
 				<li class="active">
-					<a href="index.html">
+					<a href="../index.html">
 						<i class="iconfont icon-shouye"></i>
 						<p>首页</p>
 					</a>

@@ -5,209 +5,288 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>确认订单</title>
 
-	<link rel="stylesheet" type="text/css" href="/css/integraShopping/css/base.css"/>
-	<link rel="stylesheet" type="text/css" href="/css/integraShopping/css/confirm.css"/>
-	<link rel="stylesheet" type="text/css" href="/css/integraShopping/css/mui.min.css"/>
-	<link rel="stylesheet" type="text/css" href="/css/integraShopping/css/loaders.min.css"/>
-	<link rel="stylesheet" type="text/css" href="/css/integraShopping/css/loading.css"/>
-	<link rel="stylesheet" href="/css/integraShopping/css/swiper.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/integraShopping/css/base.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/integraShopping/css/confirm.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/integraShopping/css/mui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/integraShopping/css/loaders.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/integraShopping/css/loading.css"/>
+    <link rel="stylesheet" href="/css/integraShopping/css/swiper.min.css">
 
-	<script src="/js/integraShopping/js/rem.js"></script>
-	<script src="/js/integraShopping/js/jquery.min.js" type="text/javascript"></script>
-	<script src="/js/integraShopping/js/others.js"></script>
-	<script src="/js/integraShopping/js/swiper.jquery.min.js"></script>
+    <script src="/js/integraShopping/js/rem.js"></script>
+    <script src="/js/integraShopping/js/jquery.min.js" type="text/javascript"></script>
+    <script src="/js/integraShopping/js/others.js"></script>
+    <script src="/js/integraShopping/js/swiper.jquery.min.js"></script>
 
+    <!--list渲染插件-->
+    <script src="/js/order/jquery-2.1.4.min.js"></script>
+    <script src="/js/plugins/form/jquery.form.js"></script>
 
-	
-	<script type="text/javascript">
-		sessionStorage.url = "confirm";
-		$(window).load(function(){
-			$(".loading").addClass("loader-chanage")
-			$(".loading").fadeOut(300)
-		})
-	</script>
+    <script src="/js/plugins/jrender/jrender.min.js"></script>
 
+    <script src="/js/plugins/common.js"></script>
 
+    <style>
+        .buttones{
+
+            width: 39.4%;
+            height: 1.6rem;
+            line-height: 1.6rem;
+            background-color:#03A9F4;
+            font-size: .5rem;
+            padding: 0;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
+
+    <script type="text/javascript">
+        sessionStorage.url = "confirm";
+        $(window).load(function () {
+            $(".loading").addClass("loader-chanage")
+            $(".loading").fadeOut(300)
+        })
+    </script>
+
+    <script>
+        $(function () {
+            /*查询所有的数据*/
+            var params = getParams();
+            $.get("/integraShopping/" + params.id, function (data) {
+
+                console.log(data);
+                $(".tops_heads").renderValues(data);
+                console.log(data);
+
+                // var user = JSON.parse(sessionStorage.getItem("user"));
+                // if (user){
+                //     $("#uid").val(user.id);
+                // }else {
+                //     window.location.href = "/login.html";
+                // }
+            });
+
+            //把表单变成异步请求表单
+            $("#sdfdsfdsf").click(function () {
+
+                $("#detailForm").ajaxSubmit({
+                    beforeSubmit: function (arr) {
+                        //arr代表提交表单是传递的数据
+                        //arr.push({name: "user.id",value:$("#userid").text()});//总价格
+                        //arr.push({name: "sign.score", value: $("#signScore").text()});//标题
+                        //arr.push({name: "tickets.coverUrl", value: $("#coverurl").attr("src")});//图片
+                        //arr.push({name: "create_time",value: $("#start_date").val()});//时间
+                        // arr.push({name: "productName",value:$("#productName").text()});//总价格
+
+                        arr.push({name: "integrasum", value: $("#zongjias").text()});//总价格
+                        arr.push({name: "integrashopping.id", value: $("#integrashopping_id").text()});//积分商城id
+                        console.log(arr);
+                    },
+
+                    success: function (data) { //表单提交成功后执行的函数
+                        if (data.success) {
+                            var p =  $("#zongjias").text();
+                            window.location.href = "/mine/cgorder.html?zongjias="+p;//我的游记
+                        }
+                    }
+                });
+            });
+
+        })
+    </script>
 </head>
 <!--loading页开始-->
 <div class="loading">
-	<div class="loader">
+    <div class="loader">
         <div class="loader-inner pacman">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
         </div>
-	</div>
+    </div>
 </div>
 <!--loading页结束-->
-	<body>
-		<!--header star-->
-		<header class="mui-bar mui-bar-nav" id="header">
-			<a class="btn" href="javascript:history.go(-1)">
-	            <i class="iconfont icon-fanhui"></i>
-	        </a>
-	        <div class="top-sch-box top-sch-boxtwo flex-col">
-	                      确认订单
-	        </div>
-	    </header>
-	    <!--header end-->
-	    
-	    <div class="warp warptwo clearfloat">
-	    	<div class="confirm clearfloat">
-	    		<div class="lie clearfloat">
-					<a href="detail.html">
-						<div class="tu clearfloat fl">
-							<img src="/img/integraShopping/images/xj.jpg"/>
-						</div>
-					</a>
-					<div class="right clearfloat fl">
-						<a href="detail.html">
-							<p class="tit over">单反相机，彰显你的风格</p>
-							<p class="fu-tit">颜色：蓝色  内存：120G</p>
-						</a>
-						<div class="xia clearfloat">
-							<a href="detail.html">
-								<p class="jifen fl over">100000积分</p>
-							</a>
-							<!--<span class="fr db">×1</span>-->
-						</div>
-					</div>
-				</div>
+<body>
+<!--header star-->
+<header class="mui-bar mui-bar-nav" id="header">
+    <a class="btn" href="javascript:history.go(-1)">
+        <i class="iconfont icon-fanhui"></i>
+    </a>
+    <div class="top-sch-box top-sch-boxtwo flex-col">
+        确认订单
+    </div>
+</header>
+<!--header end-->
 
-				<div class="gmshu gmshutwo clearfloat box-s fl">
-					<div class="gcontent clearfloat">
+<div class="tops_heads">
+    <form id="detailForm" action="/integraOrder/integraOrderform" method="post">
+        <input type="hidden" name="_method" value="put">
+        <input type="hidden" name="user.id" id="uid">
+        <div id="integrashopping_id" name="id" render-html="id" style="display:none;"></div>
 
-						<div class="getinput">
-							<p class="getxinxi" style="float: left;">联系人:</p>
-							<div class="getshu" style="float: left; width:85%;">
-								<input maxlength="20" type="text" name="username" id="UserName" class="xingmings" placeholder="真实姓名" style="border:none; width:100%;font-size: 16px;height:35px;margin-left:10px;margin-bottom:0px; padding:0;">
-							</div>
-						</div>
+        <div class="warp warptwo clearfloat">
+            <div class="confirm clearfloat">
+                <div class="lie clearfloat">
+                    <a href="detail.html">
+                        <div class="tu clearfloat fl">
+                            <img render-src="coverUrl"/>
+                        </div>
+                    </a>
+                    <div class="right clearfloat fl">
+                        <a href="detail.html">
+                            <p class="tit over" id="productName" render-html="productName"></p>
+                            <p class="fu-tit" id="productDescription" render-html="productDescription"></p>
+                        </a>
+                        <div class="xia clearfloat">
+                            <a href="detail.html">
+                                <p class="jifen fl over" id="signScore" render-html="sign.score"><span>积分</span></p>
+                            </a>
 
+                        </div>
+                    </div>
+                </div>
 
-					</div>
-				</div>
+                <div class="gmshu gmshutwo clearfloat box-s fl">
+                    <div class="gcontent clearfloat">
 
-				<div class="gmshu gmshutwo clearfloat box-s fl">
-					<div class="gcontent clearfloat">
-
-						<div class="getinput">
-							<p class="getxinxi" style="float: left;width:20%;">联系电话:</p>
-							<div class="getshu" style="float: left; width:70%;">
-								<input maxlength="20" type="text" name="username" id="phonenumber" class="xingmings" placeholder="请输入联系电话" style="border:none; width:100%;font-size: 16px;height:35px;margin-left:10px;margin-bottom:0px; padding:0;">
-							</div>
-						</div>
+                        <div class="getinput">
+                            <p class="getxinxi" style="float: left;">联系人:</p>
+                            <div class="getshu" style="float: left; width:85%;">
+                                <input maxlength="20" type="text" name="contactName" id="UserName" class="xingmings"
+                                       placeholder="真实姓名"
+                                       style="border:none; width:100%;font-size: 16px;height:35px;margin-left:10px;margin-bottom:0px; padding:0;">
+                            </div>
+                        </div>
 
 
-					</div>
-				</div>
+                    </div>
+                </div>
 
-				<div class="gmshu gmshutwo clearfloat box-s fl">
-					<div class="gcontent clearfloat">
+                <div class="gmshu gmshutwo clearfloat box-s fl">
+                    <div class="gcontent clearfloat">
 
-						<div class="getinput">
-							<p class="getxinxi" style="float: left; width:20%;">收货地址:</p>
-							<div class="getshu" style="float: left; width:70%;">
-								<input maxlength="20" type="text" name="username" id=" address" class="xingmings" placeholder="请输入收货地址" style="border:none; width:100%;font-size: 16px;height:35px;margin-left:10px;margin-bottom:0px; padding:0;">
-							</div>
-						</div>
+                        <div class="getinput">
+                            <p class="getxinxi" style="float: left;width:20%;">联系电话:</p>
+                            <div class="getshu" style="float: left; width:70%;">
+                                <input maxlength="20" type="text" name="contactNumber" id="phonenumber" class="xingmings"
+                                       placeholder="请输入联系电话"
+                                       style="border:none; width:100%;font-size: 16px;height:35px;margin-left:10px;margin-bottom:0px; padding:0;">
+                            </div>
+                        </div>
 
 
-					</div>
-				</div>
+                    </div>
+                </div>
 
-		     	<div class="gmshu gmshutwo clearfloat box-s fl">
-					<div class="gcontent clearfloat">
-						<p class="fl">配送方式</p>
-			     		<div class="you clearfloat fr">
-			     			<span>快递 免邮</span>
-			     			<i class="iconfont icon-jiantou1"></i>
-			     		</div>
-					</div>		     		
-		     	</div>
-		     	<div class="gmshu gmshutwo clearfloat box-s fl">
-					<div class="gcontent clearfloat">
-						<p class="fl">发票信息</p>
-			     		<div class="you clearfloat fr">
-			     			<div class="xuan clearfloat">
-			     				<div class="radiotwo" > 
-								    <label>
-								        <input type="radio" name="fapiao" value="" checked/>
-								        <div class="option"></div>
-								        <span class="opt-text">需要发票</span>
-								    </label>
-								</div>
-			     			</div>
-		    				<div class="xuan clearfloat">
-			     				<div class="radiotwo" > 
-								    <label>
-								        <input type="radio" name="fapiao" value=""/>
-								        <div class="option"></div>
-								        <span class="opt-text">不需要发票</span>
-								    </label>
-								</div>
-			     			</div>
-			     		</div>
-					</div>		     		
-		     	</div>
-		     	<div class="gmshu gmshuthree clearfloat box-s fl">
-					<div class="gcontent clearfloat">
-						<p class="fl">买家留言</p>
-			     		<div class="you clearfloat fl">
-			     			<input type="text" name="" id="" value="" class="text" placeholder="选填 对本次交易需求给商家留言" />
-			     		</div>
-					</div>		     		
-		     	</div>
-		     	<div class="gmshu clearfloat box-s fl">
-					<p class="fr">共1件商品   合计<samp>100000积分</samp></p>	     		
-		     	</div>
-		     	
-	    	</div>
-	    </div>	    
-	    
-		<!--settlement star-->
-	    <div class="settlement clearfloat">
-	    	<div class="zuo clearfloat fl box-s">
-	    		共<span>1</span>件  总积分：<span>100000</span>
-	    	</div>
-	    	<a href="zhifu.html" class="fl db">
-	    		提交订单
-	    	</a>
-	    </div>
-	    <!--settlement end-->
-	    
-		<!--footer star-->
-	    <footer class="page-footer fixed-footer" id="footer">
-			<ul>
-				<li>
-					<a href="index.html">
-						<i class="iconfont icon-shouye"></i>
-						<p>首页</p>
-					</a>
-				</li>
-				<li>
-					<a href="cation.html">
-						<i class="iconfont icon-icon04"></i>
-						<p>分类</p>
-					</a>
-				</li>
-				<li class="active">
-					<a href="shopcar.html">
-						<i class="iconfont icon-gouwuche"></i>
-						<p>购物车</p>
-					</a>
-				</li>
-				<li>
-					<a href="center.html">
-						<i class="iconfont icon-yonghuming"></i>
-						<p>我的</p>
-					</a>
-				</li>
-			</ul>
-		</footer>
-		<!--footer end-->
-	</body>
-	
+                <div class="gmshu gmshutwo clearfloat box-s fl">
+                    <div class="gcontent clearfloat">
+
+                        <div class="getinput">
+                            <p class="getxinxi" style="float: left; width:20%;">收货地址:</p>
+                            <div class="getshu" style="float: left; width:70%;">
+                                <input maxlength="20" type="text" name="shippingAddress" id=" address" class="xingmings"
+                                       placeholder="请输入收货地址"
+                                       style="border:none; width:100%;font-size: 16px;height:35px;margin-left:10px;margin-bottom:0px; padding:0;">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="gmshu gmshutwo clearfloat box-s fl">
+                    <div class="gcontent clearfloat">
+                        <p class="fl">配送方式</p>
+                        <div class="you clearfloat fr">
+                            <span>快递 免邮</span>
+                            <i class="iconfont icon-jiantou1"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="gmshu gmshutwo clearfloat box-s fl">
+                    <div class="gcontent clearfloat">
+                        <p class="fl">发票信息</p>
+                        <div class="you clearfloat fr">
+                            <div class="xuan clearfloat">
+                                <div class="radiotwo">
+                                    <label>
+                                        <input type="radio" name="fapiao" value="" checked/>
+                                        <div class="option"></div>
+                                        <span class="opt-text">需要发票</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="xuan clearfloat">
+                                <div class="radiotwo">
+                                    <label>
+                                        <input type="radio" name="fapiao" value=""/>
+                                        <div class="option"></div>
+                                        <span class="opt-text">不需要发票</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gmshu gmshuthree clearfloat box-s fl">
+                    <div class="gcontent clearfloat">
+                        <p class="fl">买家留言</p>
+                        <div class="you clearfloat fl">
+                            <input type="text" name="" id="" value="" class="text" placeholder="选填 对本次交易需求给商家留言"/>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="gmshu clearfloat box-s fl">
+                   <p class="fr">共1件商品合计<samp>100000积分</samp></p>
+                </div>-->
+
+            </div>
+        </div>
+
+        <!--settlement star-->
+        <div class="settlement clearfloat">
+            <div class="zuo clearfloat fl box-s">
+                共<span>1</span>件 总积分：<span id="zongjias" render-html="sign.score"></span>
+            </div>
+            <button type="button" class="db buttones" id="sdfdsfdsf">
+                提交订单
+            </button>
+        </div>
+    </form>
+</div>
+
+<!--settlement end-->
+
+<!--footer star-->
+<footer class="page-footer fixed-footer" id="footer">
+    <ul>
+        <li>
+            <a href="index.html">
+                <i class="iconfont icon-shouye"></i>
+                <p>首页</p>
+            </a>
+        </li>
+        <li>
+            <a href="cation.html">
+                <i class="iconfont icon-icon04"></i>
+                <p>分类</p>
+            </a>
+        </li>
+        <li class="active">
+            <a href="shopcar.html">
+                <i class="iconfont icon-gouwuche"></i>
+                <p>购物车</p>
+            </a>
+        </li>
+        <li>
+            <a href="center.html">
+                <i class="iconfont icon-yonghuming"></i>
+                <p>我的</p>
+            </a>
+        </li>
+    </ul>
+</footer>
+<!--footer end-->
+</body>
+
 </html>

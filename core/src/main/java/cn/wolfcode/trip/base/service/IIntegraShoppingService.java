@@ -28,4 +28,9 @@ public interface IIntegraShoppingService {
      * 修改
      */
     void update(IntegraShopping integraShopping);
+
+    /**
+     * 查询对应id
+     */
+    IntegraShopping get(Long id);
 }

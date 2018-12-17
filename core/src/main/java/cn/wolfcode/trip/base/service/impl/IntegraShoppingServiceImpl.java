@@ -57,4 +57,9 @@ public class IntegraShoppingServiceImpl implements IIntegraShoppingService {
         integraShoppingMapper.updateByPrimaryKey(integraShopping);
     }
 
+    public IntegraShopping get(Long id) {
+
+        return integraShoppingMapper.selectByPrimaryKey(id);
+    }
+
 }

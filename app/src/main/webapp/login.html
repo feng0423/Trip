@@ -19,6 +19,12 @@
 		    //如果用户存在返回的json字符串,如果存在,那就直接登录
 			//如果该用户不存在,b那么告诉用户邮箱或密码出错
 			//发送ajaxFrom异步请求
+
+
+
+
+
+			
 			$("#loginForm").ajaxForm(function (data) {
 				if(data.success){
                     //登录成功后的用户信息,存到sessionStorage(把json对象转换成字符串在存储)

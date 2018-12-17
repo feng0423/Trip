@@ -91,42 +91,40 @@
 //
                 favorite(-1);
                 //--------------------
-                $.get("/sessions/isLogined", function (data) {
+                var user = JSON.parse(sessionStorage.getItem("user"));
+                if(user){
 
+                    $("#likeBtn").click(function () {
+                        // state  -1:查询 0:没按 1:按下
+                        var state = 1;
+                        var has = $(this).hasClass("fa-thumbs-o-up");
+                        if(has){
+                            state = 0;
+                        }
+                        like(state);
+                    })
+
+                    $("#collectBtn").click(function () {
+                        // state  -1:查询 0:没按 1:按下
+                        var state = 1;
+                        var has = $(this).hasClass("fa-heart-o");
+                        if(has){
+                            state = 0;
+                        }
+                        favorite(state);
+                    })
+
+                }else{
                     // 没登录的话就不显示底部3个按钮
-                    if(!data.obj){
-                        $("#likeBtn").click(function () {
-                            window.location.href = "login.html";
-                        });
 
-                        $("#bottomBtn").click(function () {
-                            window.location.href = "login.html";
-                        });
-                    }else {
+                    $("#likeBtn").click(function () {
+                        window.location.href = "login.html";
+                    });
 
-                        $("#likeBtn").click(function () {
-                            // state  -1:查询 0:没按 1:按下
-                            var state = 1;
-                            var has = $(this).hasClass("fa-thumbs-o-up");
-                            if(has){
-                                state = 0;
-                            }
-                            like(state);
-                        })
-
-                        $("#collectBtn").click(function () {
-                            // state  -1:查询 0:没按 1:按下
-                            var state = 1;
-                            var has = $(this).hasClass("fa-heart-o");
-                            if(has){
-                                state = 0;
-                            }
-                            favorite(state);
-                        })
-
-                    }
-
-                })
+                    $("#bottomBtn").click(function () {
+                        window.location.href = "login.html";
+                    });
+                }
                 //---------------------------------
 
                 //获取全部攻略进行分页
@@ -333,7 +331,7 @@
                         </span>
                         <span class="comment-date" render-html="list.commendTime"></span>
                         <div class="comment-content">
-                            <a href="strategyComment.html"><p render-html="list.content"></p></a>
+                            <a href="reply.html" render-fun="getHref" render-key="list.starNum"><p render-html="list.content"></p></a>
                         </div>
 
                         <ul class="comment-img" render-loop="list.imgArr">

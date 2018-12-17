@@ -95,48 +95,44 @@
                 favorite(-1);
 
                 //---------------------------------
+                var user = JSON.parse(sessionStorage.getItem("user"));
+                if(user){
+                    $("#likeBtn").click(function () {
+                        // state  -1:查询 0:没按 1:按下
+                        var state = 1;
+                        var has = $(this).hasClass("fa-thumbs-o-up");
+                        if(has){
+                            state = 0;
+                        }
+                        like(state);
+                    })
 
-                $.get("/sessions/isLogined", function (data) {
+
+                    $("#commentBtn").click(function () {
+                        window.location.href = "reply.html?id=" + params.id+"&title="+encodeURI(encodeURI(title)) +"&type=3";
+                    });
+
+                    $("#collectBtn").click(function () {
+                        // state  -1:查询 0:没按 1:按下
+                        var state = 1;
+                        var has = $(this).hasClass("fa-star-o");
+                        if(has){
+                            state = 0;
+                        }
+                        favorite(state);
+                    })
+                }else{
                     // 没登录的话就不显示底部3个按钮
-                    if(!data.obj){
-                        $("#likeBtn").click(function () {
-                            window.location.href = "login.html";
-                        });
-                        $("#commentBtn").click(function () {
-                            window.location.href = "login.html";
-                        });
-                        $("#bottomBtn").click(function () {
-                            window.location.href = "login.html";
-                        });
-                    }else {
-                        $("#likeBtn").click(function () {
-                            // state  -1:查询 0:没按 1:按下
-                            var state = 1;
-                            var has = $(this).hasClass("fa-thumbs-o-up");
-                            if(has){
-                                state = 0;
-                            }
-                            like(state);
-                        })
-
-
-                        $("#commentBtn").click(function () {
-                            window.location.href = "reply.html?id=" + params.id+"&title="+encodeURI(encodeURI(title)) +"&type=3";
-                        });
-
-                        $("#collectBtn").click(function () {
-                            // state  -1:查询 0:没按 1:按下
-                            var state = 1;
-                            var has = $(this).hasClass("fa-star-o");
-                            if(has){
-                                state = 0;
-                            }
-                            favorite(state);
-                        })
-
-                    }
-
-                })
+                    $("#likeBtn").click(function () {
+                        window.location.href = "login.html";
+                    });
+                    $("#commentBtn").click(function () {
+                        window.location.href = "login.html";
+                    });
+                    $("#bottomBtn").click(function () {
+                        window.location.href = "login.html";
+                    });
+				}
             })
 		</script>
 		

@@ -25,7 +25,11 @@ public class ImageController {
         HashMap<String, Object> map = new HashMap();
         try {
             //别忘加upload
-            String url = UploadUtil.upload(upload,UploadUtil.PATH+"/upload");
+           // String url = UploadUtil.upload(upload,UploadUtil.PATH+"/upload");
+
+            String url = UploadUtil.uploadQiniyun(upload);
+            map.put("url",UploadUtil.Qi_PATH+url);
+
             map.put("uploaded",1);
             map.put("url",url);
         } catch (Exception e) {

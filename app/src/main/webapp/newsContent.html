@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>骡窝日报详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		    <link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
+			<script src="/js/jquery/jquery.min.js"></script>
+			<script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
+			<link rel="stylesheet" href="/css/font/css/font-awesome.min.css"/>
+			<link rel="stylesheet" href="/css/reset.css"/>
+			<link rel="stylesheet" href="/css/newsContent.css">
+			<script src="/js/plugins/jrender/jrender.min.js"></script>
+			<link rel="stylesheet" href="/js/plugins/dialog2/dialog.css"/>
+			<script src="/js/plugins/dialog2/dialog.min.js"></script>
+		    <script src="/js/plugins/common.js"></script>
+		<script>
+            $(function () {
+
+                var title = "";
+                var params = getParams();
+                if(params.id){
+                    //获取该游记的相关信息
+                    $.get('/news/'+params.id,function (data) {
+                        title = data.title;
+                        $(".newsDetail").renderValues(data);
+                    })
+                }
+
+                //---------------------------------------------
+                function getReplyCount() {
+
+                    $.get("/news/" + params.id + "/replies", function (data) {
+
+                        var resultMap = data.obj;
+
+                        if (resultMap!=null){
+
+                            $("#commentCount").text(resultMap["count"]);
+                        }
+
+                    })
+                }
+//
+                getReplyCount();
+
+                //---------------------------------
+                //------------------
+
+
+                function like(state) {
+
+                    $.get("/news/" + params.id + "/likes/" + state, function (data) {
+
+                        // 回显
+                        var resultMap = data.obj;
+                        if (resultMap!=null){
+                            if (!resultMap["hasClick"]) {
+
+                                $("#likeBtn").removeClass("fa-thumbs-up").addClass("fa-thumbs-o-up")
+                            } else {
+                                $("#likeBtn").removeClass("fa-thumbs-o-up").addClass("fa-thumbs-up")
+                            }
+                            $("#likeCount").text(resultMap["count"]);
+                        }
+                    })
+                }
+//
+                like(-1);
+
+                //---------------------------------------------
+                function favorite(state) {
+
+                    $.get("/news/" + params.id + "/favorites/"+ state, function (data) {
+
+                        var resultMap = data.obj;
+
+                        if (resultMap!=null){
+                            if (!resultMap["hasClick"]) {
+                                $("#collectBtn").removeClass("fa-star").addClass("fa-star-o")
+                            } else {
+                                $("#collectBtn").removeClass("fa-star-o").addClass("fa-star")
+                            }
+
+
+
+                            $("#collectCount").text(resultMap["count"]);
+                        }
+
+
+                    })
+                }
+//
+                favorite(-1);
+
+                //---------------------------------
+                var user = JSON.parse(sessionStorage.getItem("user"));
+                if(user){
+                    $("#likeBtn").click(function () {
+                        // state  -1:查询 0:没按 1:按下
+                        var state = 1;
+                        var has = $(this).hasClass("fa-thumbs-o-up");
+                        if(has){
+                            state = 0;
+                        }
+                        like(state);
+                    })
+
+
+                    $("#commentBtn").click(function () {
+                        window.location.href = "reply.html?id=" + params.id+"&title="+encodeURI(encodeURI(title)) +"&type=3";
+                    });
+
+                    $("#collectBtn").click(function () {
+                        // state  -1:查询 0:没按 1:按下
+                        var state = 1;
+                        var has = $(this).hasClass("fa-star-o");
+                        if(has){
+                            state = 0;
+                        }
+                        favorite(state);
+                    })
+                }else{
+                    // 没登录的话就不显示底部3个按钮
+                    $("#likeBtn").click(function () {
+                        window.location.href = "login.html";
+                    });
+                    $("#commentBtn").click(function () {
+                        window.location.href = "login.html";
+                    });
+                    $("#bottomBtn").click(function () {
+                        window.location.href = "login.html";
+                    });
+				}
+            })
+		</script>
+		
+	</head>
+
+	<body>
+		<div class="newsDetail">
+			<img  class="cover" render-src="coverUrl">
+			<div>
+			<a href="javascript:history.go(-1);" style="position: absolute;top: 10px;left: 22px;">
+				<span><i class="fa fa-chevron-left fa-2x" style="color: white;"></i></span>
+			</a>
+
+
+			<div class="container">
+				<div class="row typeRow">
+					<div class="col-4">
+						<span class="type" >美图美文</span>
+					</div>
+					<div class="col-2">
+					</div>
+					<div class="col-2">
+						<span>By</span>
+					</div>
+					<div class="col-4">
+						<span class="type">骡窝官方</span>
+					</div>
+				</div>
+
+				<div class="detail">
+					<h2 class="title" render-html="title"></h2>
+					<div class="content" render-html='content.content'>
+					</div>
+				</div>
+			</div>
+			</div>
+
+			<div class="container d-flex" id="bottomBtn" >
+				<div class="p-2  flex-fill">
+					<i class="fa fa-thumbs-o-up" id="likeBtn"> <span id="likeCount"></span></i>
+				</div>
+				<div class="p-2  flex-fill"><i class="fa  fa-commenting-o" id="commentBtn"><span id="commentCount"></span></i>
+				</div>
+				<div class="p-2  flex-fill"><i class="fa fa-star-o" id="collectBtn"> <span id="collectCount"></span></i>
+				</div>
+			</div>
+
+		</div>
+	
+
+</body>
+
+</html>

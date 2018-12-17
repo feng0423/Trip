@@ -3,6 +3,8 @@ package cn.wolfcode.trip.base.util;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Setter
 @Getter
 public class JsonResult {
@@ -15,5 +17,14 @@ public class JsonResult {
     public void mark(String msg){
         this.success = false;
         this.msg = msg;
+    }
+
+    // 通过把map传入Obj,返还一个success为true的JsonResult
+    public static JsonResult jsonResultWithMap(Map map){
+        JsonResult jsonResult = new JsonResult();
+
+        // 如果页面取此值为null, 即当前没有收藏;反之有收藏
+        jsonResult.setObj(map);
+        return jsonResult;
     }
 }

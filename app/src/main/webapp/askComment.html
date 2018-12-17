@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head lang="en">
+    <title>提问详情</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
+    <script src="/js/jquery/jquery.min.js"></script>
+    <script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/font/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="/css/reset.css"/>
+    <link rel="stylesheet" href="/css/strategyComment.css"/>
+    <script src="/js/plugins/jrender/jrender.min.js"></script>
+    <link rel="stylesheet" href="/js/plugins/dialog2/dialog.css"/>
+    <script src="/js/plugins/dialog2/dialog.min.js"></script>
+    <script src="/js/plugins/form/jquery.form.js"></script>
+    <script src="/js/common.js"></script>
+    <script>
+        $(function () {
+            var user = JSON.parse(sessionStorage.getItem("user"));
+            var params = getParams();
+            var a =params.id;
+            $("#coverUrl").val(a);
+            function queryComments() {
+                //获取指定问题的评论信息并渲染
+                $.get("/questions/"+params.id+"/askComments",function (data) {
+                    $(".askComment").renderValues({list:data},{
+                        getHref:function (item,value) {
+                            var href = $(item).data("href");
+                            $(item).attr("href",href+value);
+                        }
+                    });
+                    //获取当前问题的评论数并将数据填充进去
+                    $("#totalComments").html(data.length);
+                    //console.log(data.length);
+                })
+            }
+            var praiseCount;
+            var byAttentionId;
+            var attention1 = '<i class="fa fa-hand-o-right" style="font-size:20px;color:red"></i>关注';
+            var attention2 = "取消关注";
+            var attention;
+            if (params.id) {
+                //获取问题信息并渲染
+                $.get("/questions/"+params.id,function (data) {
+                    $(".question").renderValues(data,{
+                        getHref:function (item,value) {
+                            var href = $(item).data("href");
+                            $(item).attr("href",href+value);
+                        }
+                    });
+                    var browse = data.browse;
+                    byAttentionId = data.user.id;
+                    //更新用户浏览量
+                    $.ajax({
+                        url:"/questions",
+                        method: "put",
+                        data : {
+                            questionId: params.id,
+                            browse: browse
+                        }
+                    });
+                    //更新用户关注状态
+                    $("#followBtn").html(attention1);
+                    if (user) {
+                        var attentionId = user.id;
+                        if (attentionId == byAttentionId) {
+                            //如果登录和查看信息都是自己，就把关注按钮删除
+                            $("#followBtn").remove();
+                            $("#letterBtn").remove();
+
+                        }
+                        $.get("/questions/"+byAttentionId+"/attention",function (data) {
+                            console.log(data);
+                            if (data) {
+                                attention = attention2;
+                            }else {
+                                attention = attention1;
+                            }
+                            $("#followBtn").html(attention);
+                        })
+                    }
+                })
+                queryComments();
+                $.get("/questions/"+params.id+"/praiseCount",function (data) {
+                    praiseCount = data;
+                    $("#praiseCount").html(data);
+                })
+            }
+            //用户需要登录后才能对问题进行评论
+            $("#send").click(function () {
+                //alert(1);
+                if (!user) {
+                    $(document).dialog({
+                        type : 'confirm',
+                        closeBtnShow: true,
+                        content: '请登录后再回复问题',
+                        onClickConfirmBtn: function(){
+                            window.location.href="login.html";
+                        }
+                    });
+                }else {
+                    if ($("#content").val() == null || $("#content").val() =="") {
+                        $(document).dialog({
+                            autoClose: 3000,
+                            content: '请输入你的回复内容',
+                        });
+                    }else {
+                        $("#askForm").attr("action","/questions/addAsk");
+                        var content = $("#content").val();
+                        //console.log(content);
+                        $("#askForm input[name='content']").val(content);
+                        $("#askForm").ajaxSubmit(function (data) {
+                           /* if (data.success) {
+                                queryComments();
+                                $("#content").val("");
+                            }*/
+                            if (data.success) {
+                                $(document).dialog({
+                                    type: 'toast',
+                                    infoIcon: '../js/plugins/dialog2/images/icon/success.png',
+                                    infoText: '保存成功',
+                                    autoClose: 2000
+                                });
+                                setTimeout(function () {
+                                    window.location.href="/question.html";
+                                },2000)
+                            }
+                        })
+                    }
+                }
+            })
+
+
+
+           /* //点击关注按钮事件
+            $("#followBtn").click(function () {
+                if (user) {
+                    //如果点击了取消关注
+                    if (attention2 == $("#followBtn").html()) {
+                        attention = attention1;
+                        //发送请求去数据库中修改他们之间的关注关系
+                        $.ajax({
+                            url: "/attentions",
+                            method: 'put',
+                            data:{
+                                attentionId:user.id,
+                                byAttentionId:byAttentionId
+                            },
+                            success: function (data) {
+                                $(document).dialog({
+                                    type: 'toast',
+                                    infoIcon: '../js/plugins/dialog2/images/icon/success.png',
+                                    infoText: '取消关注成功',
+                                    autoClose: 2500
+                                });
+                            }
+                        });
+                        //如果点击了关注按钮
+                    } else {
+                        attention = attention2;
+                        //发送一个请求去数据库中修改他们的关注关系
+                        $.post("/attentions", {attentionId: user.id, byAttentionId: byAttentionId}, function (data) {
+                            if (data.success) {
+                                $(document).dialog({
+                                    type: 'toast',
+                                    infoIcon: '../js/plugins/dialog2/images/icon/success.png',
+                                    infoText: '关注成功',
+                                    autoClose: 2500
+                                });
+                            }
+                        });
+                    }
+                    $("#followBtn").html(attention);
+                    //如果没有登录，点击按钮给予提示
+                } else {
+                    $(document).dialog({
+                        type: 'toast',
+                        infoIcon: '../js/plugins/dialog2/images/icon/fail.png',
+                        infoText: '你还没有登录，请登录后再试！',
+                        autoClose: 2500
+                    });
+                }
+            });*/
+        })
+    </script>
+
+</head>
+
+<body>
+
+<form method="post" id="askForm" action="/questions/addAsk">
+    <input type="hidden" name="content" class="content">
+    <input type="hidden" name="coverUrl" id="coverUrl">
+    <input type="hidden" name="state" value="1">
+</form>
+
+<div class="search-head">
+    <div class="row nav-search">
+        <div class="col" id="back">
+            <a href="/question.html">
+                <span><i class="fa fa-chevron-left"></i></span>
+            </a>
+        </div>
+        <div class="col">
+            <span>提问详情</span>
+        </div>
+        <div id="collect" class="col" style="text-align: right"></div>
+    </div>
+</div>
+<br/>
+<div class="question">
+    <div class="container">
+        <div class="row">
+            <div class="col-2 comment-head">
+                <a data-href="userProfiles.html?id=" render-key="user.id" render-fun="getHref">
+                    <img class="rounded-circle" render-src="user.headImgUrl">
+                </a>
+                <!--<button class="btn btn-success ibtn" id="followBtn">关注</button>-->
+                <button class="btn" id="followBtn">
+                </button>
+            </div>
+            <div class="col">
+                <span class="comment-star" render-html="user.nickName"></span>
+                <span class="comment-date" render-html="createTime"></span>
+                <span>发布</span>
+                <div class="comment-content">
+                    <h5 render-html="title"></h5>
+                    <img  render-src="coverImgUrl" style="width: 80%">
+                    <p render-html="content"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<div class="count d-flex justify-content-between">
+        <div class="p-2">评论数<span id="totalComments"></span></div>
+        <div class="p-2">
+            <i class="fa fa-thumbs-o-up" style="font-size:20px;color:red" id="likeBtn"></i>
+            <span id="praiseCount"></span>
+        </div>
+    </div>-->
+</div>
+
+<div class="askComment">
+    <div render-loop="list" id="askComment">
+        <div>
+            <div class="container">
+                <br/>
+                <div class="row">
+                    <div class="col-2 comment-head">
+                        <a data-href="userProfiles.html?id=" render-key="list.user.id" render-fun="getHref">
+                            <img class="rounded-circle" render-src="list.user.headImgUrl">
+                        </a>
+                    </div>
+                    <div class="col">
+                        <span class="comment-star" render-html="list.user.nickName"></span>
+                        <span class="comment-date" render-html="list.commentTime"></span>
+                        <div class="comment-content">
+                            <p render-html="list.content"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="count d-flex justify-content-between" style="height: 2px">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="operation">
+    <div class="d-flex justify-content-between">
+        <div class="p-2 commenting" style="text-align: center;width: 100%;position: relative;background:#4D4C4B">
+            <i id="send">发送</i>
+            <textarea style="width: 50%;height: 20px;font-size: 15px;text-align: left"
+                      class="form-control-lg" placeholder="回复" id="content"></textarea>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+<style>
+</style>
+</html></html>

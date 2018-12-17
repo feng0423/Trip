@@ -8,7 +8,7 @@ import cn.wolfcode.trip.base.service.IStrategyService;
 import cn.wolfcode.trip.base.util.JsonResult;
 import cn.wolfcode.trip.base.util.UploadUtil;
 import com.github.pagehelper.PageInfo;
-import com.sun.org.apache.xpath.internal.operations.Mult;
+//import com.sun.org.apache.xpath.internal.operations.Mult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,12 +37,14 @@ public class StrategyController {
     @RequestMapping("/saveOrUpdate")
     @ResponseBody
     public JsonResult saveOrUpdate(Strategy strategy, MultipartFile file) {
-            //判断是否上传文件
-            if(file!=null && file.getSize()>0){
-                String url = UploadUtil.upload(file, UploadUtil.PATH+"/upload");
-                System.out.println(url);
-                strategy.setCoverUrl(url);
-            }
+        //判断是否上传文件
+        if(file!=null && file.getSize()>0){
+            //String url = UploadUtil.upload(file, UploadUtil.PATH+"/upload");
+            String url = UploadUtil.uploadQiniyun(file);
+            //map.put("url",UploadUtil.Qi_PATH+url);
+            //System.out.println(UploadUtil.Qi_PATH+url);
+            strategy.setCoverUrl(UploadUtil.Qi_PATH+url);
+        }
         strategyService.saveOrUpdate(strategy);
         return new JsonResult();
     }

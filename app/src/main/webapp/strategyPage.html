@@ -34,7 +34,7 @@
             //获取大攻略推荐状态为1的所有推荐
             $.get("/strategies", {pageSize: 0, state: 1}, function (data) {
                 //渲染数据
-                $(".strategyCommend").renderValues(data,{
+                $(".strategyCommend").renderValues(data, {
                     getHref: function (item, value) {
                         //通过当前的对象获取超链接
                         var url = $(item).data("href");
@@ -65,7 +65,7 @@
                     pages = 2;
                     //注意发送异步情求,需要将数据渲染完才能进行相关的操作
                     regionId = $(this).data("rid");
-                    if(regionId){
+                    if (regionId) {
                         //获取html内容
                         $.get('regions/' + regionId + '/strategies', function (data) {
                             //然后放到该地区对应的div内容中
@@ -117,6 +117,24 @@
                     }
                 }
             })
+            $("#select").click(function () {
+                var keyword = $("#keyword").val();
+                console.log(keyword);
+                //什么都不输/输n个空格,都不会跳页
+                if (keyword == "" || keyword == undefined || keyword == null || (keyword.length > 0 && keyword.trim().length == 0)) {
+                    $(document).dialog({
+                        type: 'notice',
+                        infoText: '搜索内容不能为空',
+                        autoClose: 1000,
+                        position: 'center'  // center: 居中; bottom: 底部
+                    });
+                } else {
+                    //将keyword共享到作用域
+                    sessionStorage.setItem("keyword", keyword);
+                    //window.sessionStorage.setItem("keyword", JSON.stringify(keyword));
+                    window.location.href = "/search.html";
+                }
+            });
         })
     </script>
 </head>
@@ -141,10 +159,14 @@
                 <span><i class="fa fa-chevron-left fa-2x"></i></span>
             </a>
         </div>
-        <div class="col-10">
-            <div class="input-group-sm search">
-                <input class="form-control searchBtn" placeholder="找攻略">
+        <div class="col-9">
+            <div class="input-group-sm">
+                <input class="form-control s" placeholder="找攻略" id="keyword">
             </div>
+        </div>
+        <div class="col-1">
+            <i class="fa fa-search" id="select"
+               style="color:white;font-size:25px;position: absolute;top: 20%;left: 1%"></i>
         </div>
     </div>
 </div>
@@ -171,7 +193,7 @@
             <h6>当季推荐</h6>
             <div class="row hot" render-loop="list">
                 <div class="col-4">
-                    <a  render-fun="getHref" render-key="list.id" data-href="/strategyCatalogs.html?id=">
+                    <a render-fun="getHref" render-key="list.id" data-href="/strategyCatalogs.html?id=">
                         <img render-src="list.coverUrl">
                         <p render-html="list.title"></p>
                     </a>

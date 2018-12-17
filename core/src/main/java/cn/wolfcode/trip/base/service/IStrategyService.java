@@ -1,10 +1,12 @@
 package cn.wolfcode.trip.base.service;
 
 import cn.wolfcode.trip.base.domain.Strategy;
+import cn.wolfcode.trip.base.domain.StrategyComment;
 import cn.wolfcode.trip.base.query.StrategyQueryObject;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IStrategyService {
     /**
@@ -31,6 +33,7 @@ public interface IStrategyService {
     Strategy getStrategyById(Long id);
 
 
+
     /**
      * 根据用户ID查询该用户所收藏的攻略
      * @param userId
@@ -42,4 +45,39 @@ public interface IStrategyService {
      * @return
      */
     List listLook();
+
+    /**
+     * 点赞或取消点赞
+     * @param id
+     */
+    Map like(Long id);
+
+    /**
+     * 查询是否点赞
+     * @param id
+     * @return
+     */
+    Map getLikeById(Long id);
+
+    /**
+     * 收藏或取消收藏
+     * @param id
+     */
+    Map favorite(Long id);
+
+    /**
+     * 查询是否收藏了 返回null就没有收藏
+     * @param id
+     * @return
+     */
+    Map getFavoriteById(Long id);
+
+    /**
+     * 在评论页面得到某条点评的数据
+     * @param strategyCommentId
+     * @return
+     */
+    StrategyComment getCommentById(Long strategyCommentId);
+
+
 }

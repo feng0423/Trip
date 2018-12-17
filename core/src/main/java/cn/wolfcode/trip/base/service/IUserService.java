@@ -1,6 +1,5 @@
 package cn.wolfcode.trip.base.service;
 
-import cn.wolfcode.trip.base.domain.Travel;
 import cn.wolfcode.trip.base.domain.User;
 import cn.wolfcode.trip.base.query.QueryObject;
 import com.github.pagehelper.PageInfo;
@@ -30,6 +29,8 @@ public interface IUserService {
      * @param user
      */
     void update(User user);
+
+
 
     /**
      * 通过ID查询指定用户

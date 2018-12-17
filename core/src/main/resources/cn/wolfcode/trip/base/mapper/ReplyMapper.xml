@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.trip.base.mapper.ReplyMapper">
+  <resultMap id="BaseResultMap" type="cn.wolfcode.trip.base.domain.Reply">
+    <id column="id" property="id" />
+    <result column="title" property="title" />
+    <result column="content" property="content" />
+    <result column="target_id" property="targetId" />
+    <result column="type" property="type" />
+    <result column="create_time" property="createTime" />
+    <result column="img_url" property="imgUrl" />
+    <association property="user" javaType="user" columnPrefix="u_">
+      <id column="id" property="id" />
+      <result column="nickName" property="nickName"/>
+      <result column="headImgUrl" property="headImgUrl"/>
+    </association>
+    <collection property="replies" ofType="replySecond" select="cn.wolfcode.trip.base.mapper.ReplySecondMapper.selectAllByParentId" column="id">
+      <id column="id" property="id" />
+      <result column="content" property="content" />
+      <result column="create_time" property="createTime" />
+      <result column="parent_id" property="parentId" />
+      <association property="user" javaType="user" columnPrefix="u_">
+        <id column="id" property="id" />
+        <result column="nickName" property="nickName"/>
+        <result column="headImgUrl" property="headImgUrl"/>
+      </association>
+    </collection>
+  </resultMap>
+  
+  
+
+
+
+  <delete id="deleteByTargetId">
+    DELETE FROM reply
+    WHERE target_id = #{targetId} AND type=#{type}
+  </delete>
+
+  <delete id="deleteByPrimaryKey">
+    DELETE FROM reply
+    WHERE id = #{id} OR parent_id = #{id}
+  </delete>
+
+  <insert id="insert" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    INSERT INTO reply (title, content, target_id,
+      user_id, type, create_time, 
+      img_url)
+    VALUES (#{title}, #{content}, #{targetId},
+      #{user.id}, #{type}, now(),
+      #{imgUrl})
+  </insert>
+  
+  
+    <select id="selectAllByTypeTargetId" resultMap="BaseResultMap">
+      SELECT r.id, r.title, r.content, r.target_id, r.user_id, r.type, r.create_time, r.img_url,
+            u.id u_id, u.nickName u_nickName, u.headImgUrl u_headImgUrl
+      FROM reply r
+      JOIN user u ON u.id = r.user_id
+      <where>
+        <if test="type!=null and targetId!=null">
+          AND r.type=#{type} AND r.target_id=#{targetId}
+        </if>
+      </where>
+    </select>
+
+</mapper>

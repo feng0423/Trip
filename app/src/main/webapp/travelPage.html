@@ -75,6 +75,23 @@
                 //first和first的区别主要是前者为父目录第一个 , 后者为父目录下的所有第一个
                 $(".carousel-item:first").addClass("active");
             });
+            $("#select").click(function () {
+                var keyword = $("#keyword").val();
+                //什么都不输/输n个空格,都不会跳页
+                if (keyword == "" || keyword == undefined || keyword == null || (keyword.length > 0 && keyword.trim().length == 0)) {
+                    $(document).dialog({
+                        type: 'notice',
+                        infoText: '搜索内容不能为空',
+                        autoClose: 1000,
+                        position: 'center'  // center: 居中; bottom: 底部
+                    });
+                } else {
+                    //将keyword共享到作用域
+                    sessionStorage.setItem("keyword", keyword);
+                    //window.sessionStorage.setItem("keyword", JSON.stringify(keyword));
+                    window.location.href = "/search.html";
+                }
+            });
         })
     </script>
 </head>
@@ -88,10 +105,14 @@
                 <span><i class="fa fa-chevron-left fa-2x"></i></span>
             </a>
         </div>
-        <div class="col-10">
+        <div class="col-9">
             <div class="input-group-sm search">
-                <input class="form-control searchBtn" placeholder="搜游记">
+                <input class="form-control searchBtn" placeholder="搜游记" id="keyword">
             </div>
+        </div>
+        <div class="col-1">
+            <i class="fa fa-search" id="select"
+               style="color:white;font-size:25px;position: absolute;top: 20%;left: 1%"></i>
         </div>
     </div>
 </div>

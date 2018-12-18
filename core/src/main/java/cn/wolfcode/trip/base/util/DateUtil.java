@@ -13,6 +13,8 @@ public abstract class DateUtil {
     }
     
     public static String getDateString(Date createTime) throws ParseException {
+        if (createTime==null)
+            return "";
         // 今日零时的date对象
         Date todayZero = DateUtil.zeroTime();
         int days = (int) ((todayZero.getTime() - createTime.getTime()) / (1000 * 3600 * 24));

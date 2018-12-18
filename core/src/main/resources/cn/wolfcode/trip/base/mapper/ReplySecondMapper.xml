@@ -29,8 +29,6 @@
   <select id="selectAllByParentId" resultMap="BaseResultMap">
     SELECT r.id, r.content, r.user_id, r.create_time, r.parent_id,
             u.id u_id, u.nickName u_nickName, u.headImgUrl u_headImgUrl
-
-
     FROM reply_second r
     JOIN user u ON u.id = r.user_id
       WHERE r.parent_id = #{id}

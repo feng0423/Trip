@@ -1,63 +1,285 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>旅行有问题,首选骡窝窝</title>
-    <meta name="viewport"
-          content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui,viewport-fit=cover">
-    <meta name="format-detection" content="telephone=no,address=no">
+    <link rel="stylesheet" href="/css/comment.css">
     <link href="/css/question.css" rel="stylesheet" type="text/css">
     <link href="/css/questioncomment.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/js/bootstrap-4.1.1-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="/css/reset.css"/>
+    <link rel="stylesheet" href="/css/strategyCatalogs.css"/>
+
     <script src="/js/jquery/jquery.min.js"></script>
+    <script src="/js/bootstrap-4.1.1-dist/js/bootstrap.min.js"></script>
     <script src="/js/plugins/form/jquery.form.js"></script>
     <script src="/js/plugins/jrender/jrender.min.js"></script>
-    <link rel="stylesheet" href="/js/plugins/dialog2/dialog.css"/>
+    <link rel="stylesheet" href="/js/plugins/dialog2/dialog.css">
     <script src="/js/plugins/dialog2/dialog.min.js"></script>
+    <script src="/js/common.js"></script>
+
+    <style>
+        .tts {
+            width: 100%;
+            height: 18em;
+            background: url("/img/reply/z_add.png");
+            background-size: 100% 100%;
+            float: left;
+            /*margin-right: 0.2rem;*/
+        }
+
+        .tts img {
+            width: 100%;
+            height: 18em;
+        }
+
+        .level2 {
+            background-color: #eEeEeE;
+            margin-top: 0px;
+            padding-top: 6px;
+            padding-bottom: 6px;
+            padding-right: 8px;
+            padding-left: 8px;
+        }
+
+        .level2 a {
+            font-size: smaller;
+            color: #005cbf;
+        }
+
+        .level2 span {
+            font-size: smaller;
+        }
+
+        .uploadbox {
+            background: rgba(0, 0, 0, .5);
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            min-height: 480px;
+            z-index: 999;
+        }
+
+        .uploadimg {
+            position: absolute;
+            top: 48.9%;
+            left: 33%;
+        }
+
+        .inputboes {
+            width: 97%;
+            box-shadow: 0px 0px 0px 2px transparent;
+            color: #eca29b;
+            -webkit-transition: box-shadow 0.3s;
+            transition: box-shadow 0.3s;
+            position: relative;
+            display: block;
+
+            padding: 0.8em;
+
+            border: none;
+            border-radius: 0;
+            background: #f9f9f9;
+
+            color: #666;
+            font-size: 100%;
+            margin: 0;
+            line-height: normal;
+        }
+    </style>
     <script>
+        var imgUrl = ""
+        // function level2Submit(questionId) {
+        //
+        // 2级回符
+        // $("#topic").attr("placeholder","")
+
+        // $.post("/questions/saveLevel2", json,
+        //     function (data) {
+        //         afterPost(data);
+        //     }, "json");
+        // }
+
+        function openEditByBtn(rName, pId) {
+
+            $("#_j_replyinput").click()
+
+            $("._j_submit").attr("data-rName", rName);
+            $("._j_submit").attr("data-pId", pId);
+
+            $("#topic").val("回复" + rName + "：");
+            $('#topic').attr("readonly", "readonly")
+
+            console.log($("._j_submit"));
+        }
+
+
         $(function () {
+
+            $("#_j_replyinput").click(function () {
+
+                $("#_js_replyBox").css("display", "block")
+
+                $("#topic").val("");
+                $('#topic').removeAttr("readonly");
+
+            });
+
+            $("._j_close").click(function () {
+                $("#_js_replyBox").css("display", "none")
+            });
+
+
+            //定义一个变量接收当前点击图片的对象
+            var rent;
+            //上传图片
+            $(".rect").click(function () {
+                rent = $(this);
+                //弹出上传图片的框
+                $("#fileInput").click();
+            })
+
+
+            //判断是否发生改变
+            $("#fileInput").change(function () {
+
+                //如果有图片就提交
+                if ($(this).val()) {
+                    $(".uploadbox").css("display", "block")
+
+                    $("#fileFrom").ajaxSubmit(function (data) {
+
+                        if (data.status == 1) {
+                            $(".uploadbox").css("display", "none")
+                            rent.html('<img src="' + data.url + '"/>')
+                            imgUrl = data.url;
+
+                        }
+                    })
+                }
+            })
+
+            // -----------------
+
+            function afterPost(data) {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    window.location.href = "login.html";
+                }
+
+            }
+
+            $("._j_submit").click(function () {
+                var text = $("#_j_replyarea").val();
+                var replyPName = $(this).attr("data-rName");
+                var parentIdToPost = $(this).attr("data-pId");
+                // console.log(getPostParams(replyPName, text, null, parentIdToPost))
+                if (replyPName) {
+
+
+                    var json = {
+                        content: $("#_j_replyarea").val(),
+                        questionId: $("._j_submit").attr("data-pId"),
+                        imgUrl: imgUrl
+                    };
+                    console.log(13313111)
+                    console.log(json)
+                    // console.log(getPostParams(replyPName, text, null, parentIdToPost))
+                    // 2级回复
+                    $.post("/questions/saveLevel2", json,
+                        function (data) {
+                            afterPost(data);
+                        }, "json");
+
+                } else {
+                    // 1级回复
+                    $.post("/questions/save", {
+                            type: params.type,
+                            title: getTypeName(),
+                            content: text,
+                            targetId: params.id,
+                            imgUrl: imgUrl
+                        },
+                        function (data) {
+                            afterPost(data);
+                        }, "json");
+                }
+
+
+            })
+
+            //----------------------------------------
+
+
             var currentPage = 1;
             var pages;
-            var questionData = [];
+
+            var replyArr = [];
+
             function query() {
-                $.get("/questions",{currentPage:currentPage},function (data) {
-                    $.merge(questionData,data.list);
+
+                $.get("/questions", {currentPage: currentPage}, function (data) {
+
+                    $.merge(replyArr, data.list);
                     pages = data.pages;
                     var json = {
-                        list:questionData
+                        list: replyArr
                     };
-                    $("#questions").renderValues(json,{
-                        getHref:function (item,value) {
+
+
+                    console.log(444444444444444444444444444);
+                    console.log(json);
+                    $(".comment_detail").renderValues(json, {
+                        getHref: function (item, value) {
+
+                            console.log(5555555555555555555555555555)
+                            var j = JSON.parse(value);
+                            console.log(j)
+                            var rName = j["user.nickName"]
+                            var id = j.id
+                            console.log(rName)
+
+
                             var href = $(item).data("href");
-                            $(item).attr("href", href + value);
+                            $(item).attr("href", "javascript:openEditByBtn('" + rName + "'," + j.id + ");");
                         }
                     });
                 })
-                currentPage ++;
+                currentPage++;
             }
+
+            // 默认查询第一页
             query();
 
+            // 给window绑定滚动事件
             $(window).scroll(function () {
-                if ($(window).height() + $(document).scrollTop() >= $(document).height()-1) {
-                    //alert(1);
+                if ($(window).height() + $(document).scrollTop() + 1 >= $(document).height()) {
+                    console.log(currentPage);
+                    // 如果是大于总页数就不发送请求了
                     if (currentPage <= pages) {
                         query();
-                    }else {
+                    } else {
                         $(document).dialog({
-                            type : 'notice',
-                            infoText: '亲,已经到底了!',
-                            autoClose: 1500,
-                            position: 'bottom'  // center: 居中; bottom: 底部
+                            type: 'notice',
+                            content: '<span class="info-text">亲，已经到底了！</span>',
+                            autoClose: 700
                         });
                     }
                 }
             })
+//------------
 
         })
+
     </script>
 </head>
 <body>
-<div id="pos38"></div>
 <header class="MfwHead">
     <div class="LBtn">
         <a class="btn back"
@@ -68,56 +290,145 @@
     <div class="RBtn">
     </div>
 </header>
+<div class="body_b">
+    <div id="pos38"></div>
 
-<section class="ans-list" id="questions">
-    <ul class="_j_pager_box"  render-loop="list">
-        <li>
-            <a data-href="/askComment.html?id=" render-key="list.id" render-fun="getHref">
-                <h2 render-html="list.title"></h2>
+
+    <section class="comment_detail ans-list">
+        <ul class="comment_lsit" id="_j_commentlist" render-loop="list"  style="margin-bottom: 36px;">
+            <li style="margin-left:0px;">
+
+                <h2 render-html="list.title"
+                    style="border-bottom: 1px dashed orange;font-size: 15px;padding-bottom: 10px;"></h2>
                 <div class="clearfix">
                     <div class="user-img clearfix" data-uid="46376914">
                         <p>
-                            <img render-src="list.user.headImgUrl">
+                            <img render-src="list.user.headImgUrl" style="width: 40px;height: 40px;">
                         </p>
 
-                        <span  render-html="list.user.nickName"></span>
-                        <span>发布于</span>
-                        <span class="comment-date" render-html="list.createTime"></span>
+                        <span render-html="list.user.nickName"
+                              style="margin-left: 35px;color: orange;font-size: 12px;"></span>
+                        <span style="font-size: 12px;">发布于</span>
+                        <span class="comment-date" render-html="list.timeString" style="font-size: 12px;"></span>
                     </div>
                     <div class="ans-nr">
-                        <div class="clearfix">
+                        <div class="clearfix" style="margin-left: 5.5rem;">
                             <div class="col bigimg">
-                                <img render-src="list.coverUrl">
+                                <img render-src="list.imgUrl" style="width: 100%">
                             </div>
-                            <p render-html="list.content">
+                            <p render-html="list.content" style="font-size: 14px;">
                             </p>
                         </div>
-                       <!-- <div class="clearfix">
-                            <span class="fl-l" render-html="list.region"></span>
-                            <span class="fl-r"><b render-html="list.browse"></b>次浏览<b render-html="list.praiseCount"></em></b><em>人顶</em></span>
-                        </div>-->
+                        <!-- <div class="clearfix">
+                             <span class="fl-l" render-html="list.region"></span>
+                             <span class="fl-r"><b render-html="list.browse"></b>次浏览<b render-html="list.praiseCount"></em></b><em>人顶</em></span>
+                         </div>-->
                         <div class="clearfix">
-                            <span render-html="list.user.place"></span>
+                            <span render-html="list.user.place" style="font-size: 12px;"></span>
                         </div>
                         <div class="clearfix">
-                            <span class="fl-r"><b></b>回复</span>
+                            <a render-key="list.json" render-fun="getHref">
+                                <span class="fl-r" style="font-size: 13px;"><b></b>回复</span>
+                            </a>
                         </div>
                     </div>
                 </div>
-            </a>
-        </li>
-    </ul>
-</section>
-<br/>
-<br/>
-<br/>
-
-<section class="askfoot">
-    <a href="/issue.html" class="btn-que"><i></i>
-        我要提问
-    </a>
-</section>
 
 
+
+
+
+
+
+                <div  render-loop="list.replies">
+                    <div style="margin-top: 13px;background-color: #efefef;position: relative;">
+                        <div class="clearfix">
+
+                            <p>
+                                <img render-src="list.replies.user.headImgUrl"
+                                     style="width: 40px;height: 40px;width: 40px;border-radius: 100%;margin-top: 10px;margin-left: 10px;">
+                            </p>
+
+                        </div>
+                        <div style="width: 80%;position: absolute;top: 20px;left: 30px;">
+
+                        <span render-html="list.replies.user.nickName"
+                              style="margin-left: 35px;color: orange;font-size: 12px;"></span>
+                            <span style="font-size: 12px;">发布于</span>
+                            <span class="comment-date" render-html="list.replies.timeString"
+                                  style="font-size: 12px;"></span>
+                        </div>
+                        <div class="ans-nr">
+                            <div class="clearfix" style="margin-left: 5.5rem;">
+                                <div class="col bigimg">
+                                    <img render-src="list.replies.imgUrl" style="width: 100%">
+                                </div>
+                                <p render-html="list.replies.content" style="font-size: 14px;padding-left: 10px;">
+                                </p>
+                            </div>
+                            <div class="clearfix" style="width: 90%;padding-left: 10px;padding-bottom: 10px;">
+                                <span render-html="list.replies.user.place" style="font-size: 12px;"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+            </li>
+        </ul>
+
+
+    </section>
+    <section class="reply_box bgef" id="_js_replyBox">
+        <div class="reply_title">
+            <div class="re-hd">我要回复</div>
+            <div class="btn">
+                <a class="close _j_close"><i
+                        style="background: url(/img/reply/footbar.png) 0px 0px no-repeat;width: 23px; height: 16px; display: block; margin: 16px 0 0 14px;background-size: 25px 300px;"></i></a>
+                <a class="submit _j_submit"><i
+                        style="background: url(/img/reply/footbar.png) 0 -20px no-repeat;width: 23px;height: 16px;display: block; margin: 13px 0 0 10px;background-size: 25px 300px;"></i></a>
+            </div>
+        </div>
+
+        <div class="reply-wrap">
+
+            <form id="fileFrom" action="/images" method="post" enctype="multipart/form-data" style="margin-top: 60px;">
+                <input style="font-size: medium;padding-top: 10px;" type="text" id="topic" placeholder="请输入标题"
+                       class="inputboes">
+                <input type="file" id="fileInput" name="file" style="display: none">
+
+            </form>
+
+            <span id="titleTextarea"></span>
+            <textarea id="_j_replyarea" style="font-size: medium;margin-top: 20px;" placeholder="请输入提问内容"></textarea>
+
+
+            <div class="container imgs " style=" padding-right:0px;padding-left:0px;margin-top: 15px;" id="imgUpload">
+                <!--<div>-->
+                <!--<img src="/img/reply/loading.gif">-->
+                <!--</div>-->
+                <div class="rect tts">
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div class="uploadbox" style="display: none">
+        <div class="uploadimg">
+            <img src="/img/reply/loading.gif">
+        </div>
+    </div>
+
+    <footer class="footer footer_comment foot-bar-reply">
+        <div class="comment_replay"><input id="_j_replyinput" type="text" placeholder="回复"></div>
+    </footer>
+</div>
+<script>
+
+</script>
 </body>
 </html>

@@ -5,34 +5,56 @@
     <result column="id" property="id" />
     <result column="title" property="title" />
     <result column="content" property="content" />
-    <result column="coverUrl" property="coverUrl" />
-    <result column="state" property="state" />
-    <result column="createTime" property="createTime" />
+    <result column="img_url" property="imgUrl" />
+    <result column="create_time" property="createTime" />
     <association property="user" javaType="User" columnPrefix="u_">
       <result column="id" property="id" />
       <result column="nickName" property="nickName" />
       <result column="place" property="place" />
       <result column="headImgUrl" property="headImgUrl" />
     </association>
+      <collection property="replies" ofType="QuestionSecond" select="cn.wolfcode.trip.base.mapper.QuestionSecondMapper.selectAllByQuestionId" column="id">
+      <id column="id" property="id" />
+      <result column="content" property="content" />
+      <result column="create_time" property="createTime" />
+      <result column="question_id" property="questionId" />
+      <result column="img_url" property="imgUrl" />
+      <association property="user" javaType="user" columnPrefix="u_">
+          <id column="id" property="id" />
+          <result column="nickName" property="nickName"/>
+          <result column="headImgUrl" property="headImgUrl"/>
+      </association>
+      </collection>
   </resultMap>
+
   <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-    insert into question (id,title, coverUrl, user_id, state, createTime,content)
-    values (#{id},#{title}, #{coverUrl}, #{user.id}, #{state}, #{createTime},#{content})
+    INSERT INTO question (
+          title,
+          img_url,
+          user_id,
+          create_time,
+          content
+    ) VALUES (
+          #{title},
+          #{imgUrl},
+          #{user.id},
+          now(),
+          #{content}
+    )
   </insert>
-  <select id="selectAll" resultMap="BaseResultMap">
-    select id, title, coverUrl, user_id, state, createTime,content
-    from question
-    ORDER  BY id DESC,state
-  </select>
-  <select id="selectForList" resultMap="BaseResultMap">
-    select q.id, q.title, q.coverUrl, q.user_id, q.state, q.createTime,content,u.id u_id,u.nickName u_nickName,u.place u_place,u.headImgUrl u_headImgUrl
-    from question q JOIN  user u
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM question
+        WHERE id = #{id}
+    </delete>
+
+
+    <select id="selectAll" resultMap="BaseResultMap">
+    SELECT q.id, q.title, q.img_url, q.user_id, q.create_time,content,
+          u.id u_id,u.nickName u_nickName,u.place u_place,u.headImgUrl u_headImgUrl
+    FROM question q JOIN  user u
     ON q.user_id = u.id
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
-      select q.id, q.title, q.coverUrl, q.user_id, q.state, q.createTime,content,u.id u_id,u.nickName u_nickName,u.place u_place,u.headImgUrl u_headImgUrl
-    from question q JOIN  user u
-    ON q.user_id = u.id
-    WHERE q.id=#{id}
-  </select>
+
+
+
 </mapper>

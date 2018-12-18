@@ -45,7 +45,7 @@
   <!--关联查询积分表获取到积分数-->
   <select id="selectForList" resultMap="BaseResultMap">
     select sp.id,sp.productName,sp.productDescription,sp.coverUrl,sp.sign_id,s.id s_id,s.score s_score
-    from integrashopping sp JOIN sign s ON sp.sign_id=s.id
+    from integrashopping sp LEFT JOIN sign s ON sp.sign_id=s.id
   </select>
 
 </mapper>

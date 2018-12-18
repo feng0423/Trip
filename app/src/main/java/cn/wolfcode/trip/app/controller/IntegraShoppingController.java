@@ -31,7 +31,6 @@ public class IntegraShoppingController {
      */
     @GetMapping
     public PageInfo query(IntegraShoppingQueryObject qo) {
-
         PageInfo query = integraShoppingService.query(qo);
         return query;
     }

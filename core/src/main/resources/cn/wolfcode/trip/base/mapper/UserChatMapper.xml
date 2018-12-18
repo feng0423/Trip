@@ -34,6 +34,11 @@
       status = #{status}
     where id = #{id}
   </update>
+    <update id="setStatus">
+        update userchat
+        set status = 0
+        WHERE sender_id=#{senderId} and receiver_id=#{receiverId}
+    </update>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap">
     select uc.*,s.id,s.headImgUrl,s.nickName,r.id,r.headImgUrl,r.nickName
     from userchat uc
@@ -78,5 +83,11 @@
                 and uc.sendTime > #{newTime}
             </if>
         </where>
+
+    </select>
+    <select id="selectUnreadsNum" resultType="int">
+        select COUNT(uc.id)
+        from userchat uc
+        WHERE uc.status = 1 AND uc.sender_id=#{senderId}
     </select>
 </mapper>

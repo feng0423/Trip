@@ -34,46 +34,6 @@
 		</div>
 
 
-
-
-		<div class="container travel">
-			<dl class="itemList" render-loop="list" >
-				<dd>
-					<div class="mfw-cmt _j_reply_item" >
-						<div class="mcmt-info">
-							<div class="mcmt-photo">
-								<a href="/mine/userProfiles.html" title="牛逼" >
-									<img render-src="list.user.headImgUrl" width="48" height="48" alt="牛逼">
-								</a>
-							</div>
-							<div class="mcmt-user">
-								<a href="#" target="_blank" class="name" render-html="list.user.nickName"></a>
-								<a href="javascript:void(0);" class="per_attention" data-japp="following" data-uid="45066857" data-follow_class="hide">
-								</a>
-							</div>
-						</div>
-					</div>
-					<p render-html="list.titleMessage"></p>
-					<p render-html="list.comment"></p>
-					<div class="d-flex">
-						<div class="p-2  flex-fill">
-							<i class="fa fa-calendar"></i>
-							<span render-html="list.commentTime"></span>
-						</div>
-						<div class="p-2  flex-fill">
-							<a href="" render-key="list.destinationMsg" render-fun="handle">
-								<i class="fa fa-money"></i> 回复他
-							</a>
-						</div>
-					</div>
-
-
-				</dd>
-			</dl>
-
-		</div>
-
-
 		<div class="container strategy">
 			<dl class="itemList" render-loop="list" >
 				<dd>
@@ -85,22 +45,22 @@
 								</a>
 							</div>
 							<div class="mcmt-user">
-								<a href="#" target="_blank" class="name" render-html="list.user.nickName"></a>
-								<a href="javascript:void(0);" class="per_attention" data-japp="following" data-uid="45066857" data-follow_class="hide">
-								</a>
+								<a href="#"  class="name" render-html="list.user.nickName"></a>
+								<a href="#"><i class="fa fa-commenting-o" aria-hidden="true" >评论了你的攻略:《</i></a>
+								<span render-html="list.strategy.title"></span>》
 							</div>
 						</div>
 					</div>
-					<p render-html="list.titleMessage"></p>
+					<p render-html="list.content"></p>
 					<p render-html="list.comment"></p>
 					<div class="d-flex">
 						<div class="p-2  flex-fill">
-							<i class="fa fa-calendar"></i>
-							<span render-html="list.commentTime"></span>
+							<i class="fa fa-clock-o" aria-hidden="true"></i>
+							<span render-html="list.createTime"></span>
 						</div>
 						<div class="p-2  flex-fill">
-							<a href="" render-key="list.themeId" render-fun="handle">
-								<i class="fa fa-money"></i> 回复他
+							<a href="#" render-key="list.strategy.id" render-fun="handle">
+								<i class="fa fa-comments" aria-hidden="true">回复他</i>
 							</a>
 						</div>
 					</div>
@@ -117,18 +77,11 @@
                 $.get("/users/messages/comment/strategy",function (data) {
                     $(".strategy").renderValues({list:data},{
                         handle: function (ele, value) {
-                            ele.href = "/strategyDetails.html?id="+value;
+                            ele.href = "/strategyCatalogs.html?id="+value;
                         }
                     })
                 })
-                setTimeout(50);
-                $.get("/users/messages/comment/travel",function (data) {
-                    $(".travel").renderValues({list:data},{
-                        handle: function (ele, value) {
-                            ele.href = "/travelContent.html?id="+value;
-                        }
-                    })
-                })
+
             })
 		</script>
 	</body>

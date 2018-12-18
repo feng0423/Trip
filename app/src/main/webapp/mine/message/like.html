@@ -43,13 +43,19 @@
 							</a>
 						</div>
 						<div class="mcmt-user">
-							<a href="#" target="_blank" class="name" render-html="list.nickName">赞了你!</a>
-							<a href="#" target="_blank">赞了你!</a>
-
+							<a href="#"  class="name" render-html="list.nickName"></a>
+							<a href="#"><i class="fa fa-thumbs-o-up" aria-hidden="true">赞了你的游记:《</i></a>
+							<span render-html="list.title"></span>》
 						</div>
 					</div>
 				</div>
-					<p render-html="list.titlemsg"></p>
+					<div class="d-flex">
+
+						<div class="p-2  flex-fill">
+							<i class="fa fa-clock-o" aria-hidden="true"></i>
+							<span render-html="list.createTime"></span>
+						</div>
+					</div>
 				</dd>
 			</dl>
 		</div>
@@ -60,6 +66,7 @@
 		      $.get("/users/messages/userlike",function (data) {
                   $(".systemMsg").renderValues({list:data})
               })
+
           })
 		</script>
 	</body>

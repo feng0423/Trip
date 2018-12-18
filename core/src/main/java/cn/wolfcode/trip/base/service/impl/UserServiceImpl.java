@@ -87,4 +87,9 @@ public class UserServiceImpl implements IUserService{
         return userMapper.selectByPrimaryKey(userId);
     }
 
+    @Override
+    public List<User> selectUserLike() {
+        return userMapper.selectUserLike();
+    }
+
 }

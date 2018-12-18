@@ -174,4 +174,12 @@ public class TravelServiceImpl implements ITravelService{
         List list = travelMapper.selectForListByUserId(qo);
         return new PageInfo(list);
     }
+
+    @Override
+    public int selectCoent(Long userId) {
+
+        return travelMapper.selectCoent(userId);
+
+    }
+
 }

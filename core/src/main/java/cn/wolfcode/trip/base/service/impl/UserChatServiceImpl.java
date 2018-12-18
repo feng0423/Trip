@@ -52,13 +52,30 @@ public class UserChatServiceImpl implements IUserChatService {
         return userChatMapper.insert(userChat);
     }
 
-
-
     @Override
     public List<UserChat> getNewMessage(Long receiverId, Long senderId,String newTime) {
 
 
         return userChatMapper.selectNewTime(receiverId,senderId,newTime);
+    }
+
+    @Override
+    public int selectUnreads(Long senderId) {
+
+        return userChatMapper.selectUnreadsNum(senderId);
+    }
+
+    /**
+     * 设置状态为已读
+     * @param senderId
+     * @param receiverId
+     */
+    @Override
+    public void setStatus(Long senderId, Long receiverId) {
+        if(receiverId!=senderId){
+
+        }
+        userChatMapper.setStatus(senderId,receiverId);
     }
 
 }

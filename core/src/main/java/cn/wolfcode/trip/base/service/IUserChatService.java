@@ -41,4 +41,8 @@ public interface IUserChatService {
     int insert(UserChat record);
 
     List<UserChat> getNewMessage(Long receiverId, Long senderId,String newTime);
+
+    int selectUnreads(Long senderId);
+
+    void setStatus(Long senderId, Long receiverId);
 }

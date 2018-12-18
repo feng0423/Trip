@@ -92,4 +92,5 @@ public interface ITravelService {
     PageInfo queryTravelByauthorId(UserQueryObject qo);
 
 
+    int selectCoent(Long userId);
 }

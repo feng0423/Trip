@@ -153,10 +153,10 @@ $(function () {
         $("[name='message']").next().css('background', '#ddd').prop('disabled', false);
     });
     //查看这个页面的时候设置这条信息状态为已读状态
-/*    $.ajax({
+    $.ajax({
         type: "PUT",
         url: "/userChats/"+senderId+"/"+receiverId
-    });*/
+    });
     var newTime = CurentTimeWithSeconds(new Date());
         function getNewMessage() {
         $.get("/userChats/" + receiverId + "/" + senderId + "/" + newTime, function (data) {

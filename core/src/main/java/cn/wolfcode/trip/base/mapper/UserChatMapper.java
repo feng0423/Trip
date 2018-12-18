@@ -24,4 +24,8 @@ public interface UserChatMapper {
     List<User> listUserById( @Param("senderId") Long id,@Param("receiverId") Long id1);
 
     List<UserChat> selectNewTime(@Param("receiverId") Long receiverId, @Param("senderId") Long senderId, @Param("newTime") String newTime);
+
+    int selectUnreadsNum(@Param("senderId") Long senderId);
+
+    void setStatus(@Param("senderId") Long senderId, @Param("receiverId") Long receiverId);
 }

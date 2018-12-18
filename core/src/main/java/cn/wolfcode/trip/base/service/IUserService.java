@@ -56,5 +56,9 @@ public interface IUserService {
      */
     User getUser(Long userId);
 
-
+    /**
+     * 获取点赞的人信息
+     * @return
+     */
+    List<User> selectUserLike();
 }

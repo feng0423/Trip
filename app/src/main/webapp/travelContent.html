@@ -19,8 +19,8 @@
             var title = "";
             var params = getParams();
             $.get("/travels/" + params.id, function (data) {
-                console.log("11111");
-                console.log(data);
+               // console.log("11111");
+                //console.log(data);
                 title = data.title;
                 //共享编辑器
                 $(".travels").renderValues(data)
@@ -130,6 +130,15 @@
                     window.location.href = "login.html";
                 });
             }
+            //回显粉丝和关注
+            $.get('/users/' + params.id + '/attention', function (data) {
+                //console.log(data);
+                $('#spanFans').text(data.fans)
+            })
+            //回显游记遍数
+            $.get('/users/'+params.id + '/travel' ,function (data) {
+                $('#aaa').text(data);
+            })
 
         })
     </script>
@@ -163,10 +172,9 @@
             <div class="col-6 mine">
                 <small>
                     <span render-html="author.nickName"></span>
-                    <button class="btn" id="followBtn">关注</button>
                     <br>
-                    <span>0 </span>篇游记
-                    <span>0 </span>粉丝
+                    <span id="aaa">0 </span>篇游记
+                    <span id="spanFans">0 </span>粉丝
                 </small>
             </div>
             <div class="attention col">

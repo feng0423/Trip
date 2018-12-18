@@ -84,5 +84,22 @@ public class ChatController {
         return userChatService.getNewMessage(senderId,receiverId,newTime);
     }
 
+    /**
+     * 查询未读私信消息数量
+     * @param senderId
+     * @return
+     */
+    @GetMapping("/{senderId}/unreads")
+    public int getUnreads(@PathVariable("senderId") Long senderId){
+        return userChatService.selectUnreads(senderId);
+    }
 
+    /**
+     * 设置状态为已读
+     * @return
+     */
+    @PutMapping("/{senderId}/{receiverId}")
+    public void setStatus(@PathVariable("senderId") Long senderId, @PathVariable("receiverId") Long receiverId){
+        userChatService.setStatus(senderId,receiverId);
+    }
 }

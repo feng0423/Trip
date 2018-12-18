@@ -44,6 +44,8 @@ public class UserController {
     private IUserStrategyService userStrategyService;
     @Autowired
     private IStrategyService strategyService;
+    @Autowired
+    private ITravelCommendService travelCommendService;
 
 
     @Autowired
@@ -115,13 +117,13 @@ public class UserController {
      */
     @GetMapping("/messages/userlike")
     public Object getUserLike(){
-        List<User> list = userService.selectAll();
+        List<User> list = userService.selectUserLike();
         return list;
     }
 
     /**
      * 查询user的数据
-     * @param qo
+     * @param receiverId
      * @return
      */
     @GetMapping("/{receiverId}")
@@ -129,11 +131,32 @@ public class UserController {
         return userService.selectByUser(receiverId);
     }
 
-    @GetMapping("/{UserId}")
-    public User getUserById(@PathVariable Long UserId) {
+    /**
+     * 查询攻略评论
+     * @return
+     */
+    @GetMapping("/messages/comment/strategy")
+    public List<StrategyComment> getStrategy(){
+        List<StrategyComment> list = strategyCommentService.selectCommentStrategy();
+        return list;
+    }
 
+    /**
+     * 查询游记评论
+     * @return
+     */
+    @GetMapping("/messages/comment/travel")
+    public List<TravelCommend> getTravel(){
+        List<TravelCommend> list = travelCommendService.selectCommentTravel();
+        return list;
+    }
+
+
+    @GetMapping("/{UserId}/userId")
+    public User getUserById(@PathVariable Long UserId) {
         return userService.getUser(UserId);
     }
+
     @GetMapping("/{UserId}/travelsByUserId")
     public PageInfo travelByauthorId(UserQueryObject qo) {
         qo.setOrderBy("lastUpdateTime desc");
@@ -199,6 +222,14 @@ public class UserController {
         return strategyService.selectStrategyByUserId(userId);
 
     }
+    //通过用户ID查询该用户收藏的游记
+    @GetMapping("/{userId}/travel")
+    public int selectCoent(@PathVariable Long userId) {
+
+        return travelService.selectCoent(userId);
+
+    }
+
 
 
 }

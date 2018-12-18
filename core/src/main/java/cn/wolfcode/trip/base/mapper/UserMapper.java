@@ -32,4 +32,6 @@ public interface UserMapper {
 
 
     List<Strategy> selectSearchForList(SerachQueryObject qo);
+
+    List<User> selectUserLike();
 }

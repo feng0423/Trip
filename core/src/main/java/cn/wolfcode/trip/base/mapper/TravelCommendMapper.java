@@ -23,4 +23,6 @@ public interface TravelCommendMapper {
 
     //查询结果集
     List<TravelCommend> selectForAppList(TravelCommendQueryObject qo); //查询结果集
+
+    List<TravelCommend> selectCommentTravel();
 }

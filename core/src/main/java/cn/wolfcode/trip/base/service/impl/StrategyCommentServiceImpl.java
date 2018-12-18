@@ -63,4 +63,9 @@ public class StrategyCommentServiceImpl implements IStrategyCommentService {
         return new PageInfo(list);
     }
 
+    @Override
+    public List<StrategyComment> selectCommentStrategy() {
+        return strategyCommentMapper.selectCommentStrategy();
+    }
+
 }

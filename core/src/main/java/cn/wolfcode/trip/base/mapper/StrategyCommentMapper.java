@@ -27,4 +27,6 @@ public interface StrategyCommentMapper {
     void changeState(@Param("id") Long id, @Param("state") Integer state);
 
     List<StrategyComment> selectByStatus(@Param("state") Integer state);
+
+    List <StrategyComment>selectCommentStrategy();
 }

@@ -40,6 +40,8 @@ public class Travel extends BaseDomain{
     //作者
     private User author;
     //创建时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date createTime;
     //发布时间
     @DateTimeFormat(pattern = "yyyy-MM-dd")

@@ -37,10 +37,9 @@
     from systemmessage
     where systemmessage.user_id=#{id}
   </select>
-    <select id="selectAll" resultMap="BaseResultMap">
-    select u.*,sm.id, sm.message, sm.user_id, sm.createTime, sm.reading, sm.travel_id
+    <select id="selectAll" resultType="map">
+    select u.*,sm.id, sm.message, sm.user_id, DATE_FORMAT(sm.createTime,'%Y-%m-%d %H:%i:%s') createTime, sm.reading, sm.travel_id
     from systemmessage sm
     JOIN user u ON sm.user_id= u.id
-    /*JOIN travel t ON sm.travel_id = t.id*/
   </select>
 </mapper>

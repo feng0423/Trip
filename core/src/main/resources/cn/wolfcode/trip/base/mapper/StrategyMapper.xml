@@ -97,8 +97,7 @@
     WHERE  strategy_id = #{strategyId}
   </select>
 
-
-  <insert id="insertLikeStrategyUserRelation">
+    <insert id="insertLikeStrategyUserRelation">
     INSERT INTO like_user_strategy (
     user_id,
     strategy_id,

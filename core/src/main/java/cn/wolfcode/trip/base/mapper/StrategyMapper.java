@@ -43,4 +43,6 @@ public interface StrategyMapper {
     void insertFavoriteStrategyUserRelation(@Param("strategyId")Long strategyId, @Param("userId")Long userId);
 
     void deleteFavoriteStrategyUserRelation(@Param("strategyId")Long strategyId, @Param("userId")Long userId);
+
+
 }

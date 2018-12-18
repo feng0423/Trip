@@ -70,4 +70,6 @@ public interface IStrategyService {
      * @return
      */
     Map getFavoriteById(Long id);
+
+
 }

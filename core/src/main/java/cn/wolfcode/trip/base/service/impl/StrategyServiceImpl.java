@@ -119,6 +119,7 @@ public class StrategyServiceImpl implements IStrategyService{
 
 
 
+
     public Map getCommonMap(Long id, int count, int type) {
         Map map;
         if (!UserContext.isLogined()) {

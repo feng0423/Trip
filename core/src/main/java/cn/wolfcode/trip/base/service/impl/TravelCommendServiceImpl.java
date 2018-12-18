@@ -37,4 +37,9 @@ public class TravelCommendServiceImpl implements ITravelCommendService {
         List list  = travelCommendMapper.selectForAppList(qo);
         return new PageInfo(list);
     }
+
+    @Override
+    public List<TravelCommend> selectCommentTravel() {
+        return travelCommendMapper.selectCommentTravel();
+    }
 }

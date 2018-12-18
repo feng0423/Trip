@@ -31,4 +31,6 @@ public interface IStrategyCommentService {
      * @return
      */
     PageInfo queryStrategycommentsByUserId(UserQueryObject qo);
+
+    List<StrategyComment> selectCommentStrategy();
 }

@@ -36,6 +36,7 @@ public class TicketsController {
                 qo.setOrderBy("price asc");
             }
         }
+        qo.setPageSize(5);
         PageInfo query = ticketsService.query(qo);
         return query;
     }

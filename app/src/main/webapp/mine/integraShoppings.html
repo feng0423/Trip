@@ -43,7 +43,7 @@
             //获取到option的参数
             // $("#ticket_searchListUl1").empty("");
 
-                $.get("/integraShopping",function (data) {
+               /* $.get("/integraShopping",function (data) {
 
                     console.log(data)
 
@@ -54,7 +54,62 @@
                             $(item).attr("href","/mine/confirm.html?id="+value);
                         }
 					});
+                })*/
+
+            /*门票js*/
+            //发请求获取所有的游记,但是需要做分页的功能
+            $(function () {
+                //需要进行分页操作
+                //当前页
+                var currentPage=1;
+                //总页数
+                var pages;
+                //定义一个接收所有的图片的数组
+                var travelArr = [];
+
+                //获取到option的参数
+                // $("#ticket_searchListUl1").empty("");
+
+                function query() {
+                    $.get("/integraShopping",{currentPage:currentPage}, function (data) {
+
+                        console.log(data)
+                        $.merge(travelArr, data.list);
+                        var json = {
+                            list: travelArr
+                        }
+                        console.log(json);
+                        $("#contentdsfsfd").renderValues(json,{
+                            getHref:function (item,value) {
+                                console.log(item);
+                                console.log(value);
+                                $(item).attr("href","/mine/confirm.html?id="+value);
+                            }
+                        });
+                        pages = data.pages;
+                    })
+                    currentPage = currentPage+1;
+                }
+
+                query();
+
+                $(window).scroll(function () {
+                    if($(window).height() + $(document).scrollTop() +1  >= $(document).height()){
+                        //如果是大于总页数就不发送请求了
+                        if(currentPage <= pages){
+                            query();
+
+                        }else{
+                            $(document).dialog({
+                                type:'notice',
+                                content:'<span class="info-text">亲,已经到底了!</span>',
+                                autoClose:2500
+                            });
+                        }
+                    }
                 })
+
+            })
         })
 	</script>
 	<style>
@@ -162,6 +217,23 @@
 								</div>
 							</a>
 							</div>
+
+<!--
+                            <div class="list clearfloat fl box-s">
+                                <a render-fun="getHref" render-key="list.id">
+                                    <div class="zuo clearfloat fl box-s">
+                                        <p class="tit text" render-html="list.productDescription"></p>
+                                        <p><span>积分:</span><span class="over db red" render-html="list.sign.score"></span></p>
+                                        <p class="tit text" render-html="list.productName"></p>
+                                    </div>
+                                    <div class="tu clearfloat fr">
+                                        <span></span>
+                                        <img render-src="list.coverUrl"/>
+                                    </div>
+                                </a>
+                            </div>-->
+
+
 						</div>
 
 
@@ -230,7 +302,6 @@
 						        </div>
 						    </a>
 						</div>
-
 			        	<div class="list clearfloat fl">
 						    <a href="detail.html">
 						        <div class="tu clearfloat fr">

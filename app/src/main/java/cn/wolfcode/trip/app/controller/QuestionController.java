@@ -1,8 +1,11 @@
 package cn.wolfcode.trip.app.controller;
 
 import cn.wolfcode.trip.base.domain.Question;
+import cn.wolfcode.trip.base.domain.QuestionSecond;
 import cn.wolfcode.trip.base.domain.User;
 import cn.wolfcode.trip.base.query.QueryObject;
+import cn.wolfcode.trip.base.query.QuestionQueryObject;
+import cn.wolfcode.trip.base.service.IQuestionSecondService;
 import cn.wolfcode.trip.base.service.IQuestionService;
 import cn.wolfcode.trip.base.util.JsonResult;
 import cn.wolfcode.trip.base.util.UploadUtil;
@@ -11,6 +14,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Date;
 import java.util.List;
 
@@ -23,59 +27,53 @@ public class QuestionController {
     @Autowired
     private IQuestionService questionService;
 
+    @Autowired
+    private IQuestionSecondService questionSecondService;
+
+//    @GetMapping("/title")
+//    public PageInfo list(QuestionQueryObject qo) {
+//        return questionService.queryForAppList(qo);
+//    }
 
     @GetMapping
-    public PageInfo query(QueryObject qo) {
-        PageInfo query = questionService.query(qo);
-        return query;
+    public PageInfo<Question> list(QuestionQueryObject qo) {
+        qo.setOrderBy("id DESC");
+        return questionService.queryForAppList(qo);
     }
 
-    @GetMapping("/{id}")
-    public Question getById(@PathVariable Long id) {
-
-        return questionService.getById(id);
-    }
-
-
-    @PostMapping("/addAsk")
-    public JsonResult save(Question question,MultipartFile file) {
-       /* String url = UploadUtil.uploadQiniyun(file);
-        //判断是否上传文件
-        if(file!=null && file.getSize()>0) {
-
-
-            question.setCoverUrl(UploadUtil.Qi_PATH + url);
-        }*/
-        //获取用户的id
-        User user = UserContext.getUser();
-        question.setCreateTime(new Date());
-        //通过获取前端的value值隐藏域,判断是进入是评论还是回复
-        if (question.getState() == 0) {
-            //System.out.println("进入提问接口");
-            question.setUser(user);
-            question.setState(0);
-            //查询所有数据,按降序排序
-            List<Question> list = questionService.selectAll();
-            if (list.size() == 0) {
-                question.setId(1L);
-            } else {
-                Long id = list.get(0).getId();//如果不为0,就获取到最大一条的id
-                question.setId(1L + 1);//手动自增1
-            }
-        } else {
-            //回复功能
-            // System.out.println("进入回复接口");
-            String content = question.getContent();
-            String id = question.getCoverUrl();
-            question = questionService.getById(Long.parseLong(id));
-            question.setState(1);
-            question.setContent(content);
-            question.setCoverUrl("");
+    @PostMapping("/save")
+    public JsonResult save(Question question) {
+        JsonResult jsonResult = new JsonResult();
+        if (!UserContext.isLogined()) {
+            jsonResult.mark("请登录后再试!");
+            return jsonResult;
         }
 
-        //调用保存的方法
         questionService.save(question);
-        return new JsonResult();
+        return jsonResult;
+    }
 
+    @PostMapping("/saveLevel2")
+    public JsonResult saveLevel2(QuestionSecond questionSecond) {
+        JsonResult jsonResult = new JsonResult();
+        if (!UserContext.isLogined()) {
+            jsonResult.mark("请登录后再试!");
+            return jsonResult;
+        }
+
+        questionSecondService.save(questionSecond);
+        return jsonResult;
+    }
+
+    @DeleteMapping("/delete")
+    public JsonResult delete(QuestionQueryObject qo) {
+        questionService.delete(qo.getQuestionId());
+        return new JsonResult();
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public JsonResult delete(@PathVariable Long id, QuestionQueryObject qo) {
+        questionService.delete(id);
+        return new JsonResult();
     }
 }

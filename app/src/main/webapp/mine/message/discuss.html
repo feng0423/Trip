@@ -59,7 +59,7 @@
 							<span render-html="list.createTime"></span>
 						</div>
 						<div class="p-2  flex-fill">
-							<a href="#" render-key="list.strategy.id" render-fun="handle">
+							<a render-key="list.id" render-fun="handle">
 								<i class="fa fa-comments" aria-hidden="true">回复他</i>
 							</a>
 						</div>
@@ -75,9 +75,11 @@
 		<script>
             $(function () {
                 $.get("/users/messages/comment/strategy",function (data) {
+                    console.log(data);
                     $(".strategy").renderValues({list:data},{
                         handle: function (ele, value) {
-                            ele.href = "/strategyCatalogs.html?id="+value;
+                            ele.href = "/reply.html?id="+value +'&title=&type=2';
+
                         }
                     })
                 })

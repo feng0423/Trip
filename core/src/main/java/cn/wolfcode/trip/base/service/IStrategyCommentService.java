@@ -6,7 +6,6 @@ import cn.wolfcode.trip.base.query.UserQueryObject;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
-import java.util.Map;
 
 public interface IStrategyCommentService {
     /**
@@ -32,6 +31,8 @@ public interface IStrategyCommentService {
      * @return
      */
     PageInfo queryStrategycommentsByUserId(UserQueryObject qo);
+
+    List<StrategyComment> selectCommentStrategy();
 
 
     /**

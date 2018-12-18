@@ -109,4 +109,9 @@ public class StrategyCommentServiceImpl implements IStrategyCommentService {
         map.put("count",count);
         return map;
     }
+    @Override
+    public List<StrategyComment> selectCommentStrategy() {
+        return strategyCommentMapper.selectCommentStrategy();
+    }
+
 }

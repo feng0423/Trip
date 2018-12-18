@@ -1,14 +1,25 @@
 package cn.wolfcode.trip.app.controller;
 
+import cn.wolfcode.trip.base.domain.SystemMessage;
+import cn.wolfcode.trip.base.domain.User;
+import cn.wolfcode.trip.base.query.QueryObject;
 import cn.wolfcode.trip.base.domain.*;
 import cn.wolfcode.trip.base.query.TravelQueryObject;
+import cn.wolfcode.trip.base.service.ISystemMessageService;
+import cn.wolfcode.trip.base.service.ITravelService;
+import cn.wolfcode.trip.base.service.IUserService;
 import cn.wolfcode.trip.base.query.UserQueryObject;
 import cn.wolfcode.trip.base.service.*;
 import cn.wolfcode.trip.base.util.JsonResult;
+import cn.wolfcode.trip.base.util.UserContext;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
+import jdk.nashorn.internal.objects.annotations.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +44,12 @@ public class UserController {
     private IUserStrategyService userStrategyService;
     @Autowired
     private IStrategyService strategyService;
+    @Autowired
+    private ITravelCommendService travelCommendService;
 
+
+    @Autowired
+    private ISystemMessageService systemMessageService;
 
     //需求一: 注册的实现
     @PostMapping
@@ -81,11 +97,66 @@ public class UserController {
         qo.setOrderBy("t.lastUpdateTime desc");
         return travelService.queryForList(qo);
     }
-    @GetMapping("/{UserId}")
-    public User getUserById(@PathVariable Long UserId) {
 
+    /**
+     * 王首恒
+     * 查询系统消息显示在系统消息界面
+     * @return
+     */
+    @GetMapping("/messages/systemMessage")
+    public Object getSystemMessage() {
+       /* User user = UserContext.getUser();*/
+        List<SystemMessage> systemMessages = systemMessageService.selectAll();
+        return systemMessages;
+    }
+
+    /**
+     * 王首恒
+     * 获取user数据展示到点赞界面
+     * @return
+     */
+    @GetMapping("/messages/userlike")
+    public Object getUserLike(){
+        List<User> list = userService.selectUserLike();
+        return list;
+    }
+
+    /**
+     * 查询user的数据
+     * @param receiverId
+     * @return
+     */
+    @GetMapping("/{receiverId}")
+    public User getUser( @PathVariable("receiverId") Long receiverId) {
+        return userService.selectByUser(receiverId);
+    }
+
+    /**
+     * 查询攻略评论
+     * @return
+     */
+    @GetMapping("/messages/comment/strategy")
+    public List<StrategyComment> getStrategy(){
+        List<StrategyComment> list = strategyCommentService.selectCommentStrategy();
+        return list;
+    }
+
+    /**
+     * 查询游记评论
+     * @return
+     */
+    @GetMapping("/messages/comment/travel")
+    public List<TravelCommend> getTravel(){
+        List<TravelCommend> list = travelCommendService.selectCommentTravel();
+        return list;
+    }
+
+
+    @GetMapping("/{UserId}/userId")
+    public User getUserById(@PathVariable Long UserId) {
         return userService.getUser(UserId);
     }
+
     @GetMapping("/{UserId}/travelsByUserId")
     public PageInfo travelByauthorId(UserQueryObject qo) {
         qo.setOrderBy("lastUpdateTime desc");
@@ -151,6 +222,14 @@ public class UserController {
         return strategyService.selectStrategyByUserId(userId);
 
     }
+    //通过用户ID查询该用户收藏的游记
+    @GetMapping("/{userId}/travel")
+    public int selectCoent(@PathVariable Long userId) {
+
+        return travelService.selectCoent(userId);
+
+    }
+
 
 
 }

@@ -28,7 +28,7 @@ public class StrategyComment extends BaseDomain {
     //点评者
     private User user;
     //创建时间
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
     //点评内容
     private String content;
@@ -41,8 +41,8 @@ public class StrategyComment extends BaseDomain {
     //状态
     private Integer state = STATE_NORMAL;
     //推荐时间安排
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date commendTime;
 
     //将图片字符串进行切割,封装到属性数组中

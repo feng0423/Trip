@@ -19,11 +19,11 @@
     <update id="updateByPrimaryKey">
         update user
         set nickName = #{nickName},
-            place  = #{place},
-            headImgUrl  = #{headImgUrl},
-            gender = #{gender},
-            coverImgUrl = #{coverImgUrl},
-            sign  = #{sign}
+        place  = #{place},
+        headImgUrl  = #{headImgUrl},
+        gender = #{gender},
+        coverImgUrl = #{coverImgUrl},
+        sign  = #{sign}
         where id = #{id}
     </update>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap">
@@ -53,6 +53,10 @@
             </if>
         </where>
     </select>
+    <select id="listUserById" resultType="user">
+        select  * from user where id in (
+        SELECT receiver_id from userchat where sender_id = #{id})
+    </select>
     <select id="selectSearchForList" resultMap="BaseResultMap">
         select id, email, nickName, password, place, headImgUrl, gender, coverImgUrl, sign
         from user
@@ -61,5 +65,19 @@
                 and (email LIKE concat('%',#{keyword},'%') OR nickName LIKE CONCAT('%', #{keyword} ,'%'))
             </if>
         </where>
+    </select>
+    <select id="selectUserLike" resultType="map">
+        SELECT
+        u.id ,u.headImgUrl ,u.nickName,
+        lt.travel_id,DATE_FORMAT(lt.create_time,'%Y-%m-%d %H:%i:%s') createTime,
+        t.author_id,t.title,
+        lsc.strategycomment_id,
+        sc.content
+        FROM user u
+        JOIN like_user_travel lt ON u.id = lt.user_id
+        JOIN travel t ON t.id = lt.travel_id
+        JOIN like_user_strategycomment lsc ON u.id=lsc.user_id
+        JOIN strategycomment sc ON sc.id=lsc.strategycomment_id
+        WHERE u.id=lt.travel_id AND t.author_id
     </select>
 </mapper>

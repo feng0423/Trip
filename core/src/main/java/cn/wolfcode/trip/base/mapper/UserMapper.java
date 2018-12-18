@@ -27,5 +27,11 @@ public interface UserMapper {
 
     User selectByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 
+
+    List<User> listUserById(@Param("id") Long id);
+
+
     List<Strategy> selectSearchForList(SerachQueryObject qo);
+
+    List<User> selectUserLike();
 }

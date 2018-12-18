@@ -42,4 +42,6 @@ public interface TravelMapper {
 
     List<Travel> selectByStatus(@Param("strategyId") Long strategyId, @Param("state") Integer state);
     List selectForListByUserId(UserQueryObject qo);
+
+    int selectCoent(Long userId);
 }

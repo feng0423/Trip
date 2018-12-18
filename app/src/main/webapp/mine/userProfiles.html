@@ -15,6 +15,16 @@
 		<link rel="stylesheet" href="/js/plugins/dialog2/dialog.css">
 		<script src="/js/plugins/dialog2/dialog.min.js"></script>
 	</head>
+	<script>
+		$(function () {
+            $(".strategy").renderValues({list:data},{
+                handle: function (ele, value) {
+                    ele.href = "/mine/message/chat.html?id="+value;
+                }
+            })
+
+        })
+	</script>
 	<body>
 		<div class="container bg" style="background-image: url(&quot;/img/user/bg.jpeg&quot;);">
 			<a href="javascript:window.history.go(-1)" class="my-arrow">
@@ -44,7 +54,9 @@
 							</div>
 						</div>
 						<div class="col">
-							<button class="btn btn-outline-light ibtn" id="letterBtn">私信</button>
+							<a href="#" render-key="list.strategy.id" render-fun="handle">
+								<button class="btn btn-outline-light ibtn" id="letterBtn">私信</button>
+							</a>
 							<button class="btn btn-success ibtn" id="followBtn">关注</button>
 						</div>
 					</div>

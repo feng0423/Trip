@@ -64,4 +64,10 @@
       and tc.schedule &lt;= now()
     </where>
   </select>
+    <select id="selectCommentTravel" resultType="map">
+      select tc.*,t.author_id,u.nickName,u.headImgUrl,t.createTime
+      from travelcommend tc
+		JOIN travel t on t.id = tc.travel_id
+		JOIN user u on u.id=t.author_id
+    </select>
 </mapper>

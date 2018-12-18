@@ -19,8 +19,7 @@
         <dependencies>
             <!-- freemarker -->
             <dependency>
-                <groupId>org.freemarker</groupId>
-                <artifactId>freemarker</artifactId>
+                <groupId>org.freemarker</groupId>                <artifactId>freemarker</artifactId>
                 <version>2.3.23</version>
             </dependency>
             <!-- swagger2 -->
@@ -133,6 +132,17 @@
             <groupId>com.qiniu</groupId>
             <artifactId>qiniu-java-sdk</artifactId>
             <version>[7.2.0, 7.2.99]</version>
+        </dependency>
+        <!-- WebSocket -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>5.0.8.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+            <version>5.0.8.RELEASE</version>
         </dependency>
     </dependencies>
 

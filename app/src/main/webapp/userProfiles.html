@@ -24,6 +24,7 @@
 
             });
 
+
             //关注关联
             var user = JSON.parse(sessionStorage.getItem('user'));//访客
             var visitorId = user;//访客ID
@@ -192,6 +193,8 @@
                     }
                 })
             })
+            //私聊按钮
+            $('#aaaaa').attr('href','/mine/message/chat.html?receiverId=' + params.id)
 
         })
     </script>
@@ -225,7 +228,9 @@
                     </div>
                 </div>
                 <div class="col">
-                    <button class="btn btn-outline-light ibtn" id="letterBtn">私信</button>
+                    <a  id="aaaaa" href="">
+                        <button class="btn btn-outline-light ibtn" id="letterBtn">私信</button>
+                    </a>
                     <button class="btn btn-success ibtn" id="followBtn">关注</button>
                 </div>
             </div>

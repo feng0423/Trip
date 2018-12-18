@@ -5,6 +5,8 @@ import cn.wolfcode.trip.base.query.QueryObject;
 import cn.wolfcode.trip.base.query.TravelCommendQueryObject;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
+
 public interface ITravelCommendService {
 
     /**
@@ -25,4 +27,6 @@ public interface ITravelCommendService {
      * @return
      */
     PageInfo queryForList(TravelCommendQueryObject qo);
+
+    List<TravelCommend> selectCommentTravel();
 }
